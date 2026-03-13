@@ -67,5 +67,6 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "blinking-emotion-game.slnx"
+    "dotnet.defaultSolution": "blinking-emotion-game.slnx",
+    "python-envs.defaultEnvManager": "ms-python.python:venv"
 }
