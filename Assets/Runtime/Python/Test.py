@@ -1,70 +1,67 @@
-import time
-
-import mediapipe as mp
-import numpy as np
 import cv2
+import numpy as np
+import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
-from mediapipe.tasks.python.vision import drawing_utils
-from mediapipe.tasks.python.vision import drawing_styles
-from mediapipe.tasks.python import vision
 
-# Global variable to store the latest annotated frame
-latest_frame = None
-model_path = 'Assets/Runtime/Python/pose_landmarker_full.task'
+# --- Modell laden ---
+base_options = python.BaseOptions(
+    model_asset_path=r"C:\Unity Projekte\blinking-emotion-game\Assets\Runtime\Python\face_landmarker.task"
+)
 
-BaseOptions = mp.tasks.BaseOptions
-PoseLandmarker = mp.tasks.vision.PoseLandmarker
-PoseLandmarkerOptions = mp.tasks.vision.PoseLandmarkerOptions
-PoseLandmarkerResult = mp.tasks.vision.PoseLandmarkerResult
-VisionRunningMode = mp.tasks.vision.RunningMode
+options = vision.FaceLandmarkerOptions(
+    base_options=base_options,
+    output_face_blendshapes=True,
+    output_facial_transformation_matrixes=True,
+    num_faces=1
+)
 
-def draw_landmarks_on_image(rgb_image, detection_result):
-    pose_landmarks_list = detection_result.pose_landmarks
-    annotated_image = np.copy(rgb_image)
+detector = vision.FaceLandmarker.create_from_options(options)
 
-    pose_landmark_style = drawing_styles.get_default_pose_landmarks_style()
-    pose_connection_style = drawing_utils.DrawingSpec(color=(0, 255, 0), thickness=2)
+# --- Webcam starten ---
+cap = cv2.VideoCapture(0)
 
-    for pose_landmarks in pose_landmarks_list:
-        drawing_utils.draw_landmarks(
-            image=annotated_image,
-            landmark_list=pose_landmarks,
-            connections=vision.PoseLandmarksConnections.POSE_LANDMARKS,
-            landmark_drawing_spec=pose_landmark_style,
-            connection_drawing_spec=pose_connection_style)
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
 
-    return annotated_image
+    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb)
+    result = detector.detect(mp_image)
 
-# Create a pose landmarker instance with the live stream mode:
-def print_result(result: PoseLandmarkerResult, output_image: mp.Image, timestamp_ms: int): # type: ignore
-    global latest_frame
-    rgb = output_image.numpy_view()
-    annotated = draw_landmarks_on_image(rgb, result)
-    latest_frame = cv2.cvtColor(annotated, cv2.COLOR_RGB2BGR)
+    # FaceMesh zeichnen
+    if result.face_landmarks:
+        h, w, _ = frame.shape
+        for lm in result.face_landmarks[0]:
+            x = int(lm.x * w)
+            y = int(lm.y * h)
+            cv2.circle(frame, (x, y), 1, (0, 255, 0), -1)
 
-options = PoseLandmarkerOptions(
-    base_options=BaseOptions(model_asset_path=model_path),
-    running_mode=VisionRunningMode.LIVE_STREAM,
-    result_callback=print_result)
+    # --- Blendshape-Fenster erstellen ---
+    blendshape_window = np.zeros((800, 500, 3), dtype=np.uint8)
 
-with PoseLandmarker.create_from_options(options) as landmarker:
-  cap = cv2.VideoCapture(0)
+    if result.face_blendshapes:
+        blendshapes = result.face_blendshapes[0]
 
-  while cap.isOpened():
-    success, image = cap.read()
-    if not success:
-      print("Ignoring empty camera frame.")
-      continue
+        y = 30
+        for b in blendshapes:
+            name = b.category_name
+            score = b.score
 
-    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+            cv2.putText(blendshape_window, f"{name}: {score:.2f}",
+                        (10, y), cv2.FONT_HERSHEY_SIMPLEX, 0.6,
+                        (0, 255, 0), 1)
 
-    frame_timestamp_ms = int(time.time() * 1000)
+            bar_len = int(score * 300)
+            cv2.rectangle(blendshape_window, (10, y + 10),
+                          (10 + bar_len, y + 30), (0, 255, 0), -1)
 
-    landmarker.detect_async(mp_image, frame_timestamp_ms)
+            y += 40
 
-    if latest_frame is not None:
-        cv2.imshow("Pose Landmarks - LIVE_STREAM", latest_frame)
+    # Fenster anzeigen
+    cv2.imshow("Kamera", cv2.flip(frame, 1))
+    cv2.imshow("Blendshapes", blendshape_window)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
