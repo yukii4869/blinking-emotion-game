@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BlinkDetector : MonoBehaviour
 {
-    
+
     [SerializeField]
     private UdpReceiver receiver;
 
@@ -19,8 +19,8 @@ public class BlinkDetector : MonoBehaviour
         var b = receiver.blendshapes;
         if (b.Count == 0) return;
 
-        float leftBlink = b["eyeBlinkLeft"];
-        float rightBlink = b["eyeBlinkRight"];
+        float leftBlink = BlendshapeUtils.Get(b, "eyeBlinkLeft");
+        float rightBlink = BlendshapeUtils.Get(b, "eyeBlinkRight");
 
         (leftClosed, leftCount) = UpdateBlink(leftBlink, blinkThreshold, leftClosed, leftCount);
         (rightClosed, rightCount) = UpdateBlink(rightBlink, blinkThreshold, rightClosed, rightCount);

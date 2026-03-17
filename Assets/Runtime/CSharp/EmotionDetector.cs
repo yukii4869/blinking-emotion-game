@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 public class EmotionDetector : MonoBehaviour
 {
-    public UdpReceiver receiver;
+    [SerializeField]
+    private UdpReceiver receiver;
     public string currentEmotion = "neutral";
 
     void Update()
@@ -11,17 +12,15 @@ public class EmotionDetector : MonoBehaviour
         var b = receiver.blendshapes;
         if (b.Count == 0) return;
 
-        // Werte holen (mit Fallback)
-        float Get(string key) => b.ContainsKey(key) ? b[key] : 0f;
+        float smile = BlendshapeUtils.Get(b, "mouthSmileLeft") + BlendshapeUtils.Get(b, "mouthSmileRight");
+        float frown = BlendshapeUtils.Get(b, "mouthFrownLeft") + BlendshapeUtils.Get(b, "mouthFrownRight");
+        float browDown = BlendshapeUtils.Get(b, "browDownLeft") + BlendshapeUtils.Get(b, "browDownRight");
+        float sneer = BlendshapeUtils.Get(b, "noseSneerLeft") + BlendshapeUtils.Get(b, "noseSneerRight");
+        float jaw = BlendshapeUtils.Get(b, "jawOpen");
+        float eyeWide = BlendshapeUtils.Get(b, "eyeWideLeft") + BlendshapeUtils.Get(b, "eyeWideRight");
+        float browInner = BlendshapeUtils.Get(b, "browInnerUp");
+        float stretch = BlendshapeUtils.Get(b, "mouthStretchLeft") + BlendshapeUtils.Get(b, "mouthStretchRight");
 
-        float smile = Get("mouthSmileLeft") + Get("mouthSmileRight");
-        float frown = Get("mouthFrownLeft") + Get("mouthFrownRight");
-        float browDown = Get("browDownLeft") + Get("browDownRight");
-        float sneer = Get("noseSneerLeft") + Get("noseSneerRight");
-        float jaw = Get("jawOpen");
-        float eyeWide = Get("eyeWideLeft") + Get("eyeWideRight");
-        float browInner = Get("browInnerUp");
-        float stretch = Get("mouthStretchLeft") + Get("mouthStretchRight");
 
         // HAPPY
         if (smile > 0.55f && frown < 0.25f)
