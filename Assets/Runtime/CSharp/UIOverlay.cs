@@ -1,29 +1,58 @@
 using UnityEngine;
 using TMPro;
 using System.Text;
+using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class UIOverlay : MonoBehaviour
 {
-    public UdpReceiver receiver;
-    public EmotionDetector emotionDetector;
+    [SerializeField]
+    private UdpReceiver receiver;
+    [SerializeField]
+    private EmotionDetector emotionDetector;
+    [SerializeField]
+    private BlinkDetector blinkDetector;
 
-    public TextMeshProUGUI emotionText;
+    [SerializeField]
+    private TextMeshProUGUI emotionText;
+    [SerializeField]
+    private TextMeshProUGUI blinkCounterText;
+
+    [SerializeField]
+    private RawImage emotionImage;
+    
+    [SerializeField]
+    private List<Texture> textures;
 
     void Update()
     {
         // Emotion anzeigen
         emotionText.text = "Emotion: " + emotionDetector.currentEmotion;
-
-        // Blendshapes anzeigen
-        var b = receiver.blendshapes;
-        if (b.Count == 0) return;
-
-        StringBuilder sb = new StringBuilder();
-
-        foreach (var kv in b)
+        if (emotionDetector.currentEmotion == "happy")
         {
-            sb.AppendLine($"{kv.Key}: {kv.Value:F3}");
+            emotionImage.texture = textures[0];
         }
+        else if(emotionDetector.currentEmotion == "sad")
+        {
+             emotionImage.texture = textures[1];
+        }
+        else if(emotionDetector.currentEmotion == "angry")
+        {
+             emotionImage.texture = textures[2];
+        }
+        else if(emotionDetector.currentEmotion == "surprised")
+        {
+             emotionImage.texture = textures[3];
+        }
+        else if(emotionDetector.currentEmotion == "neutral")
+        {
+             emotionImage.texture = textures[4];
+        }
+
+        blinkCounterText.text = "Links: " + blinkDetector.leftCount + "Rechts: " + blinkDetector.rightCount;
+        
+
+        
 
     }
 }

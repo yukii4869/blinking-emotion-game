@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public class UdpReceiver : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class UdpReceiver : MonoBehaviour
 
     void Start()
     {
+        StartPythonScript();
+
         client = new UdpClient(5005);
         thread = new Thread(ReceiveData);
         thread.IsBackground = true;
@@ -45,14 +48,15 @@ public class UdpReceiver : MonoBehaviour
             }
         }
     }
+    void StartPythonScript()
+    {   
+        ProcessStartInfo psi = new ProcessStartInfo();
+        psi.FileName = "python"; // oder "python3", je nach System
+        psi.Arguments = "\"C:/Unity Projekte/blinking-emotion-game/Assets/Runtime/Python/Mediapipe_sender.py\"";
+        psi.UseShellExecute = false;
+        psi.CreateNoWindow = true;
 
-    void Update()
-    {
-        if (blendshapes.Count > 0)
-        {
-            //Debug.Log("Blendshapes geladen: " + blendshapes.Count);
-            //Debug.Log("eyeBlinkLeft: " + blendshapes["eyeBlinkLeft"]);
-        }
+        Process.Start(psi);
     }
 }
 
