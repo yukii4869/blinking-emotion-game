@@ -39,13 +39,30 @@ while True:
     mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
     result = detector.detect(mp_image)
 
-    if result.face_blendshapes:
-        # Deine MediaPipe-Version: face_blendshapes[0] ist die Liste der Category-Objekte
-        blendshape_list = result.face_blendshapes[0]
+    # Immer initialisieren!
+    landmarks = None
+    blendshapes = None
+    
+    # Landmarks extrahieren
+    if result.face_landmarks:
+        lm = result.face_landmarks[0]
+        landmarks = [{"x": p.x, "y": p.y, "z": p.z} for p in lm]
 
-        data = [{"key": b.category_name, "value": b.score} for b in blendshape_list]
-        message = json.dumps({"entries": data}).encode("utf-8")
+    # Blendshapes extrahieren
+    if result.face_blendshapes:
+        blendshape_list = result.face_blendshapes[0]
+        blendshapes = [{"key": b.category_name, "value": b.score} for b in blendshape_list]
+
+    # Nur senden, wenn mindestens etwas vorhanden ist
+    if landmarks is not None or blendshapes is not None:
+        message = json.dumps({
+            "landmarks": landmarks,
+            "blendshapes": blendshapes
+        }).encode("utf-8")
+
         sock.sendto(message, (UNITY_IP, UNITY_PORT))
+
+    
 
     cv2.imshow("MediaPipe Face Tracking", frame)
     if cv2.waitKey(1) & 0xFF == 27:
