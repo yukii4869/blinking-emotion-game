@@ -1,0 +1,78 @@
+using UnityEngine;
+
+public class BlinkDetector : MonoBehaviour
+{
+    [SerializeField] 
+    private UdpReceiver receiver;
+
+    [Header("EAR Settings")]
+    [SerializeField] 
+    private float blinkThreshold = 0.20f;   // EAR unter diesem Wert = Auge zu
+    [SerializeField] 
+    private int minClosedFrames = 3;        // Mindestdauer für einen Blink
+
+    [Header("Debug")]
+    [SerializeField] 
+    private bool isBlinking = false;
+    [SerializeField] 
+    private float currentEAR = 0f;
+    [SerializeField] 
+    private float counterBlinking = 0f;
+
+    private int closedFrameCounter = 0;
+
+    // Landmark Indices
+    private readonly int[] leftEye  = { 33, 159, 158, 133, 153, 145 };
+    private readonly int[] rightEye = { 362, 386, 387, 263, 374, 380 };
+
+    void Update()
+    {
+        if (receiver.latestLandmarks == null)
+            return;
+
+        Landmark[] lm = receiver.latestLandmarks;
+
+        float leftEAR  = ComputeEAR(lm, leftEye);
+        float rightEAR = ComputeEAR(lm, rightEye);
+        currentEAR = (leftEAR + rightEAR) * 0.5f;
+
+        // Blink-Logik
+        if (currentEAR < blinkThreshold)
+        {
+            closedFrameCounter++;
+
+            if (!isBlinking && closedFrameCounter >= minClosedFrames)
+            {
+                isBlinking = true;
+
+                counterBlinking++;
+            }
+        }
+        else
+        {
+            closedFrameCounter = 0;
+            isBlinking = false;
+        }
+    }
+
+    float ComputeEAR(Landmark[] lm, int[] idx)
+    {
+        Vector3 p1 = ToVec(lm[idx[0]]);
+        Vector3 p2 = ToVec(lm[idx[1]]);
+        Vector3 p3 = ToVec(lm[idx[2]]);
+        Vector3 p4 = ToVec(lm[idx[3]]);
+        Vector3 p5 = ToVec(lm[idx[4]]);
+        Vector3 p6 = ToVec(lm[idx[5]]);
+
+        float vert1 = Vector3.Distance(p2, p6);
+        float vert2 = Vector3.Distance(p3, p5);
+        float horiz = Vector3.Distance(p1, p4);
+
+        return (vert1 + vert2) / (2f * horiz);
+    }
+
+    Vector3 ToVec(Landmark l)
+    {
+        return new Vector3(l.x, l.y, l.z);
+    }
+}

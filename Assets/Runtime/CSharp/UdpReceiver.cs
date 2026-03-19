@@ -12,10 +12,12 @@ public class UdpReceiver : MonoBehaviour
     Thread thread;
 
     public Dictionary<string, float> blendshapes = new Dictionary<string, float>();
+    public Landmark[] latestLandmarks;
     private object lockObj = new object();
 
     void Start()
     {
+        // MediaPipe_sender wird ausgeführt
         StartPythonScript();
 
         client = new UdpClient(5005);
@@ -33,23 +35,33 @@ public class UdpReceiver : MonoBehaviour
             byte[] data = client.Receive(ref ep);
             string json = Encoding.UTF8.GetString(data);
 
-            Wrapper wrapper = JsonUtility.FromJson<Wrapper>(json);
+            FaceData faceData = JsonUtility.FromJson<FaceData>(json);
 
-            if (wrapper != null && wrapper.entries != null)
+            if (faceData != null)
             {
-                var dict = new Dictionary<string, float>();
-                foreach (var e in wrapper.entries)
-                    dict[e.key] = e.value;
-
                 lock (lockObj)
                 {
-                    blendshapes = dict;
+                    // Blendshapes aktualisieren
+                    if (faceData.blendshapes != null)
+                    {
+                        var dict = new Dictionary<string, float>();
+                        foreach (var e in faceData.blendshapes)
+                            dict[e.key] = e.value;
+
+                        blendshapes = dict;
+                    }
+
+                    // Landmarks aktualisieren
+                    if (faceData.landmarks != null)
+                    {
+                        latestLandmarks = faceData.landmarks;
+                    }
                 }
             }
         }
     }
     void StartPythonScript()
-    {   
+    {
         ProcessStartInfo psi = new ProcessStartInfo();
         psi.FileName = "python"; // oder "python3", je nach System
         psi.Arguments = "\"C:/Unity Projekte/blinking-emotion-game/Assets/Runtime/Python/Mediapipe_sender.py\"";
@@ -61,14 +73,23 @@ public class UdpReceiver : MonoBehaviour
 }
 
 [System.Serializable]
-public class Wrapper
+public class Landmark
 {
-    public List<Entry> entries;
+    public float x;
+    public float y;
+    public float z;
 }
 
 [System.Serializable]
-public class Entry
+public class BlendshapeEntry
 {
     public string key;
     public float value;
 }
+[System.Serializable]
+public class FaceData
+{
+    public Landmark[] landmarks;
+    public BlendshapeEntry[] blendshapes;
+}
+

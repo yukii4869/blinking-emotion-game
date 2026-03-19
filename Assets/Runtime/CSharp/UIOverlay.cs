@@ -11,7 +11,7 @@ public class UIOverlay : MonoBehaviour
     [SerializeField]
     private EmotionDetector emotionDetector;
     [SerializeField]
-    private BlinkDetector blinkDetector;
+    private BlinkDetectorBlendshapes blinkDetector;
 
     [SerializeField]
     private TextMeshProUGUI emotionText;

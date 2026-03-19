@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BlinkDetector : MonoBehaviour
+public class BlinkDetectorBlendshapes : MonoBehaviour
 {
 
     [SerializeField]
