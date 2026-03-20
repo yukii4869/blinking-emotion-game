@@ -5,6 +5,7 @@ import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 import os
+import numpy as np
 
 # UDP Setup
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -13,6 +14,26 @@ UNITY_PORT = 5005
 
 # Absoluten Pfad zum Modell bestimmen
 model_path = os.path.join(os.path.dirname(__file__), "face_landmarker.task")
+
+LEFT_EYE = [33, 159, 158, 133, 153, 145]
+RIGHT_EYE = [362, 386, 387, 263, 374, 380]
+
+def dist(a, b):
+    return np.linalg.norm(np.array(a) - np.array(b))
+
+def compute_ear(landmarks, idx):
+    p = [landmarks[i] for i in idx]
+    vert1 = dist((p[1]["x"], p[1]["y"]), (p[5]["x"], p[5]["y"]))
+    vert2 = dist((p[2]["x"], p[2]["y"]), (p[4]["x"], p[4]["y"]))
+    horiz = dist((p[0]["x"], p[0]["y"]), (p[3]["x"], p[3]["y"]))
+    return (vert1 + vert2) / (2.0 * horiz)
+
+def draw_eye_points(frame, landmarks, idx, color):
+    h, w, _ = frame.shape
+    for i in idx:
+        x = int(landmarks[i]["x"] * w)
+        y = int(landmarks[i]["y"] * h)
+        cv2.circle(frame, (x, y), 3, color, -1)
 
 # Model laden
 base_options = python.BaseOptions(
@@ -47,6 +68,18 @@ while True:
     if result.face_landmarks:
         lm = result.face_landmarks[0]
         landmarks = [{"x": p.x, "y": p.y, "z": p.z} for p in lm]
+        # EAR berechnen
+        left_ear = compute_ear(landmarks, LEFT_EYE)
+        right_ear = compute_ear(landmarks, RIGHT_EYE)
+        ear = (left_ear + right_ear) / 2.0
+
+        # Punkte zeichnen
+        draw_eye_points(frame, landmarks, LEFT_EYE, (0, 255, 0))
+        draw_eye_points(frame, landmarks, RIGHT_EYE, (255, 0, 0))
+
+        # EAR anzeigen
+        cv2.putText(frame, f"EAR: {ear:.3f}", (30, 50),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
     # Blendshapes extrahieren
     if result.face_blendshapes:

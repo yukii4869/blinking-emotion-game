@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BlinkDetector : MonoBehaviour
+public class BlinkDetectorLandmarks : MonoBehaviour
 {
     [SerializeField] 
     private UdpReceiver receiver;
@@ -16,8 +16,8 @@ public class BlinkDetector : MonoBehaviour
     private bool isBlinking = false;
     [SerializeField] 
     private float currentEAR = 0f;
-    [SerializeField] 
-    private float counterBlinking = 0f;
+   
+    public float counterBlinking = 0f;
 
     private int closedFrameCounter = 0;
 
@@ -27,10 +27,13 @@ public class BlinkDetector : MonoBehaviour
 
     void Update()
     {
-        if (receiver.latestLandmarks == null)
+        if (receiver.latestLandmarks == null || receiver.latestLandmarks.Length < 381)
             return;
 
         Landmark[] lm = receiver.latestLandmarks;
+
+        if (lm.Length < 381)   // höchster Index = 380
+        return;
 
         float leftEAR  = ComputeEAR(lm, leftEye);
         float rightEAR = ComputeEAR(lm, rightEye);
