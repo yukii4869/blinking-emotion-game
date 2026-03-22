@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class BlinkDetectorLandmarks : MonoBehaviour
 {
@@ -16,10 +17,12 @@ public class BlinkDetectorLandmarks : MonoBehaviour
     private bool isBlinking = false;
     [SerializeField] 
     private float currentEAR = 0f;
+    [SerializeField] private UnityEvent<float> onBlinking;
    
     public float counterBlinking = 0f;
 
     private int closedFrameCounter = 0;
+
 
     // Landmark Indices
     private readonly int[] leftEye  = { 33, 159, 158, 133, 153, 145 };
@@ -49,6 +52,7 @@ public class BlinkDetectorLandmarks : MonoBehaviour
                 isBlinking = true;
 
                 counterBlinking++;
+                onBlinking?.Invoke(counterBlinking);
             }
         }
         else
@@ -57,6 +61,7 @@ public class BlinkDetectorLandmarks : MonoBehaviour
             isBlinking = false;
         }
     }
+
 
     float ComputeEAR(Landmark[] lm, int[] idx)
     {
