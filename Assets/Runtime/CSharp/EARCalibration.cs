@@ -1,22 +1,21 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-/// <summary>
-/// Zweiphasige, wissenschaftliche EAR-Kalibrierung:
-/// Phase 1: Augen offen -> NeutralEAR + Noise
-/// Phase 2: Bewusster Blink -> ClosedEAR
-/// Ergebnis: personenspezifischer BlinkThreshold
-/// </summary>
 public class EARCalibration : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private BlinkDetectorLandmarks blinkDetector;
 
     [Header("Durations (seconds)")]
-    [SerializeField] private float openPhaseDuration = 2f;
-    [SerializeField] private float blinkPhaseDuration = 1f;
+    [SerializeField] private float openPhaseDuration = 5f;
+    [SerializeField] private float blinkPhaseDuration = 2f;
+    [SerializeField] private float closedHoldDuration = 2f;
 
-    [Header("Computed values")]
+    [Header("Smoothing")]
+    [SerializeField] private int smoothingWindow = 5;
+    [SerializeField] private UdpReceiver receiver;
+
     public float NeutralEAR { get; private set; }
     public float ClosedEAR { get; private set; }
     public float BlinkThreshold { get; private set; }
@@ -24,38 +23,68 @@ public class EARCalibration : MonoBehaviour
     public bool IsCalibrating { get; private set; }
     public bool Phase1Done { get; private set; }
     public bool Phase2Done { get; private set; }
+    public bool Phase3Done { get; private set; }
 
     private readonly List<float> openSamples = new();
     private readonly List<float> blinkSamples = new();
+    private readonly List<float> closedHoldSamples = new();
+    private readonly Queue<float> smoothingQueue = new();
+
     private float timer = 0f;
+    private bool calibrationCompleted = false;
 
     public void StartCalibration()
     {
         IsCalibrating = true;
-        Phase1Done = false;
-        Phase2Done = false;
+        Phase1Done = Phase2Done = Phase3Done = false;
 
         openSamples.Clear();
         blinkSamples.Clear();
+        closedHoldSamples.Clear();
+        smoothingQueue.Clear();
+
         timer = 0f;
 
-        Debug.Log("Calibration Phase 1: relaxed look into camera.");
+        Debug.Log("Phase 1: Schau entspannt in die Kamera.");
     }
 
     private void Update()
     {
+        // 1. Warten bis Python sendet
+        if (!receiver.pythonReady)
+            return;
+
+        // 2. Kalibrierung nur EINMAL starten
+        if (!IsCalibrating && !calibrationCompleted)
+        {
+            StartCalibration();
+            return;
+        }
+
+        // 3. Wenn Kalibrierung fertig ist → nichts mehr tun
+        if (calibrationCompleted)
+            return;
+
+        // 4. Ab hier deine Kalibrierungslogik
         if (!IsCalibrating || blinkDetector == null)
             return;
 
-        float ear = blinkDetector.CurrentEAR;
+        float rawEAR = blinkDetector.CurrentEAR;
+        if (float.IsNaN(rawEAR) || rawEAR <= 0f)
+            return;
 
-        // PHASE 1: offene Augen
+        // --- EAR smoothing ---
+        smoothingQueue.Enqueue(rawEAR);
+        if (smoothingQueue.Count > smoothingWindow)
+            smoothingQueue.Dequeue();
+
+        float ear = smoothingQueue.Average();
+
+        // --- PHASE 1: offene Augen ---
         if (!Phase1Done)
         {
             timer += Time.deltaTime;
-
-            if (!float.IsNaN(ear) && ear > 0.05f)
-                openSamples.Add(ear);
+            if (ear > 0.05f) openSamples.Add(ear);
 
             if (timer >= openPhaseDuration)
                 FinishPhase1();
@@ -63,16 +92,26 @@ public class EARCalibration : MonoBehaviour
             return;
         }
 
-        // PHASE 2: bewusster Blink
+        // --- PHASE 2: kurzer Blink ---
         if (Phase1Done && !Phase2Done)
         {
             timer += Time.deltaTime;
-
-            if (!float.IsNaN(ear) && ear > 0.01f)
-                blinkSamples.Add(ear);
+            if (ear > 0.01f) blinkSamples.Add(ear);
 
             if (timer >= blinkPhaseDuration)
                 FinishPhase2();
+
+            return;
+        }
+
+        // --- PHASE 3: Augen geschlossen halten ---
+        if (Phase2Done && !Phase3Done)
+        {
+            timer += Time.deltaTime;
+            if (ear > 0.01f) closedHoldSamples.Add(ear);
+
+            if (timer >= closedHoldDuration)
+                FinishPhase3();
         }
     }
 
@@ -81,41 +120,43 @@ public class EARCalibration : MonoBehaviour
         Phase1Done = true;
         timer = 0f;
 
-        if (openSamples.Count < 5)
-        {
-            Debug.LogWarning("Phase 1: not enough samples.");
-            return;
-        }
-
-        float sum = 0f;
-        foreach (var v in openSamples) sum += v;
-        NeutralEAR = sum / openSamples.Count;
+        var sorted = openSamples.OrderBy(v => v).ToList();
+        int start = Mathf.FloorToInt(sorted.Count * 0.70f);
+        NeutralEAR = sorted.Skip(start).Average();
 
         Debug.Log($"Phase 1 done. NeutralEAR={NeutralEAR:F3}");
-        Debug.Log("Calibration Phase 2: please blink once.");
+        Debug.Log("Phase 2: Bitte einmal kurz blinzeln.");
     }
 
     private void FinishPhase2()
     {
         Phase2Done = true;
+        timer = 0f;
+
+        var sorted = blinkSamples.OrderBy(v => v).ToList();
+        int count = Mathf.Max(1, Mathf.FloorToInt(sorted.Count * 0.10f));
+        ClosedEAR = sorted.Take(count).Average();
+
+        Debug.Log($"Phase 2 done. Preliminary ClosedEAR={ClosedEAR:F3}");
+        Debug.Log("Phase 3: Bitte halte die Augen kurz geschlossen.");
+    }
+
+    private void FinishPhase3()
+    {
+        Phase3Done = true;
         IsCalibrating = false;
+        calibrationCompleted = true;
 
-        if (blinkSamples.Count < 3)
-        {
-            Debug.LogWarning("Phase 2: not enough blink samples.");
-            return;
-        }
+        // Closed-Hold ist stabiler als Blink-Minimum
+        var sorted = closedHoldSamples.OrderBy(v => v).ToList();
+        int count = Mathf.Max(1, Mathf.FloorToInt(sorted.Count * 0.20f));
+        ClosedEAR = sorted.Take(count).Average();
 
-        ClosedEAR = Mathf.Min(blinkSamples.ToArray());
-
-        // wissenschaftlich begründeter Threshold zwischen offen und geschlossen
         float amplitude = NeutralEAR - ClosedEAR;
         BlinkThreshold = NeutralEAR - 0.5f * amplitude;
-
-        // Sicherheitsgrenzen
         BlinkThreshold = Mathf.Clamp(BlinkThreshold, 0.05f, NeutralEAR * 0.9f);
 
-        Debug.Log($"Phase 2 done. ClosedEAR={ClosedEAR:F3}, Threshold={BlinkThreshold:F3}");
-        Debug.Log("Calibration completed.");
+        Debug.Log($"Phase 3 done. Final ClosedEAR={ClosedEAR:F3}, Threshold={BlinkThreshold:F3}");
+        Debug.Log("Kalibrierung abgeschlossen.");
     }
 }

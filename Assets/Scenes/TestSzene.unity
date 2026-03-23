@@ -644,6 +644,7 @@ GameObject:
   m_Component:
   - component: {fileID: 162795811}
   - component: {fileID: 162795810}
+  - component: {fileID: 162795812}
   m_Layer: 0
   m_Name: MediapipeReceiver
   m_TagString: Untagged
@@ -663,6 +664,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b16d4702d8f2ae43b20bc3da8f03550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UdpReceiver
+  pythonReady: 0
   latestLandmarks: []
 --- !u!4 &162795811
 Transform:
@@ -679,6 +681,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &162795812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 162795809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d1e398cb78b5b740901e3d7ea29d31f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PythonProcessManager
+  pythonExe: python
+  scriptPath: C:/Unity Projekte/blinking-emotion-game/Assets/Runtime/Python/Mediapipe_sender.py
 --- !u!1 &172521762
 GameObject:
   m_ObjectHideFlags: 0
@@ -1267,6 +1283,9 @@ MonoBehaviour:
   blinkDetector: {fileID: 1083780522}
   openPhaseDuration: 2
   blinkPhaseDuration: 1
+  closedHoldDuration: 2
+  smoothingWindow: 5
+  receiver: {fileID: 162795810}
 --- !u!1 &370015606
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,6 +10,7 @@ public class UdpReceiver : MonoBehaviour
 {
     UdpClient client;
     Thread thread;
+    public bool pythonReady = false;
 
     public Dictionary<string, float> blendshapes = new Dictionary<string, float>();
     public Landmark[] latestLandmarks;
@@ -17,9 +18,6 @@ public class UdpReceiver : MonoBehaviour
 
     void Start()
     {
-        // MediaPipe_sender wird ausgeführt
-        StartPythonScript();
-
         client = new UdpClient(5005);
         thread = new Thread(ReceiveData);
         thread.IsBackground = true;
@@ -57,18 +55,13 @@ public class UdpReceiver : MonoBehaviour
                         latestLandmarks = faceData.landmarks;
                     }
                 }
+                if (!pythonReady)
+                {
+                    pythonReady = true;
+                    UnityEngine.Debug.Log("Python sendet – Kalibrierung kann starten.");
+                }
             }
         }
-    }
-    void StartPythonScript()
-    {
-        ProcessStartInfo psi = new ProcessStartInfo();
-        psi.FileName = "python"; // oder "python3", je nach System
-        psi.Arguments = "\"C:/Unity Projekte/blinking-emotion-game/Assets/Runtime/Python/Mediapipe_sender.py\"";
-        psi.UseShellExecute = false;
-        psi.CreateNoWindow = true;
-
-        Process.Start(psi);
     }
 }
 

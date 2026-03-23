@@ -9,7 +9,6 @@ public class BlinkDetectorLandmarks : MonoBehaviour
     [Header("EAR Settings")]
     [SerializeField] private EARCalibration calibration;
 
-    private float blinkThreshold => calibration.BlinkThreshold;
     [SerializeField]
     private int minClosedFrames = 3;        // Mindestdauer für einen Blink
 

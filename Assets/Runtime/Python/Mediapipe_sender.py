@@ -103,3 +103,15 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
+try:
+    sock.close()
+except:
+    pass
+
+try:
+    del detector
+except:
+    pass
+
+import sys
+sys.exit(0)
