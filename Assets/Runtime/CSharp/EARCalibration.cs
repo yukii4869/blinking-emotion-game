@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
+using TMPro.EditorUtilities;
 using UnityEngine;
 
 public class EARCalibration : MonoBehaviour
@@ -8,13 +10,18 @@ public class EARCalibration : MonoBehaviour
     [SerializeField] private BlinkDetectorLandmarks blinkDetector;
 
     [Header("Durations (seconds)")]
-    [SerializeField] private float openPhaseDuration = 5f;
+    [SerializeField] private float openPhaseDuration = 3f;
     [SerializeField] private float blinkPhaseDuration = 2f;
     [SerializeField] private float closedHoldDuration = 2f;
 
     [Header("Smoothing")]
-    [SerializeField] private int smoothingWindow = 5;
+    [SerializeField] private int smoothingWindow = 2;
     [SerializeField] private UdpReceiver receiver;
+
+    [Header("UI")]
+    [SerializeField] private TextMeshProUGUI statusText;
+    [SerializeField] private TextMeshProUGUI earValue;
+    [SerializeField] private GameObject calibrationPanel;
 
     public float NeutralEAR { get; private set; }
     public float ClosedEAR { get; private set; }
@@ -45,7 +52,7 @@ public class EARCalibration : MonoBehaviour
 
         timer = 0f;
 
-        Debug.Log("Phase 1: Schau entspannt in die Kamera.");
+        statusText.text = "Phase 1: Schau entspannt in die Kamera.";
     }
 
     private void Update()
@@ -103,42 +110,39 @@ public class EARCalibration : MonoBehaviour
 
             return;
         }
-
-        // --- PHASE 3: Augen geschlossen halten ---
-        if (Phase2Done && !Phase3Done)
-        {
-            timer += Time.deltaTime;
-            if (ear > 0.01f) closedHoldSamples.Add(ear);
-
-            if (timer >= closedHoldDuration)
-                FinishPhase3();
-        }
     }
-
     private void FinishPhase1()
     {
         Phase1Done = true;
         timer = 0f;
 
         var sorted = openSamples.OrderBy(v => v).ToList();
-        int start = Mathf.FloorToInt(sorted.Count * 0.70f);
-        NeutralEAR = sorted.Skip(start).Average();
+        NeutralEAR = sorted[sorted.Count / 2]; // Median
 
-        Debug.Log($"Phase 1 done. NeutralEAR={NeutralEAR:F3}");
-        Debug.Log("Phase 2: Bitte einmal kurz blinzeln.");
+        earValue.text = $"Phase 1 done. NeutralEAR={NeutralEAR:F3}";
+        statusText.text = "Phase 2: Bitte einmal kurz blinzeln.";
     }
+
+
 
     private void FinishPhase2()
     {
         Phase2Done = true;
-        timer = 0f;
+        IsCalibrating = false;
+        calibrationCompleted = true;
 
         var sorted = blinkSamples.OrderBy(v => v).ToList();
-        int count = Mathf.Max(1, Mathf.FloorToInt(sorted.Count * 0.10f));
+        int count = Mathf.Max(1, Mathf.FloorToInt(sorted.Count * 0.15f));
         ClosedEAR = sorted.Take(count).Average();
 
-        Debug.Log($"Phase 2 done. Preliminary ClosedEAR={ClosedEAR:F3}");
-        Debug.Log("Phase 3: Bitte halte die Augen kurz geschlossen.");
+        float amplitude = NeutralEAR - ClosedEAR;
+        BlinkThreshold = NeutralEAR - 0.5f * amplitude;
+
+        BlinkThreshold = Mathf.Clamp(BlinkThreshold, ClosedEAR + 0.01f, NeutralEAR * 0.9f);
+
+        earValue.text = $"ClosedEAR={ClosedEAR:F3}, Threshold={BlinkThreshold:F3}";
+        statusText.text = "Kalibrierung abgeschlossen.";
+        calibrationPanel.SetActive(false);
     }
 
     private void FinishPhase3()
@@ -156,7 +160,8 @@ public class EARCalibration : MonoBehaviour
         BlinkThreshold = NeutralEAR - 0.5f * amplitude;
         BlinkThreshold = Mathf.Clamp(BlinkThreshold, 0.05f, NeutralEAR * 0.9f);
 
-        Debug.Log($"Phase 3 done. Final ClosedEAR={ClosedEAR:F3}, Threshold={BlinkThreshold:F3}");
-        Debug.Log("Kalibrierung abgeschlossen.");
+        earValue.text = $"Phase 3 done. Final ClosedEAR={ClosedEAR:F3}, Threshold={BlinkThreshold:F3}";
+        statusText.text = "Kalibrierung abgeschlossen.";
+        calibrationPanel.SetActive(false);
     }
 }

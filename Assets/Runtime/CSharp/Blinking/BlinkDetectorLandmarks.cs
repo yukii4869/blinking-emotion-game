@@ -8,6 +8,7 @@ public class BlinkDetectorLandmarks : MonoBehaviour
 
     [Header("EAR Settings")]
     [SerializeField] private EARCalibration calibration;
+    [SerializeField] private Animator anim;
 
     [SerializeField]
     private int minClosedFrames = 3;        // Mindestdauer für einen Blink
@@ -53,9 +54,10 @@ public class BlinkDetectorLandmarks : MonoBehaviour
                 if (!isBlinking && closedFrameCounter >= minClosedFrames)
                 {
                     isBlinking = true;
-
+                    anim.SetTrigger("blink");
                     counterBlinking++;
                     onBlinking?.Invoke(counterBlinking);
+                    
                 }
             }
             else
