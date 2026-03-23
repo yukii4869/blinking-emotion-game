@@ -1,0 +1,98 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using System.Collections.Generic;
+
+public class EARGraph : MonoBehaviour
+{
+    [SerializeField] private BlinkDetectorLandmarks blinkDetector;
+    [SerializeField] private RawImage graphImage;
+    [SerializeField] private int maxSamples = 300;
+
+    private List<float> samples = new List<float>();
+    
+    private Texture2D texture;
+    private bool visible = false;
+
+    private InputAction toggleAction;
+
+    void Awake()
+    {
+        // Taste G als InputAction registrieren
+        toggleAction = new InputAction(type: InputActionType.Button, binding: "<Keyboard>/g");
+    }
+
+    void OnEnable()
+    {
+        toggleAction.Enable();
+        toggleAction.performed += ctx => ToggleGraph();
+    }
+
+    void OnDisable()
+    {
+        toggleAction.Disable();
+    }
+
+    void Start()
+    {
+        texture = new Texture2D(400, 200);
+        graphImage.texture = texture;
+        graphImage.gameObject.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (!visible) return;
+
+        float ear = blinkDetector.CurrentEAR;
+
+        // EAR muss gültig sein
+        if (float.IsNaN(ear) || ear <= 0f || ear > 1f)
+            return;
+
+        samples.Add(ear);
+        if (samples.Count > maxSamples)
+            samples.RemoveAt(0);
+
+        DrawGraph();
+    }
+
+    void ToggleGraph()
+    {
+        visible = !visible;
+        graphImage.gameObject.SetActive(visible);
+    }
+
+    void DrawGraph()
+    {
+        // Hintergrund schwarz
+        Color[] fill = new Color[400 * 200];
+        for (int i = 0; i < fill.Length; i++)
+            fill[i] = Color.black;
+        texture.SetPixels(fill);
+
+        float scale = 400f; // EAR sichtbar machen
+
+        for (int i = 1; i < samples.Count; i++)
+        {
+            float v0 = samples[i - 1];
+            float v1 = samples[i];
+
+            // Sicherheit: Werte clampen
+            v0 = Mathf.Clamp(v0, 0f, 1f);
+            v1 = Mathf.Clamp(v1, 0f, 1f);
+
+            int x0 = i - 1;
+            int x1 = i;
+
+            int y0 = Mathf.Clamp((int)(v0 * scale), 0, 199);
+            int y1 = Mathf.Clamp((int)(v1 * scale), 0, 199);
+
+            texture.SetPixel(x0, y0, Color.green);
+            texture.SetPixel(x1, y1, Color.green);
+        }
+
+        texture.Apply();
+    }
+
+}

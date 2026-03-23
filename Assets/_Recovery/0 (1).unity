@@ -1214,7 +1214,6 @@ GameObject:
   m_Component:
   - component: {fileID: 364166408}
   - component: {fileID: 364166407}
-  - component: {fileID: 364166409}
   m_Layer: 0
   m_Name: EARGraph
   m_TagString: Untagged
@@ -1234,9 +1233,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cc1080c804669741a00c20ffa4d3646, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EARGraph
-  blinkDetector: {fileID: 1083780522}
+  blinkDetectorLandmarks: {fileID: 1083780522}
   graphImage: {fileID: 1136088691}
   maxSamples: 300
+  toggleKey: 103
 --- !u!4 &364166408
 Transform:
   m_ObjectHideFlags: 0
@@ -1252,21 +1252,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &364166409
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 364166406}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e50299d5df50f0548ad24d0628d537d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EARCalibration
-  blinkDetector: {fileID: 1083780522}
-  openPhaseDuration: 2
-  blinkPhaseDuration: 1
 --- !u!1 &370015606
 GameObject:
   m_ObjectHideFlags: 0
@@ -2125,7 +2110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BlinkDetector
   receiver: {fileID: 162795810}
-  calibration: {fileID: 364166409}
+  blinkThreshold: 0.2
   minClosedFrames: 3
   isBlinking: 0
   currentEAR: 0
@@ -2233,7 +2218,6 @@ GameObject:
   - component: {fileID: 1110097816}
   - component: {fileID: 1110097815}
   - component: {fileID: 1110097814}
-  - component: {fileID: 1110097818}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -2335,19 +2319,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1110097818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1110097813}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a66c1dc52ce58e84d81ceabcf93ebc6a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TestStart
-  calibration: {fileID: 364166409}
 --- !u!1 &1126569705
 GameObject:
   m_ObjectHideFlags: 0
@@ -2492,7 +2463,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1136088691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2506,7 +2477,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RawImage
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.6509804}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

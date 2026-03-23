@@ -3,29 +3,31 @@ using UnityEngine.Events;
 
 public class BlinkDetectorLandmarks : MonoBehaviour
 {
-    [SerializeField] 
+    [SerializeField]
     private UdpReceiver receiver;
 
     [Header("EAR Settings")]
-    [SerializeField] 
-    private float blinkThreshold = 0.20f;   // EAR unter diesem Wert = Auge zu
-    [SerializeField] 
+    [SerializeField] private EARCalibration calibration;
+
+    private float blinkThreshold => calibration.BlinkThreshold;
+    [SerializeField]
     private int minClosedFrames = 3;        // Mindestdauer für einen Blink
 
     [Header("Debug")]
-    [SerializeField] 
+    [SerializeField]
     private bool isBlinking = false;
-    [SerializeField] 
+    [SerializeField]
     private float currentEAR = 0f;
     [SerializeField] private UnityEvent<float> onBlinking;
-   
+
     public float counterBlinking = 0f;
+    public float CurrentEAR => currentEAR;
 
     private int closedFrameCounter = 0;
 
 
     // Landmark Indices
-    private readonly int[] leftEye  = { 33, 159, 158, 133, 153, 145 };
+    private readonly int[] leftEye = { 33, 159, 158, 133, 153, 145 };
     private readonly int[] rightEye = { 362, 386, 387, 263, 374, 380 };
 
     void Update()
@@ -36,29 +38,32 @@ public class BlinkDetectorLandmarks : MonoBehaviour
         Landmark[] lm = receiver.latestLandmarks;
 
         if (lm.Length < 381)   // höchster Index = 380
-        return;
+            return;
 
-        float leftEAR  = ComputeEAR(lm, leftEye);
+        float leftEAR = ComputeEAR(lm, leftEye);
         float rightEAR = ComputeEAR(lm, rightEye);
         currentEAR = (leftEAR + rightEAR) * 0.5f;
 
         // Blink-Logik
-        if (currentEAR < blinkThreshold)
+        if (calibration != null && calibration.Phase2Done)
         {
-            closedFrameCounter++;
-
-            if (!isBlinking && closedFrameCounter >= minClosedFrames)
+            if (CurrentEAR < calibration.BlinkThreshold)
             {
-                isBlinking = true;
+                closedFrameCounter++;
 
-                counterBlinking++;
-                onBlinking?.Invoke(counterBlinking);
+                if (!isBlinking && closedFrameCounter >= minClosedFrames)
+                {
+                    isBlinking = true;
+
+                    counterBlinking++;
+                    onBlinking?.Invoke(counterBlinking);
+                }
             }
-        }
-        else
-        {
-            closedFrameCounter = 0;
-            isBlinking = false;
+            else
+            {
+                closedFrameCounter = 0;
+                isBlinking = false;
+            }
         }
     }
 
