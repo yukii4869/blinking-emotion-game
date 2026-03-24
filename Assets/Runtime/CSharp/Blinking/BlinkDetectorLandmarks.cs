@@ -7,7 +7,7 @@ public class BlinkDetectorLandmarks : MonoBehaviour
     private UdpReceiver receiver;
 
     [Header("EAR Settings")]
-    [SerializeField] private EARCalibration calibration;
+    [SerializeField] private EARCalibrationNew calibration;
     [SerializeField] private Animator anim;
 
     [SerializeField]
@@ -24,6 +24,12 @@ public class BlinkDetectorLandmarks : MonoBehaviour
     public float CurrentEAR => currentEAR;
 
     private int closedFrameCounter = 0;
+    float blinkStartTime = 0f;
+
+    float minBlinkTime = 0.08f; // 80 ms
+    float maxBlinkTime = 0.40f; // 400 ms
+    float eyeOpenStabilityTime = 0.03f; // 30 ms
+    float eyeOpenTimer = 0f;
 
 
     // Landmark Indices
@@ -45,27 +51,43 @@ public class BlinkDetectorLandmarks : MonoBehaviour
         currentEAR = (leftEAR + rightEAR) * 0.5f;
 
         // Blink-Logik
-        if (calibration != null && calibration.Phase2Done)
+        if (calibration != null && calibration.calibrationFinished)
         {
-            if (CurrentEAR < calibration.BlinkThreshold)
+            if (!isBlinking && currentEAR < calibration.blinkThreshold)
             {
-                closedFrameCounter++;
+                isBlinking = true;
+                blinkStartTime = Time.time;
+            }
 
-                if (!isBlinking && closedFrameCounter >= minClosedFrames)
+            if (isBlinking)
+            {
+                if (currentEAR >= calibration.blinkThreshold)
                 {
-                    isBlinking = true;
-                    anim.SetTrigger("blink");
-                    counterBlinking++;
-                    onBlinking?.Invoke(counterBlinking);
-                    
+                    eyeOpenTimer += Time.deltaTime;
+
+                    if (eyeOpenTimer >= eyeOpenStabilityTime)
+                    {
+                        float duration = Time.time - blinkStartTime;
+
+                        if (duration >= minBlinkTime && duration <= maxBlinkTime)
+                        {
+                            anim.SetTrigger("blink");
+                            counterBlinking++;
+                            onBlinking?.Invoke(counterBlinking);
+                        }
+
+                        isBlinking = false;
+                        eyeOpenTimer = 0f;
+                    }
+                }
+                else
+                {
+                    // EAR ist wieder unten → Blink geht weiter
+                    eyeOpenTimer = 0f;
                 }
             }
-            else
-            {
-                closedFrameCounter = 0;
-                isBlinking = false;
-            }
         }
+
     }
 
 
