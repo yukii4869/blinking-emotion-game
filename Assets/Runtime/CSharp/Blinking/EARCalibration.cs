@@ -4,7 +4,7 @@ using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 
-public class EARCalibrationNew : MonoBehaviour
+public class EARCalibration : MonoBehaviour
 {
     [Header("Calibration Settings")]
     [Tooltip("Dauer der Kalibrierungsphase in Sekunden")]
@@ -24,29 +24,26 @@ public class EARCalibrationNew : MonoBehaviour
     public bool isCalibrating = false;
     public bool calibrationFinished = false;
 
-    private float calibrationTimer = 0f;
-    private List<float> collectedEARValues = new List<float>();
-    [SerializeField] private UdpReceiver receiver;
-    [SerializeField] private BlinkDetectorLandmarks blinkDetector;
+    [SerializeField] private EARCalculator earCalc;
     private readonly Queue<float> medianWindow = new Queue<float>();
     [SerializeField] private int medianWindowSize = 5;
+    [SerializeField] MediaPipeProvider provider;
 
-    void Start()
-    {
-        if (receiver.pythonReady)
-        {
-            StartCalibration();
-        }
-    }
+    private float calibrationTimer = 0f;
+    private List<float> collectedEARValues = new List<float>();
+
+    private float currentEAR;
+
     void Update()
     {
-        if (receiver.pythonReady && !isCalibrating && !calibrationFinished)
+        if (provider.pythonReady && !isCalibrating && !calibrationFinished)
         {
             StartCalibration();
         }
-        if (receiver.pythonReady && isCalibrating)
+        if (provider.pythonReady && isCalibrating)
         {
-            ProcessEAR(blinkDetector.CurrentEAR);
+            currentEAR = earCalc.ComputeBothEyes(provider.Landmarks);
+            ProcessEAR(currentEAR);
         }
     }
 
@@ -62,7 +59,6 @@ public class EARCalibrationNew : MonoBehaviour
 
         Debug.Log("Kalibrierung gestartet. Bitte normal auf den Bildschirm schauen.");
     }
-
 
     private float ApplyMedianFilter(float value)
     {

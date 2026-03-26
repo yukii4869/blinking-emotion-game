@@ -4,7 +4,7 @@ public class BlinkDetectorBlendshapes : MonoBehaviour
 {
 
     [SerializeField]
-    private UdpReceiver receiver;
+    private MediaPipeProvider provider;
 
     [SerializeField]
     private float blinkThreshold = 0.25f;
@@ -16,7 +16,7 @@ public class BlinkDetectorBlendshapes : MonoBehaviour
 
     void Update()
     {
-        var b = receiver.blendshapes;
+        var b = provider.Blendshapes;
         if (b.Count == 0) return;
 
         float leftBlink = BlendshapeUtils.Get(b, "eyeBlinkLeft");

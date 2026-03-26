@@ -4,13 +4,17 @@ using System.Collections.Generic;
 public class EmotionDetector : MonoBehaviour
 {
     [SerializeField]
-    private UdpReceiver receiver;
+    private MediaPipeProvider provider;
     public string currentEmotion = "neutral";
 
     void Update()
     {
-        var b = receiver.blendshapes;
-        if (b.Count == 0) return;
+        if(!provider.pythonReady)
+        {
+            return;
+        }
+
+        var b = provider.Blendshapes;
 
         float smile = BlendshapeUtils.Get(b, "mouthSmileLeft") + BlendshapeUtils.Get(b, "mouthSmileRight");
         float frown = BlendshapeUtils.Get(b, "mouthFrownLeft") + BlendshapeUtils.Get(b, "mouthFrownRight");

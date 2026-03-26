@@ -11,7 +11,7 @@ public class UIOverlay : MonoBehaviour
     [SerializeField]
     private EmotionDetector emotionDetector;
     [SerializeField]
-    private BlinkDetectorLandmarks blinkDetectorLandmarks;
+    private BlinkDetector blinkDetector;
 
     [SerializeField]
     private TextMeshProUGUI emotionText;
@@ -49,7 +49,7 @@ public class UIOverlay : MonoBehaviour
              emotionImage.texture = textures[4];
         }
 
-        blinkCounterText.text = "Blinks: " + blinkDetectorLandmarks.counterBlinking;
+       // blinkCounterText.text = "Blinks: " + blinkDetector.counterBlinking;
         
 
         

@@ -4,7 +4,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 public class UdpReceiver : MonoBehaviour
 {
@@ -12,7 +11,7 @@ public class UdpReceiver : MonoBehaviour
     Thread thread;
     public bool pythonReady = false;
 
-    public Dictionary<string, float> blendshapes = new Dictionary<string, float>();
+    public Dictionary<string, float> latestBlendshapes = new Dictionary<string, float>();
     public Landmark[] latestLandmarks;
     private object lockObj = new object();
 
@@ -46,7 +45,7 @@ public class UdpReceiver : MonoBehaviour
                         foreach (var e in faceData.blendshapes)
                             dict[e.key] = e.value;
 
-                        blendshapes = dict;
+                        latestBlendshapes = dict;
                     }
 
                     // Landmarks aktualisieren

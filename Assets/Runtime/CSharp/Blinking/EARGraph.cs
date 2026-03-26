@@ -2,15 +2,17 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using TMPro;
 
 public class EARGraph : MonoBehaviour
 {
-    [SerializeField] private BlinkDetectorLandmarks blinkDetector;
+    [SerializeField] private BlinkDetector blinkDetector;
     [SerializeField] private RawImage graphImage;
     [SerializeField] private int maxSamples = 300;
+    [SerializeField] private TextMeshProUGUI[] yAxisLabels;
 
     private List<float> samples = new List<float>();
-    
+
     private Texture2D texture;
     private bool visible = false;
 
@@ -93,6 +95,17 @@ public class EARGraph : MonoBehaviour
         }
 
         texture.Apply();
+    }
+    
+
+    private void UpdateYAxisLabels(float minEAR, float maxEAR)
+    {
+        for (int i = 0; i < yAxisLabels.Length; i++)
+        {
+            float t = 1f - (i / (float)(yAxisLabels.Length - 1));
+            float value = Mathf.Lerp(minEAR, maxEAR, t);
+            yAxisLabels[i].text = value.ToString("F2");
+        }
     }
 
 }

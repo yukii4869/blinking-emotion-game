@@ -5,10 +5,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EARCalibration : MonoBehaviour
+public class EARCalibrationOld : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private BlinkDetectorLandmarks blinkDetector;
+    [SerializeField] private BlinkDetector blinkDetector;
     [SerializeField] private UdpReceiver receiver;
 
     [Header("Durations")]
