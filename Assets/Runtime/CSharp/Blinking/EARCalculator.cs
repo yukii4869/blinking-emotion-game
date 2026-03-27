@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EARCalculator : MonoBehaviour
+public class EARCalculator
 {
     private int[] leftEye = { 33, 159, 158, 133, 153, 145 };
     private int[] rightEye = { 362, 386, 387, 263, 374, 380 };

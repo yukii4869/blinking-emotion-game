@@ -57,7 +57,7 @@ public class UdpReceiver : MonoBehaviour
                 if (!pythonReady)
                 {
                     pythonReady = true;
-                    UnityEngine.Debug.Log("Python sendet – Kalibrierung kann starten.");
+                    UnityEngine.Debug.Log("Python sendet - Kalibrierung kann starten.");
                 }
             }
         }

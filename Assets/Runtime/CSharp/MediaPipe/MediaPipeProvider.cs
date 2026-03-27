@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 public class MediaPipeProvider : MonoBehaviour
 {
@@ -16,6 +17,5 @@ public class MediaPipeProvider : MonoBehaviour
         Landmarks = receiver.latestLandmarks;
         Blendshapes = receiver.latestBlendshapes; 
         pythonReady = receiver.pythonReady;
-
     }
 }

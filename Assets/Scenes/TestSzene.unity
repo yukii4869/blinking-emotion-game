@@ -296,7 +296,6 @@ MonoBehaviour:
   earValue: {fileID: 49490296}
   isCalibrating: 0
   calibrationFinished: 0
-  earCalc: {fileID: 1459002540}
   medianWindowSize: 5
   provider: {fileID: 162795813}
 --- !u!4 &76727630
@@ -347,7 +346,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BlinkDetector
   provider: {fileID: 162795813}
-  earCalc: {fileID: 1459002540}
   calibration: {fileID: 76727629}
   minBlinkTime: 0.08
   maxBlinkTime: 0.4
@@ -412,7 +410,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmotionDetector
   provider: {fileID: 162795813}
-  currentEmotion: Neutral
 --- !u!4 &105525779
 Transform:
   m_ObjectHideFlags: 0
@@ -1518,6 +1515,7 @@ MonoBehaviour:
   graphImage: {fileID: 1136088691}
   maxSamples: 300
   yAxisLabels: []
+  smoothing: 0.2
 --- !u!4 &364166408
 Transform:
   m_ObjectHideFlags: 0
@@ -3239,50 +3237,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1346459396}
   m_CullTransparentMesh: 1
---- !u!1 &1459002539
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1459002541}
-  - component: {fileID: 1459002540}
-  m_Layer: 0
-  m_Name: Calculators
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1459002540
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1459002539}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bfc43f33ead18842b13cfd4edfe1041, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EARCalculator
---- !u!4 &1459002541
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1459002539}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 981.652, y: 398.9948, z: -0.58595}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1472597335
 GameObject:
   m_ObjectHideFlags: 0
@@ -4847,7 +4801,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e825ff0bcca1fc49ae1f919c8539b0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIOverlay
-  receiver: {fileID: 162795810}
   emotionDetector: {fileID: 105525778}
   blinkDetector: {fileID: 105525775}
   emotionText: {fileID: 385028381}
@@ -4986,7 +4939,6 @@ SceneRoots:
   - {fileID: 162795811}
   - {fileID: 105525779}
   - {fileID: 76727630}
-  - {fileID: 1459002541}
   - {fileID: 2057851108}
   - {fileID: 237716884}
   - {fileID: 1540899240}

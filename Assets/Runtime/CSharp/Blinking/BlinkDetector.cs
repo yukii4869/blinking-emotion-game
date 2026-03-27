@@ -4,7 +4,6 @@ using UnityEngine.Events;
 public class BlinkDetector : MonoBehaviour
 {
     [SerializeField] private MediaPipeProvider provider;
-    [SerializeField] private EARCalculator earCalc;
     [SerializeField] private EARCalibration calibration;
 
     [Header("Blink Timing")]
@@ -13,8 +12,9 @@ public class BlinkDetector : MonoBehaviour
 
     [Header("Events")]
     public UnityEvent OnBlink;
+    public int counterBlinking = 0;
 
-
+    private readonly EARCalculator earCalc = new();
     private bool isBlinking = false;
     private float blinkStartTime = 0f;
 
@@ -58,6 +58,7 @@ public class BlinkDetector : MonoBehaviour
 
             if (duration >= minBlinkTime && duration <= maxBlinkTime)
                 OnBlink?.Invoke(); // Blink wurde detected -- Logik einfügen bzw ab da abgreifen
+                counterBlinking++;
 
             isBlinking = false;
         }

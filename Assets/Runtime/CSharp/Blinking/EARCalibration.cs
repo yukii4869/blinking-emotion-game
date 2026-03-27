@@ -24,7 +24,7 @@ public class EARCalibration : MonoBehaviour
     public bool isCalibrating = false;
     public bool calibrationFinished = false;
 
-    [SerializeField] private EARCalculator earCalc;
+    private readonly EARCalculator earCalc = new();
     private readonly Queue<float> medianWindow = new Queue<float>();
     [SerializeField] private int medianWindowSize = 5;
     [SerializeField] MediaPipeProvider provider;
