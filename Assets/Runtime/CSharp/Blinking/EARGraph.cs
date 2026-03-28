@@ -75,6 +75,12 @@ public class EARGraph : MonoBehaviour
 
         float scale = 400f;
 
+        // 1. Threshold-Linie zeichnen
+        float threshold = blinkDetector.blinkThreshold;
+        int ty = Mathf.Clamp((int)(threshold * scale), 0, texture.height - 1);
+        texture.DrawLine(0, ty, texture.width - 1, ty, Color.red);
+
+        // 2. EAR-Kurve zeichnen
         for (int i = 1; i < samples.Count; i++)
         {
             float v0 = Mathf.Clamp(samples[i - 1], 0f, 1f);
@@ -83,8 +89,8 @@ public class EARGraph : MonoBehaviour
             int x0 = i - 1;
             int x1 = i;
 
-            int y0 = Mathf.Clamp((int)(v0 * scale), 0, 199);
-            int y1 = Mathf.Clamp((int)(v1 * scale), 0, 199);
+            int y0 = Mathf.Clamp((int)(v0 * scale), 0, texture.height - 1);
+            int y1 = Mathf.Clamp((int)(v1 * scale), 0, texture.height - 1);
 
             texture.DrawLine(x0, y0, x1, y1, Color.green);
         }

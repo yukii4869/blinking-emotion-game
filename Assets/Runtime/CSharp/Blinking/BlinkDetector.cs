@@ -19,6 +19,8 @@ public class BlinkDetector : MonoBehaviour
     private float blinkStartTime = 0f;
 
     public float CurrentEAR { get; private set; }
+    public float blinkThreshold = 0;
+
 
     private void Update()
     {
@@ -41,10 +43,10 @@ public class BlinkDetector : MonoBehaviour
         if (!calibration.calibrationFinished)
             return;
 
-        float threshold = calibration.blinkThreshold;
+        blinkThreshold = calibration.blinkThreshold;
 
         // Start Blink
-        if (!isBlinking && CurrentEAR < threshold)
+        if (!isBlinking && CurrentEAR < blinkThreshold)
         {
             isBlinking = true;
             blinkStartTime = Time.time;
@@ -52,7 +54,7 @@ public class BlinkDetector : MonoBehaviour
         }
 
         // Ende Blink
-        if (isBlinking && CurrentEAR >= threshold)
+        if (isBlinking && CurrentEAR >= blinkThreshold)
         {
             float duration = Time.time - blinkStartTime;
 
