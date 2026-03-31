@@ -1,75 +1,103 @@
 using UnityEngine;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
+
 public class EmotionCalibrator : MonoBehaviour
 {
+    [Header("Dependencies")]
     [SerializeField] private MediaPipeProvider provider;
-    public Dictionary<string, float> NeutralBaseline { get; private set; } = new();
-    private Dictionary<string, float> neutralSum = new();
-    private int neutralFrames = 0;
-    public bool isNeutralCalibrating = false;
-    public bool calibrationEmotionFinished = false;
-    private InputAction calibrateNeutralAction =
-        new InputAction(type: InputActionType.Button, binding: "<Keyboard>/n");
 
-    //=============================================================== DEBUG STUFF =====================================================
-    void OnEnable()
+    [Header("Calibration Settings")]
+    [SerializeField] private int neutralSampleFrames = 60;
+
+    // Public API
+    public bool IsCalibratingNeutral { get; private set; }
+    public bool NeutralCalibrationFinished { get; private set; }
+    public Dictionary<string, float> NeutralBaseline { get; private set; } = new();
+
+    // Internals
+    private readonly Dictionary<string, float> neutralAccumulation = new();
+    private int collectedFrames = 0;
+
+    // Debug Input
+    private InputAction calibrateNeutralAction =
+        new(type: InputActionType.Button, binding: "<Keyboard>/n");
+
+    // ------------------------------------------------------------
+    // Unity Lifecycle
+    // ------------------------------------------------------------
+    private void OnEnable()
     {
         calibrateNeutralAction.Enable();
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         calibrateNeutralAction.Disable();
     }
-    //=============================================================== DEBUG STUFF =====================================================
 
-
-    void Update()
+    private void Update()
     {
-        if (provider.pythonReady && calibrateNeutralAction.triggered && !isNeutralCalibrating&&!calibrationEmotionFinished)
+        if (!provider.pythonReady)
+            return;
+
+        // Start calibration via debug key
+        if (calibrateNeutralAction.triggered && !IsCalibratingNeutral && !NeutralCalibrationFinished)
         {
             StartNeutralCalibration();
         }
-        if (provider.pythonReady && isNeutralCalibrating)
+
+        // If calibration is active, collect frames
+        if (IsCalibratingNeutral)
         {
             ProcessFrame(provider.Blendshapes);
         }
     }
+
+    // ------------------------------------------------------------
+    // Public API
+    // ------------------------------------------------------------
     public void StartNeutralCalibration()
     {
-        isNeutralCalibrating = true;
-        neutralFrames = 0;
-        neutralSum.Clear();
+        IsCalibratingNeutral = true;
+        NeutralCalibrationFinished = false;
+
+        collectedFrames = 0;
+        neutralAccumulation.Clear();
+        NeutralBaseline.Clear();
+
+        Debug.Log("Neutral calibration started.");
     }
 
-    public bool IsCalibratingNeutral => isNeutralCalibrating; // Getter in schnell geschrieben
-
-    public void ProcessFrame(Dictionary<string, float> blendshapes)
+    // ------------------------------------------------------------
+    // Internal Logic
+    // ------------------------------------------------------------
+    private void ProcessFrame(Dictionary<string, float> blendshapes)
     {
-        if (!isNeutralCalibrating)
-            return;
-
         foreach (var kvp in blendshapes)
         {
-            if (!neutralSum.ContainsKey(kvp.Key))
-                neutralSum[kvp.Key] = 0f;
+            if (!neutralAccumulation.ContainsKey(kvp.Key))
+                neutralAccumulation[kvp.Key] = 0f;
 
-            neutralSum[kvp.Key] += kvp.Value;
+            neutralAccumulation[kvp.Key] += kvp.Value;
         }
 
-        neutralFrames++;
+        collectedFrames++;
 
-        if (neutralFrames >= 60)
-        {
-            NeutralBaseline.Clear();
-            foreach (var kvp in neutralSum)
-                NeutralBaseline[kvp.Key] = kvp.Value / neutralFrames;
+        if (collectedFrames >= neutralSampleFrames)
+            FinishNeutralCalibration();
+    }
 
-            isNeutralCalibrating = false;
-            calibrationEmotionFinished = true;
-            Debug.Log("Neutral calibration finished.");
-        }
+    private void FinishNeutralCalibration()
+    {
+        NeutralBaseline.Clear();
+
+        foreach (var kvp in neutralAccumulation)
+            NeutralBaseline[kvp.Key] = kvp.Value / collectedFrames;
+
+        IsCalibratingNeutral = false;
+        NeutralCalibrationFinished = true;
+
+        Debug.Log("Neutral calibration finished.");
     }
 }

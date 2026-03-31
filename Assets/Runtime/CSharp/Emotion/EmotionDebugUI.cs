@@ -10,9 +10,9 @@ public class EmotionDebugUI : MonoBehaviour
     {
         if (!gameObject.activeSelf) return;
 
-        var b = detector.provider.Blendshapes;
-        var neutral = detector.emotionCalibrator.NeutralBaseline;
-        var features = detector.calculator.Compute(b);
+        var b = detector.Provider.Blendshapes;
+        var neutral = detector.Calibrator.NeutralBaseline;
+        var features = detector.Calculator.Compute(b);
 
         System.Text.StringBuilder sb = new();
 
