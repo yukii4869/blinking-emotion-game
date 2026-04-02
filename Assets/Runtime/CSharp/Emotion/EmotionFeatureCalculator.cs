@@ -1,73 +1,84 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
+
 public class EmotionFeatureCalculator
 {
-    private Dictionary<string, float> neutral = null;
+    private Dictionary<string, float> neutral;
+    private Dictionary<string, float> smileMax;
+    private Dictionary<string, float> angryMax;
+    private Dictionary<string, float> sadMax;
+    private Dictionary<string, float> surprisedMax;
 
-    public void SetNeutralBaseline(Dictionary<string, float> baseline)
+    public void SetBaselines(
+        Dictionary<string, float> neutral,
+        Dictionary<string, float> smileMax,
+        Dictionary<string, float> angryMax,
+        Dictionary<string, float> sadMax,
+        Dictionary<string, float> surprisedMax)
     {
-        neutral = baseline;
+        this.neutral = neutral;
+        this.smileMax = smileMax;
+        this.angryMax = angryMax;
+        this.sadMax = sadMax;
+        this.surprisedMax = surprisedMax;
     }
-    private float GetNormalized(Dictionary<string, float> b, string key)
+
+    // ------------------------------------------------------------
+    // Helper: Normalisierung (0 = neutral, 1 = max)
+    // ------------------------------------------------------------
+    private float Normalize(string key, Dictionary<string, float> maxDict, float raw)
     {
-        float raw = 0f;
-        float neu = 0f;
+        if (!neutral.TryGetValue(key, out float n)) return 0f;
+        if (!maxDict.TryGetValue(key, out float m)) return 0f;
 
-        // Rohwert holen
-        if (b.TryGetValue(key, out float rawValue))
-            raw = rawValue;
+        float denom = m - n;
+        if (Mathf.Abs(denom) < 1e-4f)
+            return 0f;
 
-        // Neutralwert holen (falls vorhanden)
-        if (neutral != null && neutral.TryGetValue(key, out float neutralValue))
-            neu = neutralValue;
-
-        // Normalisiert: niemals negativ
-        return Mathf.Max(0f, raw - neu);
+        return Mathf.Clamp01((raw - n) / denom);
     }
-    public EmotionFeatures Compute(Dictionary<string, float> b)
 
+    // ------------------------------------------------------------
+    // Hauptfunktion: Features berechnen
+    // ------------------------------------------------------------
+    public EmotionFeatures Compute(Dictionary<string, float> blendshapes)
     {
+        // Helper zum Lesen
+        float Get(string key) =>
+            blendshapes.TryGetValue(key, out float v) ? v : 0f;
+
+        // Smile
+        float smileL = Normalize("mouthSmile_L", smileMax, Get("mouthSmile_L"));
+        float smileR = Normalize("mouthSmile_R", smileMax, Get("mouthSmile_R"));
+        float smile = 0.5f * (smileL + smileR);
+
+        // Angry (BrowDown)
+        float browDownL = Normalize("browDown_L", angryMax, Get("browDown_L"));
+        float browDownR = Normalize("browDown_R", angryMax, Get("browDown_R"));
+        float angry = 0.5f * (browDownL + browDownR);
+
+        // Sad (BrowInnerUp)
+        float sad = Normalize("browInnerUp", sadMax, Get("browInnerUp"));
+
+        // Surprised (EyeWide + Jaw)
+        float eyeWideL = Normalize("eyeWide_L", surprisedMax, Get("eyeWide_L"));
+        float eyeWideR = Normalize("eyeWide_R", surprisedMax, Get("eyeWide_R"));
+        float jaw = Normalize("jawOpen", surprisedMax, Get("jawOpen"));
+        float surprised = (eyeWideL + eyeWideR) * 0.5f * 0.6f + jaw * 0.4f;
+
         return new EmotionFeatures
         {
-            Smile =
-                GetNormalized(b, "mouthSmileLeft") +
-                GetNormalized(b, "mouthSmileRight"),
-
-            Frown =
-                GetNormalized(b, "mouthFrownLeft") +
-                GetNormalized(b, "mouthFrownRight"),
-
-            BrowDown =
-                GetNormalized(b, "browDownLeft") +
-                GetNormalized(b, "browDownRight"),
-
-            Sneer =
-                GetNormalized(b, "noseSneerLeft") +
-                GetNormalized(b, "noseSneerRight"),
-
-            Jaw =
-                GetNormalized(b, "jawOpen"),
-
-            EyeWide =
-                GetNormalized(b, "eyeWideLeft") +
-                GetNormalized(b, "eyeWideRight"),
-
-            BrowInner =
-                GetNormalized(b, "browInnerUp"),
-
-            Stretch =
-                GetNormalized(b, "mouthStretchLeft") +
-                GetNormalized(b, "mouthStretchRight")
+            Smile = smile,
+            Angry = angry,
+            Sad = sad,
+            Surprised = surprised
         };
     }
-    private float GetBlendshape(Dictionary<string, float> b, string key)
-    {
-        return BlendshapeUtils.Get(b, key);
-    }
 }
-
-
 public struct EmotionFeatures
 {
-    public float Smile, Frown, BrowDown, Sneer, Jaw, EyeWide, BrowInner, Stretch;
+    public float Smile;
+    public float Angry;
+    public float Sad;
+    public float Surprised;
 }

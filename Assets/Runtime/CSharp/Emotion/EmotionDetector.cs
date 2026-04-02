@@ -5,47 +5,56 @@ public class EmotionDetector : MonoBehaviour
 {
     [Header("Dependencies")]
     [SerializeField] private MediaPipeProvider provider;
-    [SerializeField] private EmotionCalibrator emotionCalibrator;
+    [SerializeField] private EmotionCalibrator calibrator;
 
     [Header("Debug UI")]
     [SerializeField] private GameObject debugPanel;
 
-    // Internals
     private readonly EmotionFeatureCalculator calculator = new();
+    public EmotionFeatures LastFeatures { get; private set; }
     private readonly EmotionClassifier classifier = new();
-    private bool baselineApplied = false;
-    private bool debugVisible = false;
 
-    // Public API
     public string CurrentEmotion { get; private set; } = "neutral";
-    public MediaPipeProvider Provider => provider;
-    public EmotionCalibrator Calibrator => emotionCalibrator;
-    public EmotionFeatureCalculator Calculator => calculator;
-
+    private bool debugVisible = false;
+    private bool baselinesApplied = false;
 
     private void Update()
     {
-        // Wait until calibration is done
-        if (!emotionCalibrator.NeutralCalibrationFinished)
+        // Warten bis alle Kalibrierungen fertig sind
+        if (!calibrator.AllCalibrationFinished)
             return;
 
-        // Apply baseline once
-        if (!baselineApplied && emotionCalibrator.NeutralBaseline.Count > 0)
+        // Baselines einmalig setzen
+        if (!baselinesApplied)
         {
-            calculator.SetNeutralBaseline(emotionCalibrator.NeutralBaseline);
-            baselineApplied = true;
-            Debug.Log("Neutral baseline applied.");
+            calculator.SetBaselines(
+                calibrator.NeutralBaseline,
+                calibrator.SmileMax,
+                calibrator.AngryMax,
+                calibrator.SadMax,
+                calibrator.SurprisedMax
+            );
+
+            baselinesApplied = true;
+            Debug.Log("Emotion baselines applied.");
         }
 
-        // Toggle debug panel
+        // Debug Panel toggeln
         if (Keyboard.current.f1Key.wasPressedThisFrame)
         {
             debugVisible = !debugVisible;
             debugPanel.SetActive(debugVisible);
         }
 
-        // Compute emotion
-        var features = calculator.Compute(provider.Blendshapes);
+        // Blendshapes holen
+        var blendshapes = provider.Blendshapes;
+        if (blendshapes == null || blendshapes.Count == 0)
+            return;
+
+        // Features berechnen
+        var features = calculator.Compute(blendshapes);
+
+        // Emotion klassifizieren
         CurrentEmotion = classifier.Classify(features);
     }
 }
