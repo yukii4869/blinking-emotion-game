@@ -26,16 +26,30 @@ public class EmotionFeatureCalculator
     // ------------------------------------------------------------
     // Helper: Normalisierung (0 = neutral, 1 = max)
     // ------------------------------------------------------------
-    private float Normalize(string key, Dictionary<string, float> maxDict, float raw)
+    private float Normalize(string key, Dictionary<string, float> maxValues, float rawValue)
     {
-        if (!neutral.TryGetValue(key, out float n)) return 0f;
-        if (!maxDict.TryGetValue(key, out float m)) return 0f;
-
-        float denom = m - n;
-        if (Mathf.Abs(denom) < 1e-4f)
+        // 1. Neutral- und Max-Wert holen
+        if (!neutral.TryGetValue(key, out float neutralValue))
             return 0f;
 
-        return Mathf.Clamp01((raw - n) / denom);
+        if (!maxValues.TryGetValue(key, out float maxValue))
+            return 0f;
+
+        // 2. Bereich berechnen (wie viel Bewegung zwischen neutral und max möglich ist)
+        float range = maxValue - neutralValue;
+
+        // Schutz: Wenn der Bereich zu klein ist, lieber 0 zurückgeben
+        if (range < 0.0001f)
+            return 0f;
+
+        // 3. Rohwert relativ zum Neutralwert berechnen
+        float relative = rawValue - neutralValue;
+
+        // 4. Normieren auf 0–1
+        float normalized = relative / range;
+
+        // 5. Begrenzen, falls der Wert leicht über/unterläuft
+        return Mathf.Clamp01(normalized);
     }
 
     // ------------------------------------------------------------
