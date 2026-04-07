@@ -37,22 +37,22 @@ public class CalibrationUI : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         promptText.text = "Zeig dein größtes Lächeln!";
-        calibrator.StartSmileMaxCalibration();
+        calibrator.StartSmileCalibration();
         yield return StartCoroutine(WaitForPhase(EmotionCalibrationPhase.SmileMax));
         yield return new WaitForSeconds(2f);
 
         promptText.text = "Schau richtig wütend!";
-        calibrator.StartAngryMaxCalibration();
+        calibrator.StartAngryCalibration();
         yield return StartCoroutine(WaitForPhase(EmotionCalibrationPhase.AngryMax));
         yield return new WaitForSeconds(2f);
 
         promptText.text = "Zeig dein traurigstes Gesicht.";
-        calibrator.StartSadMaxCalibration();
+        calibrator.StartSadCalibration();
         yield return StartCoroutine(WaitForPhase(EmotionCalibrationPhase.SadMax));
         yield return new WaitForSeconds(2f);
 
         promptText.text = "Schau überrascht!";
-        calibrator.StartSurprisedMaxCalibration();
+        calibrator.StartSurprisedCalibration();
         yield return StartCoroutine(WaitForPhase(EmotionCalibrationPhase.SurprisedMax));
         yield return new WaitForSeconds(2f);
 
@@ -68,16 +68,16 @@ public class CalibrationUI : MonoBehaviour
     {
         progressBar.value = 0f;
         float t = 0f;
-
-        while (!IsPhaseFinished(phase))
+        yield return null;
+        /*while (!IsPhaseFinished(phase))
         {
             t += Time.deltaTime;
             progressBar.value = Mathf.Clamp01(t / phaseDuration);
             yield return null;
-        }
+        }/*
 
     }
-    private bool IsPhaseFinished(EmotionCalibrationPhase phase)
+   /* private bool IsPhaseFinished(EmotionCalibrationPhase phase)
     {
         return phase switch
         {
@@ -87,6 +87,6 @@ public class CalibrationUI : MonoBehaviour
             EmotionCalibrationPhase.SadMax => calibrator.SadMaxFinished,
             EmotionCalibrationPhase.SurprisedMax => calibrator.SurprisedMaxFinished,
             _ => false
-        };
+        };*/
     }
 }

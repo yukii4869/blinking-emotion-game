@@ -6,16 +6,16 @@ public class MediaPipeProvider : MonoBehaviour
     [SerializeField] private UdpReceiver receiver;
 
     public Landmark[] Landmarks { get; private set; }
-    public  Dictionary<string, float> Blendshapes;
+    public  Dictionary<string, float> blendshapes;
     public bool pythonReady;
 
     public bool HasValidLandmarks => Landmarks != null && Landmarks.Length >= 381;
-    public bool HasValidBlendshapes => Blendshapes != null;
+    public bool HasValidBlendshapes => blendshapes != null;
 
     private void Update()
     {
         Landmarks = receiver.latestLandmarks;
-        Blendshapes = receiver.latestBlendshapes; 
+        blendshapes = receiver.latestBlendshapes; 
         pythonReady = receiver.pythonReady;
     }
 }

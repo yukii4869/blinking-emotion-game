@@ -18,7 +18,7 @@ public class EmotionDetector : MonoBehaviour
     private bool debugVisible = false;
     private bool baselinesApplied = false;
 
-    private void Update()
+    /*private void Update()
     {
         // Warten bis alle Kalibrierungen fertig sind
         if (!calibrator.AllCalibrationFinished)
@@ -45,7 +45,7 @@ public class EmotionDetector : MonoBehaviour
         }
 
         // Blendshapes holen
-        var blendshapes = provider.Blendshapes;
+        var blendshapes = provider.blendshapes;
         if (blendshapes == null || blendshapes.Count == 0)
             return;
 
@@ -54,5 +54,5 @@ public class EmotionDetector : MonoBehaviour
 
         // Emotion klassifizieren
         CurrentEmotion = classifier.Classify(features);
-    }
+    }*/
 }

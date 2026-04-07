@@ -1,112 +1,156 @@
 using UnityEngine;
 using System.Collections.Generic;
-
 public class EmotionCalibrator : MonoBehaviour
 {
-    [Header("Dependencies")]
     [SerializeField] private MediaPipeProvider provider;
 
-    [Header("Sampling")]
-    [SerializeField] private int framesPerPhase = 60;
+    //Dictionaries
+    private Dictionary<string, float> accumulator = new();
+    private Dictionary<string, float> neutralBase = new();
+    private Dictionary<string, float> smileBase = new();
+    private Dictionary<string, float> angryBase = new();
+    private Dictionary<string, float> sadBase = new();
+    private Dictionary<string, float> surprisedBase = new();
+    private Dictionary<string, float> globalMax = new();
+    private bool isCalibrating;
 
-    public EmotionCalibrationPhase CurrentPhase { get; private set; } = EmotionCalibrationPhase.None;
-    public bool IsCalibrating => CurrentPhase != EmotionCalibrationPhase.None;
+    //Finished Flags
+    private bool finishedNeutral = false;
+    private bool finishedSmile = false;
+    private bool finishedAngry = false;
+    private bool finishedSad = false;
+    private bool finishedSurprised = false;
+    private bool finishedAll = false;
 
-    // Baselines
-    public Dictionary<string, float> NeutralBaseline { get; private set; } = new();
-    public Dictionary<string, float> SmileMax { get; private set; } = new();
-    public Dictionary<string, float> AngryMax { get; private set; } = new();
-    public Dictionary<string, float> SadMax { get; private set; } = new();
-    public Dictionary<string, float> SurprisedMax { get; private set; } = new();
-
-    // Internals
-    private readonly Dictionary<string, float> accumulation = new();
     private int collectedFrames = 0;
+    private EmotionCalibrationPhase currentPhase;
+    private List<Dictionary<string, float>> finishedBaseLines = new();
+    private readonly int maxFrames = 180;
+    private static readonly string[] relevantBlendshapes =
+{
+    "browDown_L", "browDown_R",
+    "browInnerUp",
+    "browOuterUp_L", "browOuterUp_R",
+    "cheekSquint_L", "cheekSquint_R",
+    "eyeSquint_L", "eyeSquint_R",
+    "eyeWide_L", "eyeWide_R",
+    "jawOpen",
+    "mouthSmile_L", "mouthSmile_R",
+    "mouthFrown_L", "mouthFrown_R",
+    "mouthPress_L", "mouthPress_R",
+    "mouthShrugLower",
+    "mouthUpperUp_L", "mouthUpperUp_R",
+    "noseSneer_L", "noseSneer_R"
+    };
+    void Start()
+    {
+        foreach (string relBs in relevantBlendshapes)
+        {
+            globalMax[relBs] = 0f;
+        }
 
+    }
     private void Update()
     {
-        if (!provider.pythonReady || !IsCalibrating)
+        if (!provider.pythonReady || !isCalibrating)
             return;
 
-        var blendshapes = provider.Blendshapes;
+        var blendshapes = provider.blendshapes;
         if (blendshapes == null || blendshapes.Count == 0)
             return;
 
-        ProcessFrame(blendshapes);
+        ProcessCalibration(blendshapes);
     }
-
-    // ------------------------------------------------------------
-    // Public API
-    // ------------------------------------------------------------
-    public void StartNeutralCalibration()      => StartPhase(EmotionCalibrationPhase.Neutral);
-    public void StartSmileMaxCalibration()     => StartPhase(EmotionCalibrationPhase.SmileMax);
-    public void StartAngryMaxCalibration()     => StartPhase(EmotionCalibrationPhase.SmileMax);
-    public void StartSadMaxCalibration()       => StartPhase(EmotionCalibrationPhase.AngryMax);
-    public void StartSurprisedMaxCalibration() => StartPhase(EmotionCalibrationPhase.SurprisedMax);
-
-    private void StartPhase(EmotionCalibrationPhase phase)
+    private void StartCalibration(EmotionCalibrationPhase calibrationPhase)
     {
-        CurrentPhase = phase;
         collectedFrames = 0;
-        accumulation.Clear();
-        Debug.Log($"Calibration started: {phase}");
-    }
+        accumulator.Clear();
+        isCalibrating = true;
+        currentPhase = calibrationPhase;
 
-    // ------------------------------------------------------------
-    // Internals
-    // ------------------------------------------------------------
-    private void ProcessFrame(Dictionary<string, float> blendshapes)
-    {
-        foreach (var kvp in blendshapes)
+        //Akkumulator initial mit allen relevanten Blendshapes befüllen
+        foreach (string relBs in relevantBlendshapes)
         {
-            if (!accumulation.ContainsKey(kvp.Key))
-                accumulation[kvp.Key] = 0f;
-
-            accumulation[kvp.Key] += kvp.Value;
+            accumulator[relBs] = 0f;
+        }
+    }
+    private void ProcessCalibration(Dictionary<string, float> blendshapes)
+    {
+        // for jeden blendhape aus provider.blendshape vergleiche ob in relevantBlendshape (oder andersherum) und schreibe wert auf wenn er noch nicht da ist, wenn er da ist dann addiere auf
+        foreach (string relBs in relevantBlendshapes)
+        {
+            float currentValue = blendshapes.GetValueOrDefault(relBs, 0f);
+            accumulator[relBs] += currentValue;
+        }
+        collectedFrames++;
+        if (collectedFrames >= maxFrames)
+        {
+            isCalibrating = false;
+            FinishCalibration(GetDictionary(currentPhase));
+        }
+    }
+    private void FinishCalibration(Dictionary<string, float> currentCalibrationbase)
+    {        
+        foreach (var blendshape in accumulator) //für jeden Eintrag in accumulator (<leftMouth, 0.8>, <rightMouth, 0.9>...) durch Frame Anzahl teilen
+        {
+            currentCalibrationbase[blendshape.Key] = accumulator[blendshape.Key] / collectedFrames;//schreibe in das normalBase Dictionary die durchschnittlichen Werte von dem gezählten Frames
+        }
+        currentPhase = EmotionCalibrationPhase.None;
+        
+        if (currentCalibrationbase != neutralBase)
+        {
+            finishedBaseLines.Add(currentCalibrationbase);//Alle außer Neutral sollen geadded werden damit später global Max ausgerechent werden kann
         }
 
-        collectedFrames++;
-
-        if (collectedFrames >= framesPerPhase)
-            FinishPhase();
     }
-
-    private void FinishPhase()
+    private void ComputeGlobalMax(List<Dictionary<string, float>> baseLines)
     {
-        var target = GetDict(CurrentPhase);
-        target.Clear();
-
-        foreach (var kvp in accumulation)
-            target[kvp.Key] = kvp.Value / collectedFrames;
-
-        Debug.Log($"Calibration finished: {CurrentPhase}");
-        CurrentPhase = EmotionCalibrationPhase.None;
+        foreach (Dictionary<string, float> baseDict in baseLines)
+        {
+            foreach (var currBlendshape in baseDict)
+            {
+                globalMax[currBlendshape.Key] = Mathf.Max(currBlendshape.Value, globalMax[currBlendshape.Key]);
+            }
+        }
     }
 
-    private Dictionary<string, float> GetDict(EmotionCalibrationPhase phase) =>
-        phase switch
+    private Dictionary<string, float> GetDictionary(EmotionCalibrationPhase currentPhase)
+    {
+        return currentPhase switch
         {
-            EmotionCalibrationPhase.Neutral      => NeutralBaseline,
-            EmotionCalibrationPhase.SmileMax     => SmileMax,
-            EmotionCalibrationPhase.AngryMax     => AngryMax,
-            EmotionCalibrationPhase.SadMax       => SadMax,
-            EmotionCalibrationPhase.SurprisedMax => SurprisedMax,
-            _ => null
+            EmotionCalibrationPhase.Neutral => neutralBase,
+            EmotionCalibrationPhase.SmileMax => smileBase,
+            EmotionCalibrationPhase.AngryMax => angryBase,
+            EmotionCalibrationPhase.SadMax => sadBase,
+            EmotionCalibrationPhase.SurprisedMax => surprisedBase,
+            _ => null,
         };
+    }
 
-    // ------------------------------------------------------------
-    // Dynamische Fertig-Checks (keine Flags nötig!)
-    // ------------------------------------------------------------
-    public bool NeutralFinished      => NeutralBaseline.Count > 0;
-    public bool SmileMaxFinished     => SmileMax.Count > 0;
-    public bool AngryMaxFinished     => AngryMax.Count > 0;
-    public bool SadMaxFinished       => SadMax.Count > 0;
-    public bool SurprisedMaxFinished => SurprisedMax.Count > 0;
-
-    public bool AllCalibrationFinished =>
-        NeutralFinished &&
-        SmileMaxFinished &&
-        AngryMaxFinished &&
-        SadMaxFinished &&
-        SurprisedMaxFinished;
+    //Methoden für die Buttons oder für die UI die man einzeln triggern kann
+    public void StartNeutralCalibration()
+    {
+        StartCalibration(EmotionCalibrationPhase.Neutral);
+    }
+    public void StartSmileCalibration()
+    {
+        StartCalibration(EmotionCalibrationPhase.SmileMax);
+    }
+    public void StartAngryCalibration()
+    {
+        StartCalibration(EmotionCalibrationPhase.AngryMax);
+    }
+    public void StartSadCalibration()
+    {
+        StartCalibration(EmotionCalibrationPhase.SadMax);
+    }
+    public void StartSurprisedCalibration()
+    {
+        StartCalibration(EmotionCalibrationPhase.SurprisedMax);
+    }
+    public void StartComputeGlobalMax()
+    {
+        ComputeGlobalMax(finishedBaseLines);
+    }
 }
+
