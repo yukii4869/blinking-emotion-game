@@ -29,10 +29,8 @@ public class EmotionDetector : MonoBehaviour
         {
             calculator.SetBaselines(
                 calibrator.NeutralBaseline,
-                calibrator.SmileMax,
-                calibrator.AngryMax,
-                calibrator.SadMax,
                 calibrator.SurprisedMax
+
             );
 
             baselinesApplied = true;

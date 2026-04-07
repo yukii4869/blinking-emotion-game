@@ -4,23 +4,14 @@ using UnityEngine;
 public class EmotionFeatureCalculator
 {
     private Dictionary<string, float> neutral;
-    private Dictionary<string, float> smileMax;
-    private Dictionary<string, float> angryMax;
-    private Dictionary<string, float> sadMax;
-    private Dictionary<string, float> surprisedMax;
-
+    private Dictionary<string, float> globalMax;
     public void SetBaselines(
         Dictionary<string, float> neutral,
-        Dictionary<string, float> smileMax,
-        Dictionary<string, float> angryMax,
-        Dictionary<string, float> sadMax,
-        Dictionary<string, float> surprisedMax)
+        Dictionary<string, float> globalMax
+        )
     {
         this.neutral = neutral;
-        this.smileMax = smileMax;
-        this.angryMax = angryMax;
-        this.sadMax = sadMax;
-        this.surprisedMax = surprisedMax;
+        this.globalMax = globalMax;
     }
 
     // ------------------------------------------------------------
@@ -61,24 +52,72 @@ public class EmotionFeatureCalculator
         float Get(string key) =>
             blendshapes.TryGetValue(key, out float v) ? v : 0f;
 
-        // Smile
-        float smileL = Normalize("mouthSmile_L", smileMax, Get("mouthSmile_L"));
-        float smileR = Normalize("mouthSmile_R", smileMax, Get("mouthSmile_R"));
-        float smile = 0.5f * (smileL + smileR);
+        float browDownL = Normalize("browDown_L", globalMax, Get("browDown_L"));
+        float browDownR = Normalize("browDown_R", globalMax, Get("browDown_R"));
 
-        // Angry (BrowDown)
-        float browDownL = Normalize("browDown_L", angryMax, Get("browDown_L"));
-        float browDownR = Normalize("browDown_R", angryMax, Get("browDown_R"));
+        float browInnerUp = Normalize("browInnerUp", globalMax, Get("browInnerUp"));
+
+        float browOuterUpL = Normalize("browOuterUp_L", globalMax, Get("browOuterUp_L"));
+        float browOuterUpR = Normalize("browOuterUp_R", globalMax, Get("browOuterUp_R"));
+
+        float cheekSquintL = Normalize("cheekSquint_L", globalMax, Get("cheekSquint_L"));
+        float cheekSquintR = Normalize("cheekSquint_R", globalMax, Get("cheekSquint_R"));
+
+        float eyeSquintL = Normalize("eyeSquint_L", globalMax, Get("eyeSquint_L"));
+        float eyeSquintR = Normalize("eyeSquint_R", globalMax, Get("eyeSquint_R"));
+
+        float eyeWideL = Normalize("eyeWide_L", globalMax, Get("eyeWide_L"));
+        float eyeWideR = Normalize("eyeWide_R", globalMax, Get("eyeWide_R"));
+
+        float jawopen = Normalize("jawOpen", globalMax, Get("jawOpen"));
+
+        float mouthFrownL = Normalize("mouthFrown_L", globalMax, Get("mouthFrown_L"));
+        float mouthFrownR = Normalize("mouthFrown_R", globalMax, Get("mouthFrown_R"));
+
+        float mouthPressL = Normalize("mouthPress_L", globalMax, Get("mouthPress_L"));
+        float mouthPressR = Normalize("mouthPress_R", globalMax, Get("mouthPress_R"));
+
+        float mouthShrugLower = Normalize("mouthShrugLower", globalMax, Get("mouthShrugLower"));
+
+        float mouthSmileL = Normalize("mouthSmile_L", globalMax, Get("mouthSmile_L"));
+        float mouthSmileR = Normalize("mouthSmile_R", globalMax, Get("mouthSmile_R"));
+
+        float mouthUpperUpL = Normalize("mouthUpperUp_L", globalMax, Get("mouthUpperUp_L"));
+        float mouthUpperUpR = Normalize("mouthUpperUp_R", globalMax, Get("mouthUpperUp_R"));
+
+        float noseSneerL = Normalize("noseSneer_L", globalMax, Get("noseSneer_L"));
+        float noseSneerR = Normalize("noseSneer_R", globalMax, Get("noseSneer_R"));
+
+
+
+
+        float smile = 0.5f * (mouthSmileL + mouthSmileR);
+
+        // Angry 
+        // 4+5/7+(9)+10+17+23
+
+
+
+
+
+
+
+        
         float angry = 0.5f * (browDownL + browDownR);
 
-        // Sad (BrowInnerUp)
-        float sad = Normalize("browInnerUp", sadMax, Get("browInnerUp"));
+        // Sad
+        // 1+4+15+17
+
+
+
+
+        float sad = 0;
+
 
         // Surprised (EyeWide + Jaw)
-        float eyeWideL = Normalize("eyeWide_L", surprisedMax, Get("eyeWide_L"));
-        float eyeWideR = Normalize("eyeWide_R", surprisedMax, Get("eyeWide_R"));
-        float jaw = Normalize("jawOpen", surprisedMax, Get("jawOpen"));
-        float surprised = (eyeWideL + eyeWideR) * 0.5f * 0.6f + jaw * 0.4f;
+
+
+        float surprised = (eyeWideL + eyeWideR) * 0.5f * 0.6f + jawopen * 0.4f;
 
         return new EmotionFeatures
         {

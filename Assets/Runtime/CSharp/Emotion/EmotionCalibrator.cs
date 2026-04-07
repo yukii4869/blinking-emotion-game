@@ -40,8 +40,8 @@ public class EmotionCalibrator : MonoBehaviour
     // ------------------------------------------------------------
     public void StartNeutralCalibration()      => StartPhase(EmotionCalibrationPhase.Neutral);
     public void StartSmileMaxCalibration()     => StartPhase(EmotionCalibrationPhase.SmileMax);
-    public void StartAngryMaxCalibration()     => StartPhase(EmotionCalibrationPhase.AngryMax);
-    public void StartSadMaxCalibration()       => StartPhase(EmotionCalibrationPhase.SadMax);
+    public void StartAngryMaxCalibration()     => StartPhase(EmotionCalibrationPhase.SmileMax);
+    public void StartSadMaxCalibration()       => StartPhase(EmotionCalibrationPhase.AngryMax);
     public void StartSurprisedMaxCalibration() => StartPhase(EmotionCalibrationPhase.SurprisedMax);
 
     private void StartPhase(EmotionCalibrationPhase phase)
