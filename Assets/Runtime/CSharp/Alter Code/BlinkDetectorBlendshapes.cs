@@ -16,7 +16,7 @@ public class BlinkDetectorBlendshapes : MonoBehaviour
 
     void Update()
     {
-        var b = provider.Blendshapes;
+        var b = provider.blendshapes;
         if (b.Count == 0) return;
 
         float leftBlink = BlendshapeUtils.Get(b, "eyeBlinkLeft");

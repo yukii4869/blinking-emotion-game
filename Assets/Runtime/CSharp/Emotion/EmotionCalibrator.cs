@@ -15,17 +15,17 @@ public class EmotionCalibrator : MonoBehaviour
     private bool isCalibrating;
 
     //Finished Flags
-    private bool finishedNeutral = false;
-    private bool finishedSmile = false;
-    private bool finishedAngry = false;
-    private bool finishedSad = false;
-    private bool finishedSurprised = false;
-    private bool finishedAll = false;
+    public bool finishedNeutral = false;
+    public bool finishedSmile = false;
+    public bool finishedAngry = false;
+    public bool finishedSad = false;
+    public bool finishedSurprised = false;
+    public bool finishedAll = false;
 
-    private int collectedFrames = 0;
+    public  int collectedFrames = 0;
     private EmotionCalibrationPhase currentPhase;
     private List<Dictionary<string, float>> finishedBaseLines = new();
-    private readonly int maxFrames = 180;
+    public readonly int maxFrames = 180;
     private static readonly string[] relevantBlendshapes =
 {
     "browDown_L", "browDown_R",
@@ -90,13 +90,13 @@ public class EmotionCalibrator : MonoBehaviour
         }
     }
     private void FinishCalibration(Dictionary<string, float> currentCalibrationbase)
-    {        
+    {
         foreach (var blendshape in accumulator) //für jeden Eintrag in accumulator (<leftMouth, 0.8>, <rightMouth, 0.9>...) durch Frame Anzahl teilen
         {
             currentCalibrationbase[blendshape.Key] = accumulator[blendshape.Key] / collectedFrames;//schreibe in das normalBase Dictionary die durchschnittlichen Werte von dem gezählten Frames
         }
+        SetCalibrationFlag(currentPhase);
         currentPhase = EmotionCalibrationPhase.None;
-        
         if (currentCalibrationbase != neutralBase)
         {
             finishedBaseLines.Add(currentCalibrationbase);//Alle außer Neutral sollen geadded werden damit später global Max ausgerechent werden kann
@@ -112,6 +112,14 @@ public class EmotionCalibrator : MonoBehaviour
                 globalMax[currBlendshape.Key] = Mathf.Max(currBlendshape.Value, globalMax[currBlendshape.Key]);
             }
         }
+        if (finishedNeutral &&
+              finishedSmile &&
+              finishedAngry &&
+              finishedSad &&
+              finishedSurprised)
+        {
+            finishedAll = true;
+        }
     }
 
     private Dictionary<string, float> GetDictionary(EmotionCalibrationPhase currentPhase)
@@ -125,6 +133,29 @@ public class EmotionCalibrator : MonoBehaviour
             EmotionCalibrationPhase.SurprisedMax => surprisedBase,
             _ => null,
         };
+    }
+    private void SetCalibrationFlag(EmotionCalibrationPhase calibrationPhase)
+    {
+        if (calibrationPhase == EmotionCalibrationPhase.Neutral)
+        {
+            finishedNeutral = true;
+        }
+        else if (calibrationPhase == EmotionCalibrationPhase.SmileMax)
+        {
+            finishedSmile = true;
+        }
+        else if (calibrationPhase == EmotionCalibrationPhase.AngryMax)
+        {
+            finishedAngry = true;
+        }
+        else if (calibrationPhase == EmotionCalibrationPhase.SadMax)
+        {
+            finishedSad = true;
+        }
+        else if (calibrationPhase == EmotionCalibrationPhase.SurprisedMax)
+        {
+            finishedSurprised = true;
+        }
     }
 
     //Methoden für die Buttons oder für die UI die man einzeln triggern kann
@@ -152,5 +183,15 @@ public class EmotionCalibrator : MonoBehaviour
     {
         ComputeGlobalMax(finishedBaseLines);
     }
+    public IReadOnlyDictionary<string, float> GetGobalMax() //Damit Werte nicht verfälscht werden können
+    {
+        return globalMax;
+    }
+    public IReadOnlyDictionary<string, float> GeGetNeutralBase()
+    {
+        return neutralBase;
+    }
+
+    
 }
 

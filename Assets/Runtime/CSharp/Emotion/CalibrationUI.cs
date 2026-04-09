@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 
+
 public class CalibrationUI : MonoBehaviour
 {
     [Header("Dependencies")]
@@ -10,9 +11,10 @@ public class CalibrationUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI promptText;
     [SerializeField] private Slider progressBar;
     [SerializeField] private EARCalibration earCalc;
+    [SerializeField] GameObject button;
+    private bool phaseRunning = false;
 
     [Header("Settings")]
-    [SerializeField] private float phaseDuration = 2f; // Sekunden pro Phase
     private bool calibrationStarted = false;
     private bool emoteCalibrationFinished = false;
 
@@ -24,69 +26,112 @@ public class CalibrationUI : MonoBehaviour
         {
             calibrationStarted = true;
             progressBar.value = 0f;
-            StartCoroutine(RunCalibration());
+            button.SetActive(true);
         }
 
     }
-
-    private IEnumerator RunCalibration()
+    public void StartCalibrationEmotion()
     {
-        promptText.text = "Schau ganz neutral.";
-        calibrator.StartNeutralCalibration();
-        yield return StartCoroutine(WaitForPhase(EmotionCalibrationPhase.Neutral));
-        yield return new WaitForSeconds(2f);
+        if (phaseRunning)
+        {
+            return;
+        }
 
-        promptText.text = "Zeig dein größtes Lächeln!";
-        calibrator.StartSmileCalibration();
-        yield return StartCoroutine(WaitForPhase(EmotionCalibrationPhase.SmileMax));
-        yield return new WaitForSeconds(2f);
+        if (!IsPhaseFinished(EmotionCalibrationPhase.Neutral))
+        {
+            StartCoroutine(RunPhase("Schau neutral", EmotionCalibrationPhase.Neutral));
+        }
+        else if (IsPhaseFinished(EmotionCalibrationPhase.Neutral) && !IsPhaseFinished(EmotionCalibrationPhase.SmileMax))
+        {
+            StartCoroutine(RunPhase("Zeig dein schönstes Lächeln", EmotionCalibrationPhase.SmileMax));
+        }
+        else if (IsPhaseFinished(EmotionCalibrationPhase.SmileMax) && !IsPhaseFinished(EmotionCalibrationPhase.AngryMax))
+        {
+            StartCoroutine(RunPhase("Schau richtig wütend", EmotionCalibrationPhase.AngryMax));
+        }
+        else if (IsPhaseFinished(EmotionCalibrationPhase.AngryMax) && !IsPhaseFinished(EmotionCalibrationPhase.SadMax))
+        {
+            StartCoroutine(RunPhase("Schau richtig traurig", EmotionCalibrationPhase.SadMax));
+        }
+        else if (IsPhaseFinished(EmotionCalibrationPhase.SadMax) && !IsPhaseFinished(EmotionCalibrationPhase.SurprisedMax))
+        {
+            StartCoroutine(RunPhase("Schau überrascht", EmotionCalibrationPhase.SurprisedMax));
+        }
+        else if (IsPhaseFinished(EmotionCalibrationPhase.SurprisedMax))
+        {
+            calibrator.StartComputeGlobalMax();
+            promptText.text = "Kalibrierung abgeschlossen!";
+            progressBar.value = 1f;
+            emoteCalibrationFinished = true;
+            return;
+        }
+    }
+    private IEnumerator RunPhase(string prompt, EmotionCalibrationPhase phase)
+    {
+        if (phaseRunning)
+        {
+            yield break;// verhindert Doppelstart
+        }
+        phaseRunning = true;
+        promptText.text = prompt;
 
-        promptText.text = "Schau richtig wütend!";
-        calibrator.StartAngryCalibration();
-        yield return StartCoroutine(WaitForPhase(EmotionCalibrationPhase.AngryMax));
-        yield return new WaitForSeconds(2f);
+        yield return StartCoroutine(Countdown());
 
-        promptText.text = "Zeig dein traurigstes Gesicht.";
-        calibrator.StartSadCalibration();
-        yield return StartCoroutine(WaitForPhase(EmotionCalibrationPhase.SadMax));
-        yield return new WaitForSeconds(2f);
+        switch (phase)
+        {
+            case EmotionCalibrationPhase.Neutral:
+                calibrator.StartNeutralCalibration();
+                break;
+            case EmotionCalibrationPhase.SmileMax:
+                calibrator.StartSmileCalibration();
+                break;
+            case EmotionCalibrationPhase.AngryMax:
+                calibrator.StartAngryCalibration();
+                break;
+            case EmotionCalibrationPhase.SadMax:
+                calibrator.StartSadCalibration();
+                break;
+            case EmotionCalibrationPhase.SurprisedMax:
+                calibrator.StartSurprisedCalibration();
+                break;
+        }
 
-        promptText.text = "Schau überrascht!";
-        calibrator.StartSurprisedCalibration();
-        yield return StartCoroutine(WaitForPhase(EmotionCalibrationPhase.SurprisedMax));
-        yield return new WaitForSeconds(2f);
-
-        promptText.text = "Kalibrierung abgeschlossen!";
-        progressBar.value = 1f;
-
-        yield return new WaitForSeconds(1f);
-        emoteCalibrationFinished = true;
-        gameObject.SetActive(false);
+        yield return StartCoroutine(ProgressCalibration(phase));
+        phaseRunning = false;
     }
 
-    private IEnumerator WaitForPhase(EmotionCalibrationPhase phase)
+
+    private IEnumerator Countdown()
+    {
+        yield return new WaitForSeconds(1f);
+        promptText.text = "3";
+        yield return new WaitForSeconds(1f);
+        promptText.text = "2";
+        yield return new WaitForSeconds(1f);
+        promptText.text = "1";
+        yield return new WaitForSeconds(1f);
+        promptText.text = "Go!";
+    }
+    private IEnumerator ProgressCalibration(EmotionCalibrationPhase phase)
     {
         progressBar.value = 0f;
-        float t = 0f;
-        yield return null;
-        /*while (!IsPhaseFinished(phase))
-        {
-            t += Time.deltaTime;
-            progressBar.value = Mathf.Clamp01(t / phaseDuration);
-            yield return null;
-        }/*
 
+        while (!IsPhaseFinished(phase))
+        {
+            progressBar.value = (float)calibrator.collectedFrames / calibrator.maxFrames;
+            yield return null;
+        }
     }
-   /* private bool IsPhaseFinished(EmotionCalibrationPhase phase)
+    private bool IsPhaseFinished(EmotionCalibrationPhase phase)
     {
         return phase switch
         {
-            EmotionCalibrationPhase.Neutral => calibrator.NeutralFinished,
-            EmotionCalibrationPhase.SmileMax => calibrator.SmileMaxFinished,
-            EmotionCalibrationPhase.AngryMax => calibrator.AngryMaxFinished,
-            EmotionCalibrationPhase.SadMax => calibrator.SadMaxFinished,
-            EmotionCalibrationPhase.SurprisedMax => calibrator.SurprisedMaxFinished,
+            EmotionCalibrationPhase.Neutral => calibrator.finishedNeutral,
+            EmotionCalibrationPhase.SmileMax => calibrator.finishedSmile,
+            EmotionCalibrationPhase.AngryMax => calibrator.finishedAngry,
+            EmotionCalibrationPhase.SadMax => calibrator.finishedSad,
+            EmotionCalibrationPhase.SurprisedMax => calibrator.finishedSurprised,
             _ => false
-        };*/
+        };
     }
 }

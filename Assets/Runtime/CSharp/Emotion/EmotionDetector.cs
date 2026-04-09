@@ -1,58 +1,29 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 
-public class EmotionDetector : MonoBehaviour
+public class EmotionDetector 
 {
-    [Header("Dependencies")]
-    [SerializeField] private MediaPipeProvider provider;
-    [SerializeField] private EmotionCalibrator calibrator;
-
-    [Header("Debug UI")]
-    [SerializeField] private GameObject debugPanel;
-
-    private readonly EmotionFeatureCalculator calculator = new();
-    public EmotionFeatures LastFeatures { get; private set; }
-    private readonly EmotionClassifier classifier = new();
-
-    public string CurrentEmotion { get; private set; } = "neutral";
-    private bool debugVisible = false;
-    private bool baselinesApplied = false;
-
-    /*private void Update()
+    public string CurrentEmotion;
+    private float smileThreshold = 0.4f;
+    private float angryThreshold = 0.4f;
+    private float sadThreshold = 0.4f;
+    private float surprisedThreshold = 0.4f;
+    public Emotion ClassifyEmotion(Dictionary<string, float> emotionScores)
     {
-        // Warten bis alle Kalibrierungen fertig sind
-        if (!calibrator.AllCalibrationFinished)
-            return;
+        
 
-        // Baselines einmalig setzen
-        if (!baselinesApplied)
-        {
-            calculator.SetBaselines(
-                calibrator.NeutralBaseline,
-                calibrator.SurprisedMax
+        return Emotion.Happy;
+    }
 
-            );
-
-            baselinesApplied = true;
-            Debug.Log("Emotion baselines applied.");
-        }
-
-        // Debug Panel toggeln
-        if (Keyboard.current.f1Key.wasPressedThisFrame)
-        {
-            debugVisible = !debugVisible;
-            debugPanel.SetActive(debugVisible);
-        }
-
-        // Blendshapes holen
-        var blendshapes = provider.blendshapes;
-        if (blendshapes == null || blendshapes.Count == 0)
-            return;
-
-        // Features berechnen
-        var features = calculator.Compute(blendshapes);
-
-        // Emotion klassifizieren
-        CurrentEmotion = classifier.Classify(features);
-    }*/
+    
+}
+public enum Emotion
+{
+    Neutral,
+    Happy,
+    Angry,
+    Sad,
+    Surprised
 }
