@@ -6,15 +6,12 @@ using System.Collections;
 
 public class CalibrationUI : MonoBehaviour
 {
-    [Header("Dependencies")]
     [SerializeField] private EmotionCalibrator calibrator;
     [SerializeField] private TextMeshProUGUI promptText;
     [SerializeField] private Slider progressBar;
     [SerializeField] private EARCalibration earCalc;
     [SerializeField] GameObject button;
     private bool phaseRunning = false;
-
-    [Header("Settings")]
     private bool calibrationStarted = false;
     private bool emoteCalibrationFinished = false;
 
@@ -43,11 +40,11 @@ public class CalibrationUI : MonoBehaviour
         }
         else if (IsPhaseFinished(EmotionCalibrationPhase.Neutral) && !IsPhaseFinished(EmotionCalibrationPhase.SmileMax))
         {
-            StartCoroutine(RunPhase("Zeig dein schönstes Lächeln", EmotionCalibrationPhase.SmileMax));
+            StartCoroutine(RunPhase("Zeig dein schönstes Laecheln", EmotionCalibrationPhase.SmileMax));
         }
         else if (IsPhaseFinished(EmotionCalibrationPhase.SmileMax) && !IsPhaseFinished(EmotionCalibrationPhase.AngryMax))
         {
-            StartCoroutine(RunPhase("Schau richtig wütend", EmotionCalibrationPhase.AngryMax));
+            StartCoroutine(RunPhase("Schau richtig wuetend", EmotionCalibrationPhase.AngryMax));
         }
         else if (IsPhaseFinished(EmotionCalibrationPhase.AngryMax) && !IsPhaseFinished(EmotionCalibrationPhase.SadMax))
         {
@@ -55,13 +52,12 @@ public class CalibrationUI : MonoBehaviour
         }
         else if (IsPhaseFinished(EmotionCalibrationPhase.SadMax) && !IsPhaseFinished(EmotionCalibrationPhase.SurprisedMax))
         {
-            StartCoroutine(RunPhase("Schau überrascht", EmotionCalibrationPhase.SurprisedMax));
+            StartCoroutine(RunPhase("Schau ueberrascht", EmotionCalibrationPhase.SurprisedMax));
         }
         else if (IsPhaseFinished(EmotionCalibrationPhase.SurprisedMax))
         {
             calibrator.StartComputeGlobalMax();
             promptText.text = "Kalibrierung abgeschlossen!";
-            progressBar.value = 1f;
             emoteCalibrationFinished = true;
             return;
         }

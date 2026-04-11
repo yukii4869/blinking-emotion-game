@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class UIOverlay : MonoBehaviour
 {
      [SerializeField]
-     private EmotionDetector emotionDetector;
+     private EmotionManager emotionManager;
      [SerializeField]
      private BlinkDetector blinkDetector;
      [SerializeField]
@@ -24,24 +24,25 @@ public class UIOverlay : MonoBehaviour
      void Update()
      {
           // Emotion anzeigen
-          emotionText.text = "Emotion: " + emotionDetector.CurrentEmotion;
-          if (emotionDetector.CurrentEmotion == "happy")
+          
+          emotionText.text = "Emotion: " + emotionManager.currentEmotion;
+          if (emotionManager.currentEmotion == Emotion.Happy)
           {
                emotionImage.texture = textures[0];
           }
-          else if (emotionDetector.CurrentEmotion == "sad")
+          else if (emotionManager.currentEmotion == Emotion.Sad)
           {
                emotionImage.texture = textures[1];
           }
-          else if (emotionDetector.CurrentEmotion == "angry")
+          else if (emotionManager.currentEmotion == Emotion.Angry)
           {
                emotionImage.texture = textures[2];
           }
-          else if (emotionDetector.CurrentEmotion == "surprised")
+          else if (emotionManager.currentEmotion == Emotion.Surprised)
           {
                emotionImage.texture = textures[3];
           }
-          else if (emotionDetector.CurrentEmotion == "neutral")
+          else if (emotionManager.currentEmotion == Emotion.Neutral)
           {
                emotionImage.texture = textures[4];
           }

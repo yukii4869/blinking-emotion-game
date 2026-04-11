@@ -321,7 +321,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 76727628}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 117cc6509b613e54a9caf9487da5af65, type: 3}
   m_Name: 
@@ -332,7 +332,8 @@ MonoBehaviour:
   finishedAngry: 0
   finishedSad: 0
   finishedSurprised: 0
-  finishedAll: 0
+  finishedCalibration: 0
+  collectedFrames: 0
 --- !u!1 &105525774
 GameObject:
   m_ObjectHideFlags: 0
@@ -343,9 +344,9 @@ GameObject:
   m_Component:
   - component: {fileID: 105525779}
   - component: {fileID: 105525775}
-  - component: {fileID: 105525778}
   - component: {fileID: 105525776}
   - component: {fileID: 105525777}
+  - component: {fileID: 105525780}
   m_Layer: 0
   m_Name: Detectors
   m_TagString: Untagged
@@ -419,21 +420,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioLoudnessDetector
   sampleWindow: 64
---- !u!114 &105525778
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 105525774}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eee589882993abf4d96236d43ae9754d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmotionDetector
-  provider: {fileID: 162795813}
-  calibrator: {fileID: 76727631}
-  debugPanel: {fileID: 504695428}
 --- !u!4 &105525779
 Transform:
   m_ObjectHideFlags: 0
@@ -449,6 +435,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &105525780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 105525774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee7f0c0465e75324ca087acadf85c551, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmotionManager
+  provider: {fileID: 162795813}
+  emotionCalibrator: {fileID: 0}
+  earCalibration: {fileID: 76727629}
+  currentEmotion: 0
 --- !u!1 &108808050
 GameObject:
   m_ObjectHideFlags: 0
@@ -1349,10 +1351,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: de7dc45688d1ae6439cf42bcaecc279a, type: 2}
+  m_sharedMaterial: {fileID: 638238104938895298, guid: de7dc45688d1ae6439cf42bcaecc279a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1382,7 +1384,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 16
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -1415,7 +1417,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: -84.61978, z: -164.41748, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2187,7 +2189,6 @@ MonoBehaviour:
   progressBar: {fileID: 1964773193}
   earCalc: {fileID: 76727629}
   button: {fileID: 738102420}
-  phaseDuration: 2
 --- !u!1 &516891493
 GameObject:
   m_ObjectHideFlags: 0
@@ -2904,7 +2905,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 504695433}
         m_TargetAssemblyTypeName: CalibrationUI, Assembly-CSharp
-        m_MethodName: StartCalibration
+        m_MethodName: StartCalibrationEmotion
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5580,7 +5581,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e825ff0bcca1fc49ae1f919c8539b0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIOverlay
-  emotionDetector: {fileID: 105525778}
+  emotionManager: {fileID: 105525780}
   blinkDetector: {fileID: 105525775}
   emotionText: {fileID: 385028381}
   blinkCounterText: {fileID: 1933938200}

@@ -7,15 +7,15 @@ public class EmotionFeatureCalculator
     {
         // ---------------- AUs ---------------------
         float AU1 = normalizedBs["browInnerUp"];
-        float AU2 = (normalizedBs["browOuterUp_L"] + normalizedBs["browOuterUp_R"]) * 0.5f;
-        float AU4 = (normalizedBs["browDown_L"] + normalizedBs["browDown_R"]) * 0.5f;
-        float AU5 = (normalizedBs["eyeWide_L"] + normalizedBs["eyeWide_R"]) * 0.5f;
-        float AU6 = (normalizedBs["cheekSquint_L"] + normalizedBs["cheekSquint_R"]) * 0.5f;
-        float AU7 = (normalizedBs["eyeSquint_L"] + normalizedBs["eyeSquint_R"]) * 0.5f;
-        float AU12 = (normalizedBs["mouthSmile_L"] + normalizedBs["mouthSmile_R"]) * 0.5f;
-        float AU15 = (normalizedBs["mouthFrown_L"] + normalizedBs["mouthFrown_R"]) * 0.5f;
+        float AU2 = (normalizedBs["browOuterUpLeft"] + normalizedBs["browOuterUpRight"]) * 0.5f;
+        float AU4 = (normalizedBs["browDownLeft"] + normalizedBs["browDownRight"]) * 0.5f;
+        float AU5 = (normalizedBs["eyeWideLeft"] + normalizedBs["eyeWideRight"]) * 0.5f;
+        float AU6 = (normalizedBs["cheekSquintLeft"] + normalizedBs["cheekSquintRight"]) * 0.5f;
+        float AU7 = (normalizedBs["eyeSquintLeft"] + normalizedBs["eyeSquintRight"]) * 0.5f;
+        float AU12 = (normalizedBs["mouthSmileLeft"] + normalizedBs["mouthSmileRight"]) * 0.5f;
+        float AU15 = (normalizedBs["mouthFrownLeft"] + normalizedBs["mouthFrownRight"]) * 0.5f;
         float AU17 = normalizedBs["mouthShrugLower"];
-        float AU23 = (normalizedBs["mouthPress_L"] + normalizedBs["mouthPress_R"]) * 0.5f;
+        float AU23 = (normalizedBs["mouthPressLeft"] + normalizedBs["mouthPressRight"]) * 0.5f;
         float AU26 = normalizedBs["jawOpen"];
 
         var emotionScores = new Dictionary<string, float>();

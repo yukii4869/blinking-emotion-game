@@ -56,8 +56,6 @@ public class EARCalibration : MonoBehaviour
         calibrationFinished = false;
         currentSmoothedEAR = 0f; // Glättung zurücksetzen
         statusText.text = "Kalibrierung gestartet. Bitte normal auf den Bildschirm schauen.";
-
-        Debug.Log("Kalibrierung gestartet. Bitte normal auf den Bildschirm schauen.");
     }
 
     private float ApplyMedianFilter(float value)
@@ -126,7 +124,6 @@ public class EARCalibration : MonoBehaviour
 
             calibrationFinished = true;
             statusText.text = $"Erfolg! Baseline: {baselineEAR:F3} | StdDev: {standardDeviation:F4} | Threshold: {blinkThreshold:F3}";
-            Debug.Log($"Erfolg! Baseline: {baselineEAR:F3} | StdDev: {standardDeviation:F4} | Threshold: {blinkThreshold:F3}");
         }
     }
 

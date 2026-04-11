@@ -20,27 +20,27 @@ public class EmotionCalibrator : MonoBehaviour
     public bool finishedAngry = false;
     public bool finishedSad = false;
     public bool finishedSurprised = false;
-    public bool finishedAll = false;
+    public bool finishedCalibration = false;
 
-    public  int collectedFrames = 0;
+    public int collectedFrames = 0;
     private EmotionCalibrationPhase currentPhase;
     private List<Dictionary<string, float>> finishedBaseLines = new();
     public readonly int maxFrames = 180;
     private static readonly string[] relevantBlendshapes =
 {
-    "browDown_L", "browDown_R",
+    "browDownLeft", "browDownRight",
     "browInnerUp",
-    "browOuterUp_L", "browOuterUp_R",
-    "cheekSquint_L", "cheekSquint_R",
-    "eyeSquint_L", "eyeSquint_R",
-    "eyeWide_L", "eyeWide_R",
+    "browOuterUpLeft", "browOuterUpRight",
+    "cheekSquintLeft", "cheekSquintRight",
+    "eyeSquintLeft", "eyeSquintRight",
+    "eyeWideLeft", "eyeWideRight",
     "jawOpen",
-    "mouthSmile_L", "mouthSmile_R",
-    "mouthFrown_L", "mouthFrown_R",
-    "mouthPress_L", "mouthPress_R",
+    "mouthSmileLeft", "mouthSmileRight",
+    "mouthFrownLeft", "mouthFrownRight",
+    "mouthPressLeft", "mouthPressRight",
     "mouthShrugLower",
-    "mouthUpperUp_L", "mouthUpperUp_R",
-    "noseSneer_L", "noseSneer_R"
+    "mouthUpperUpLeft", "mouthUpperUpRight",
+    "noseSneerLeft", "noseSneerRight"
     };
     void Start()
     {
@@ -118,7 +118,7 @@ public class EmotionCalibrator : MonoBehaviour
               finishedSad &&
               finishedSurprised)
         {
-            finishedAll = true;
+            finishedCalibration = true;
         }
     }
 
@@ -187,11 +187,20 @@ public class EmotionCalibrator : MonoBehaviour
     {
         return globalMax;
     }
-    public IReadOnlyDictionary<string, float> GeGetNeutralBase()
+    public IReadOnlyDictionary<string, float> GetNeutralBase()
     {
         return neutralBase;
     }
 
-    
+
+}
+public enum EmotionCalibrationPhase
+{
+    None,
+    Neutral,
+    SmileMax,
+    AngryMax,
+    SadMax,
+    SurprisedMax
 }
 
