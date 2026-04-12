@@ -321,7 +321,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 76727628}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 117cc6509b613e54a9caf9487da5af65, type: 3}
   m_Name: 
@@ -446,10 +446,10 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee7f0c0465e75324ca087acadf85c551, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmotionManager
-  provider: {fileID: 162795813}
+  m_EditorClassIdentifier: Assembly-CSharp::FaceInputManager
+  provider: {fileID: 0}
   emotionCalibrator: {fileID: 0}
-  earCalibration: {fileID: 76727629}
+  earCalibration: {fileID: 0}
   currentEmotion: 0
 --- !u!1 &108808050
 GameObject:
@@ -5581,7 +5581,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e825ff0bcca1fc49ae1f919c8539b0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIOverlay
-  emotionManager: {fileID: 105525780}
+  faceInputManager: {fileID: 0}
   blinkDetector: {fileID: 105525775}
   emotionText: {fileID: 385028381}
   blinkCounterText: {fileID: 1933938200}

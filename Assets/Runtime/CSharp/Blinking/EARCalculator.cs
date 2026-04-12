@@ -2,10 +2,15 @@ using UnityEngine;
 
 public class EARCalculator
 {
-    private int[] leftEye = { 33, 159, 158, 133, 153, 145 };
-    private int[] rightEye = { 362, 386, 387, 263, 374, 380 };
+    private readonly int[] leftEye = { 33, 159, 158, 133, 153, 145 };
+    private readonly int[] rightEye = { 362, 386, 387, 263, 374, 380 };
     public float ComputeEAR(Landmark[] lm, int[] idx)
     {
+        if (lm == null || lm.Length == 0)
+        {
+            return 0f;
+        }
+            
         Vector3 p1 = ToVec(lm[idx[0]]);
         Vector3 p2 = ToVec(lm[idx[1]]);
         Vector3 p3 = ToVec(lm[idx[2]]);

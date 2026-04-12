@@ -1,10 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
-public class EmotionManager : MonoBehaviour
+public class FaceInputManager : MonoBehaviour
 {
     [SerializeField] private MediaPipeProvider provider;
     [SerializeField] private EmotionCalibrator emotionCalibrator;
-      [SerializeField] private EARCalibration earCalibration;
+    [SerializeField] private EARCalibration earCalibration;
     private readonly EmotionFeatureCalculator emotionFeatureCalculator = new();
     private BlendshapeNormalizer blendshapeNormalizer;
     private readonly EmotionDetector emotionDetector = new();

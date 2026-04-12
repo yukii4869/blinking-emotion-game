@@ -3,7 +3,7 @@ using System.Collections.Generic;
 public class EmotionCalibrator : MonoBehaviour
 {
     [SerializeField] private MediaPipeProvider provider;
-
+    
     //Dictionaries
     private Dictionary<string, float> accumulator = new();
     private Dictionary<string, float> neutralBase = new();
@@ -13,21 +13,11 @@ public class EmotionCalibrator : MonoBehaviour
     private Dictionary<string, float> surprisedBase = new();
     private Dictionary<string, float> globalMax = new();
     private bool isCalibrating;
-
-    //Finished Flags
-    public bool finishedNeutral = false;
-    public bool finishedSmile = false;
-    public bool finishedAngry = false;
-    public bool finishedSad = false;
-    public bool finishedSurprised = false;
-    public bool finishedCalibration = false;
-
-    public int collectedFrames = 0;
     private EmotionCalibrationPhase currentPhase;
     private List<Dictionary<string, float>> finishedBaseLines = new();
-    public readonly int maxFrames = 180;
+
     private static readonly string[] relevantBlendshapes =
-{
+    {
     "browDownLeft", "browDownRight",
     "browInnerUp",
     "browOuterUpLeft", "browOuterUpRight",
@@ -42,6 +32,18 @@ public class EmotionCalibrator : MonoBehaviour
     "mouthUpperUpLeft", "mouthUpperUpRight",
     "noseSneerLeft", "noseSneerRight"
     };
+
+    //Finished Flags
+    public bool finishedNeutral = false;
+    public bool finishedSmile = false;
+    public bool finishedAngry = false;
+    public bool finishedSad = false;
+    public bool finishedSurprised = false;
+    public bool finishedCalibration = false;
+
+    public int collectedFrames = 0;
+    public readonly int maxFrames = 180;
+
     void Start()
     {
         foreach (string relBs in relevantBlendshapes)
@@ -53,7 +55,9 @@ public class EmotionCalibrator : MonoBehaviour
     private void Update()
     {
         if (!provider.pythonReady || !isCalibrating)
+        {
             return;
+        }
 
         var blendshapes = provider.blendshapes;
         if (blendshapes == null || blendshapes.Count == 0)
