@@ -1,30 +1,18 @@
 using UnityEngine;
 using TMPro;
-using System.Text;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class UIOverlay : MonoBehaviour
+public class LiveFaceUI : MonoBehaviour
 {
-     [SerializeField]
-     private FaceInputManager faceInputManager;
-     [SerializeField]
-     private BlinkDetector blinkDetector;
-     [SerializeField]
-     private TextMeshProUGUI emotionText;
-     [SerializeField]
-     private TextMeshProUGUI blinkCounterText;
+     [SerializeField] private FaceInputManager faceInputManager;
+     [SerializeField] private RawImage emotionImage;
+     [SerializeField] private TextMeshProUGUI emotionText;
+     [SerializeField] private TextMeshProUGUI blinkCounterText;
+     [SerializeField] private List<Texture> textures;
 
-     [SerializeField]
-     private RawImage emotionImage;
-
-     [SerializeField]
-     private List<Texture> textures;
-
-     void Update()
+     public void UpdateEmotion()
      {
-          // Emotion anzeigen
-          
           emotionText.text = "Emotion: " + faceInputManager.currentEmotion;
           if (faceInputManager.currentEmotion == Emotion.Happy)
           {
@@ -46,11 +34,9 @@ public class UIOverlay : MonoBehaviour
           {
                emotionImage.texture = textures[4];
           }
-
-          blinkCounterText.text = "Blinks: " + blinkDetector.counterBlinking;
-
-
-
-
+     }
+     public void UpdateBlinkCount()
+     {
+          blinkCounterText.text = "Blinks: " + faceInputManager.blinkCount;
      }
 }

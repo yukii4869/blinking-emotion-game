@@ -4,12 +4,12 @@ using TMPro;
 using System.Collections;
 
 
-public class CalibrationUI : MonoBehaviour
+public class EmotionCalibrationUI : MonoBehaviour
 {
     [SerializeField] private EmotionCalibrator calibrator;
     [SerializeField] private TextMeshProUGUI promptText;
     [SerializeField] private Slider progressBar;
-    [SerializeField] private EARCalibration earCalc;
+    [SerializeField] private EARCalibrator earCalibrator;
     [SerializeField] GameObject button;
     private bool phaseRunning = false;
     private bool calibrationStarted = false;
@@ -17,7 +17,7 @@ public class CalibrationUI : MonoBehaviour
 
     private void Update()
     {
-        if (!earCalc.calibrationFinished)
+        if (!earCalibrator.finishedCalibration)
             return;
         if (!calibrationStarted && !emoteCalibrationFinished)
         {
@@ -40,7 +40,7 @@ public class CalibrationUI : MonoBehaviour
         }
         else if (IsPhaseFinished(EmotionCalibrationPhase.Neutral) && !IsPhaseFinished(EmotionCalibrationPhase.SmileMax))
         {
-            StartCoroutine(RunPhase("Zeig dein schönstes Laecheln", EmotionCalibrationPhase.SmileMax));
+            StartCoroutine(RunPhase("Zeig dein schoenstes Laecheln", EmotionCalibrationPhase.SmileMax));
         }
         else if (IsPhaseFinished(EmotionCalibrationPhase.SmileMax) && !IsPhaseFinished(EmotionCalibrationPhase.AngryMax))
         {

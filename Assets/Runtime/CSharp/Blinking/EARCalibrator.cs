@@ -1,12 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.Rendering;
-using JetBrains.Annotations;
 
 public class EARCalibrator : MonoBehaviour
 {
     [SerializeField] MediaPipeProvider provider;
-    private readonly EARCalculator eARCalculator = new();
+    private readonly EARCalculator earCalculator = new();
     private bool isCalibrating;
     public bool finishedCalibration = false;
     private int collectedFrames = 0;
@@ -15,7 +13,9 @@ public class EARCalibrator : MonoBehaviour
     private readonly float blinkFactor = 0.75f;
     private List<float> earSamples = new();
     public float neutralEAR;
+    private bool startedCalibration;
     public float blinkThreshold;
+    public bool StartedCalibration => startedCalibration;
 
     private void Update()
     {
@@ -25,7 +25,7 @@ public class EARCalibrator : MonoBehaviour
         }
         if (collectedFrames < maxFrames)
         {
-            float currentEAR = eARCalculator.ComputeBothEyes(provider.Landmarks);
+            float currentEAR = earCalculator.ComputeBothEyes(provider.Landmarks);
             earSamples.Add(currentEAR);
             collectedFrames++;
         }
@@ -36,6 +36,7 @@ public class EARCalibrator : MonoBehaviour
     }
     public void StartEARCalibration()
     {
+        startedCalibration = true;
         earSamples.Clear();
         collectedFrames = 0;
         isCalibrating = true;

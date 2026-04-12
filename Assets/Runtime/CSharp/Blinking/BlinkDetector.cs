@@ -1,68 +1,52 @@
-using UnityEngine;
-using UnityEngine.Events;
-
-public class BlinkDetector : MonoBehaviour
+public class BlinkDetector
 {
-    [SerializeField] private MediaPipeProvider provider;
-    [SerializeField] private EARCalibration calibration;
+    private int framesBelowThreshold;
+    private int framesAboveThreshold;
+    readonly int requiredFrames = 2;
+    private float blinkThreshold;
+    private bool isBlinking;
+    private bool blinkStartedThisFrame;
+    private bool blinkEndedThisFrame;
+    // Getter
+    public bool IsBlinking => isBlinking;
+    public bool BlinkStartedThisFrame => blinkStartedThisFrame;
+    public bool BlinkEndedThisFrame => blinkEndedThisFrame;
 
-    [Header("Blink Timing")]
-    [SerializeField] private float minBlinkTime = 0.08f;
-    [SerializeField] private float maxBlinkTime = 0.40f;
-
-    [Header("Events")]
-    public UnityEvent OnBlink;
-    public int counterBlinking = 0;
-
-    private readonly EARCalculator earCalc = new();
-    private bool isBlinking = false;
-    private float blinkStartTime = 0f;
-
-    public float CurrentEAR { get; private set; }
-    public float blinkThreshold = 0;
-
-
-    private void Update()
+    public BlinkDetector(float blinkThreshold)
     {
-        if (!calibration.calibrationFinished)
-            return;
-
-        UpdateEAR();
-        UpdateBlinkLogic();
+        this.blinkThreshold = blinkThreshold;
     }
-
-    private void UpdateEAR()
+    public void UpdateEAR(float ear)
     {
-        if (!provider.HasValidLandmarks)
-            return;
-        CurrentEAR = earCalc.ComputeBothEyes(provider.Landmarks);
+        blinkStartedThisFrame = false;
+        blinkEndedThisFrame = false;
+        if (ear < blinkThreshold)
+        {
+            framesBelowThreshold++;
+            framesAboveThreshold = 0;
+            DetectBlinkStart();
+        }
+        else
+        {
+            framesAboveThreshold++;
+            framesBelowThreshold = 0;
+            DetectBlinkEnd();
+        }
     }
-
-    private void UpdateBlinkLogic()
+    private void DetectBlinkStart()
     {
-        if (!calibration.calibrationFinished)
-            return;
-
-        blinkThreshold = calibration.blinkThreshold;
-
-        // Start Blink
-        if (!isBlinking && CurrentEAR < blinkThreshold)
+        if (!isBlinking && framesBelowThreshold >= requiredFrames)
         {
             isBlinking = true;
-            blinkStartTime = Time.time;
-            return;
+            blinkStartedThisFrame = true;
         }
-
-        // Ende Blink
-        if (isBlinking && CurrentEAR >= blinkThreshold)
+    }
+    private void DetectBlinkEnd()
+    {
+        if (isBlinking && framesAboveThreshold >= requiredFrames)
         {
-            float duration = Time.time - blinkStartTime;
-
-            if (duration >= minBlinkTime && duration <= maxBlinkTime)
-                OnBlink?.Invoke(); // Blink wurde detected -- Logik einfügen bzw ab da abgreifen
-                counterBlinking++;
-
             isBlinking = false;
+            blinkEndedThisFrame = true;
         }
     }
 }
