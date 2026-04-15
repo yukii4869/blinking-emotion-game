@@ -1,0 +1,89 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+[RequireComponent(typeof(CharacterController))]
+public class PlayerController : MonoBehaviour
+{
+    [Header("Movement Settings")]
+    public float moveSpeed = 5f;
+    public float gravity = -9.81f;
+    public float jumpHeight = 1.5f;
+
+    [Header("Camera Settings")]
+    public Transform cameraTransform;
+    public float mouseSensitivity = 1.5f;
+    public float maxLookAngle = 80f;
+
+    private CharacterController controller;
+    private Vector2 moveInput;
+    private Vector2 lookInput;
+    private float verticalVelocity;
+    private float cameraPitch = 0f;
+
+    private void Awake()
+    {
+        controller = GetComponent<CharacterController>();
+    }
+
+    private void Update()
+    {
+        HandleMovement();
+        HandleCamera();
+    }
+
+    // -----------------------------
+    // Input System Callbacks
+    // -----------------------------
+
+    public void OnMove(InputAction.CallbackContext ctx)
+    {
+        moveInput = ctx.ReadValue<Vector2>();
+    }
+
+    public void OnLook(InputAction.CallbackContext ctx)
+    {
+        lookInput = ctx.ReadValue<Vector2>();
+    }
+
+    public void OnJump(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed && controller.isGrounded)
+        {
+            verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+    }
+
+    // -----------------------------
+    // Movement
+    // -----------------------------
+
+    private void HandleMovement()
+    {
+        Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
+        move *= moveSpeed;
+
+        if (controller.isGrounded && verticalVelocity < 0)
+            verticalVelocity = -2f;
+
+        verticalVelocity += gravity * Time.deltaTime;
+        move.y = verticalVelocity;
+
+        controller.Move(move * Time.deltaTime);
+    }
+
+    // -----------------------------
+    // Camera
+    // -----------------------------
+
+    private void HandleCamera()
+    {
+        // Horizontal rotation (player body)
+        transform.Rotate(Vector3.up * lookInput.x * mouseSensitivity);
+
+        // Vertical rotation (camera pitch)
+        cameraPitch -= lookInput.y * mouseSensitivity;
+        cameraPitch = Mathf.Clamp(cameraPitch, -maxLookAngle, maxLookAngle);
+
+        cameraTransform.localRotation = Quaternion.Euler(cameraPitch, 0f, 0f);
+    }
+}
