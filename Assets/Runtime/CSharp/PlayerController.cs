@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] private GameStateManager gameStateManager;
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
     public float gravity = -9.81f;
@@ -24,12 +25,35 @@ public class PlayerController : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
     }
+    private void Start()
+    {
+        gameStateManager.OnStateChanged += HandleStateChanged;
+
+        // Initialer Zustand
+        HandleStateChanged(gameStateManager.CurrentState);
+    }
 
     private void Update()
     {
         HandleMovement();
         HandleCamera();
     }
+    private void HandleStateChanged(GameState state)
+    {
+        bool isGameplay = (state == GameState.Gameplay);
+
+        // PlayerController aktivieren/deaktivieren
+        this.enabled = isGameplay;
+
+        // Cursor sperren oder freigeben
+        Cursor.lockState = isGameplay ? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.visible = !isGameplay;
+    }
+        private void OnDestroy()
+    {
+        gameStateManager.OnStateChanged -= HandleStateChanged;
+    }
+
 
     // -----------------------------
     // Input System Callbacks
