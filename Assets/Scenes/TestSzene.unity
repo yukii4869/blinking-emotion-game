@@ -5394,7 +5394,7 @@ MonoBehaviour:
   gravity: -9.81
   jumpHeight: 1.5
   cameraTransform: {fileID: 108808053}
-  mouseSensitivity: 1.5
+  mouseSensitivity: 0.1
   maxLookAngle: 80
 --- !u!143 &1540899243
 CharacterController:
