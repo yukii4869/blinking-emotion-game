@@ -4,6 +4,8 @@ using System.Collections.Generic;
 public class EARCalibrator : MonoBehaviour
 {
     [SerializeField] MediaPipeProvider provider;
+    [SerializeField] private GameStateManager gameStateManager;
+
     private readonly EARCalculator earCalculator = new();
     private bool isCalibrating;
     public bool finishedCalibration = false;
@@ -19,7 +21,7 @@ public class EARCalibrator : MonoBehaviour
 
     private void Update()
     {
-        if (!provider.pythonReady || !isCalibrating)
+        if (!provider.PythonReady || !isCalibrating)
         {
             return;
         }
@@ -51,6 +53,8 @@ public class EARCalibrator : MonoBehaviour
         neutralEAR = ComputeNeutralEAR(cleaned);
         blinkThreshold = ComputeBlinkThreshold(neutralEAR);
         finishedCalibration = true;
+
+        gameStateManager.SetState(GameState.EmotionCalibration);
     }
     private List<float> SortList(List<float> earValues)
     {
@@ -68,12 +72,12 @@ public class EARCalibrator : MonoBehaviour
     {
         float accumulatedEAR = 0;
         int lengthcleanedList = removedSamples.Count;
-        foreach(float ear in removedSamples)
+        foreach (float ear in removedSamples)
         {
             accumulatedEAR += ear;
         }
-         float meanEAR = accumulatedEAR/lengthcleanedList;
-         return meanEAR;
+        float meanEAR = accumulatedEAR / lengthcleanedList;
+        return meanEAR;
     }
     private float ComputeBlinkThreshold(float meanEAR)
     {

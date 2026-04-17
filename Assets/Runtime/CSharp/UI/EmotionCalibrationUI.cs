@@ -6,10 +6,10 @@ using System.Collections;
 
 public class EmotionCalibrationUI : MonoBehaviour
 {
-    [SerializeField] private EmotionCalibrator calibrator;
+    [SerializeField] private EmotionCalibrator emotionCalibrator;
     [SerializeField] private TextMeshProUGUI promptText;
     [SerializeField] private Slider progressBar;
-    [SerializeField] private EARCalibrator earCalibrator;
+    [SerializeField] private EARCalibrator eARCalibrator;
     [SerializeField] GameObject button;
     private bool phaseRunning = false;
     private bool calibrationStarted = false;
@@ -17,7 +17,7 @@ public class EmotionCalibrationUI : MonoBehaviour
 
     private void Update()
     {
-        if (!earCalibrator.finishedCalibration)
+        if (!eARCalibrator.finishedCalibration)
             return;
         if (!calibrationStarted && !emoteCalibrationFinished)
         {
@@ -56,7 +56,7 @@ public class EmotionCalibrationUI : MonoBehaviour
         }
         else if (IsPhaseFinished(EmotionCalibrationPhase.SurprisedMax))
         {
-            calibrator.StartComputeGlobalMax();
+            emotionCalibrator.StartComputeGlobalMax();
             promptText.text = "Kalibrierung abgeschlossen!";
             emoteCalibrationFinished = true;
             return;
@@ -76,19 +76,19 @@ public class EmotionCalibrationUI : MonoBehaviour
         switch (phase)
         {
             case EmotionCalibrationPhase.Neutral:
-                calibrator.StartNeutralCalibration();
+                emotionCalibrator.StartNeutralCalibration();
                 break;
             case EmotionCalibrationPhase.SmileMax:
-                calibrator.StartSmileCalibration();
+                emotionCalibrator.StartSmileCalibration();
                 break;
             case EmotionCalibrationPhase.AngryMax:
-                calibrator.StartAngryCalibration();
+                emotionCalibrator.StartAngryCalibration();
                 break;
             case EmotionCalibrationPhase.SadMax:
-                calibrator.StartSadCalibration();
+                emotionCalibrator.StartSadCalibration();
                 break;
             case EmotionCalibrationPhase.SurprisedMax:
-                calibrator.StartSurprisedCalibration();
+                emotionCalibrator.StartSurprisedCalibration();
                 break;
         }
 
@@ -114,7 +114,7 @@ public class EmotionCalibrationUI : MonoBehaviour
 
         while (!IsPhaseFinished(phase))
         {
-            progressBar.value = (float)calibrator.collectedFrames / calibrator.maxFrames;
+            progressBar.value = (float)emotionCalibrator.collectedFrames / emotionCalibrator.maxFrames;
             yield return null;
         }
     }
@@ -122,11 +122,11 @@ public class EmotionCalibrationUI : MonoBehaviour
     {
         return phase switch
         {
-            EmotionCalibrationPhase.Neutral => calibrator.finishedNeutral,
-            EmotionCalibrationPhase.SmileMax => calibrator.finishedSmile,
-            EmotionCalibrationPhase.AngryMax => calibrator.finishedAngry,
-            EmotionCalibrationPhase.SadMax => calibrator.finishedSad,
-            EmotionCalibrationPhase.SurprisedMax => calibrator.finishedSurprised,
+            EmotionCalibrationPhase.Neutral => emotionCalibrator.finishedNeutral,
+            EmotionCalibrationPhase.SmileMax => emotionCalibrator.finishedSmile,
+            EmotionCalibrationPhase.AngryMax => emotionCalibrator.finishedAngry,
+            EmotionCalibrationPhase.SadMax => emotionCalibrator.finishedSad,
+            EmotionCalibrationPhase.SurprisedMax => emotionCalibrator.finishedSurprised,
             _ => false
         };
     }

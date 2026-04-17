@@ -4,7 +4,7 @@ public class FaceInputManager : MonoBehaviour
 {
     [SerializeField] private MediaPipeProvider provider;
     [SerializeField] private EmotionCalibrator emotionCalibrator;
-    [SerializeField] private EARCalibrator earCalibrator;
+    [SerializeField] private EARCalibrator eARCalibrator;
     private readonly EmotionFeatureCalculator emotionFeatureCalculator = new();
     private readonly EmotionDetector emotionDetector = new();
     private BlendshapeNormalizer blendshapeNormalizer;
@@ -26,15 +26,15 @@ public class FaceInputManager : MonoBehaviour
     }
     private void InitializeBlinkDetectorIfReady()
     {
-        if (blinkDetectorNew == null && earCalibrator.finishedCalibration)
+        if (blinkDetectorNew == null && eARCalibrator.finishedCalibration)
         {
-            blinkThreshold = earCalibrator.blinkThreshold;
+            blinkThreshold = eARCalibrator.blinkThreshold;
             blinkDetectorNew = new BlinkDetector(blinkThreshold);
         }
     }
     private void ProcessBlinkDetection()
     {
-        if (!earCalibrator.finishedCalibration || blinkDetectorNew == null)
+        if (!eARCalibrator.finishedCalibration || blinkDetectorNew == null)
         {
             return;
         }
@@ -59,7 +59,7 @@ public class FaceInputManager : MonoBehaviour
     }
     private void ProcessEmotionDetection()
     {
-        if (!emotionCalibrator.finishedCalibration || !earCalibrator.finishedCalibration)
+        if (!emotionCalibrator.finishedCalibration || !eARCalibrator.finishedCalibration)
         {
             return;
         }
@@ -69,7 +69,7 @@ public class FaceInputManager : MonoBehaviour
 
         }
         // 1.  Blendshapes holen
-        var rawBlendshapes = provider.blendshapes;
+        var rawBlendshapes = provider.Blendshapes;
         if (rawBlendshapes == null)
         {
             return;

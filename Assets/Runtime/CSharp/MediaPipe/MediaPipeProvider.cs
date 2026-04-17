@@ -1,21 +1,45 @@
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
+
 public class MediaPipeProvider : MonoBehaviour
 {
-    [SerializeField] private UdpReceiver receiver;
+    private UdpReceiverService receiver;
+
+    [Header("Python Settings")]
+    [SerializeField] private string pythonExe = "python";
+    [SerializeField] private string scriptPath = @"C:/Unity Projekte/blinking-emotion-game/Assets/Runtime/Python/Mediapipe_sender.py";
+
+    private PythonProcessService python;
 
     public Landmark[] Landmarks { get; private set; }
-    public  Dictionary<string, float> blendshapes;
-    public bool pythonReady;
+    public Dictionary<string, float> Blendshapes { get; private set; }
+    public bool PythonReady { get; private set; }
 
     public bool HasValidLandmarks => Landmarks != null && Landmarks.Length >= 381;
-    public bool HasValidBlendshapes => blendshapes != null;
+    public bool HasValidBlendshapes => Blendshapes != null;
+
+    private void Start()
+    {
+        // Python starten
+        python = new PythonProcessService();
+        python.StartPython(pythonExe, scriptPath);
+
+        // UDP Receiver starten
+        receiver = new UdpReceiverService();
+        receiver.Start(5005);
+    }
 
     private void Update()
     {
-        Landmarks = receiver.latestLandmarks;
-        blendshapes = receiver.latestBlendshapes; 
-        pythonReady = receiver.pythonReady;
+        // Daten aus dem UDP-Service holen
+        Landmarks = receiver.LatestLandmarks;
+        Blendshapes = receiver.LatestBlendshapes;
+        PythonReady = receiver.PythonReady;
+    }
+
+    private void OnDestroy()
+    {
+        receiver?.Stop();
+        python?.StopPython();
     }
 }

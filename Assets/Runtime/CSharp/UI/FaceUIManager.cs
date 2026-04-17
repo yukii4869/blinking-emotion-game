@@ -19,7 +19,7 @@ public class FaceUIManager : MonoBehaviour
     }
     private void UpdateVisibility()
     {
-        earCalibrationUI.gameObject.SetActive(provider.pythonReady);
+        earCalibrationUI.gameObject.SetActive(provider.PythonReady);
         if (earCalibrator.finishedCalibration)
         {
             earCalibrationUI.FinishedEARCalibration();

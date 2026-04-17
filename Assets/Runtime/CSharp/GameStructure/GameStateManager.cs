@@ -7,6 +7,7 @@ public class GameStateManager : MonoBehaviour
     public event Action<GameState> OnStateChanged;
     public void SetState(GameState newState)
     {
+        Debug.Log(CurrentState);
         CurrentState = newState; 
         OnStateChanged?.Invoke(newState);
 
