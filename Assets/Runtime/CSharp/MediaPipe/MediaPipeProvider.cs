@@ -8,8 +8,10 @@ public class MediaPipeProvider : MonoBehaviour
     [Header("Python Settings")]
     [SerializeField] private string pythonExe = "python";
     [SerializeField] private string scriptPath = @"C:/Unity Projekte/blinking-emotion-game/Assets/Runtime/Python/Mediapipe_sender.py";
+    [SerializeField] GameStateManager gameStateManager;
 
     private PythonProcessService python;
+    private bool activated;
 
     public Landmark[] Landmarks { get; private set; }
     public Dictionary<string, float> Blendshapes { get; private set; }
@@ -35,6 +37,11 @@ public class MediaPipeProvider : MonoBehaviour
         Landmarks = receiver.LatestLandmarks;
         Blendshapes = receiver.LatestBlendshapes;
         PythonReady = receiver.PythonReady;
+        if(PythonReady && !activated)
+        {
+            gameStateManager.SetState(GameState.EARCalibration);
+            activated = true;
+        }
     }
 
     private void OnDestroy()

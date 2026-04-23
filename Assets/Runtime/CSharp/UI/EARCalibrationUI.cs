@@ -7,6 +7,10 @@ public class EARCalibrationUI : MonoBehaviour
     [SerializeField] MediaPipeProvider provider;
     [SerializeField] GameObject startEARCalibrationButton;
     [SerializeField] private TextMeshProUGUI statusText;
+    private void Start()
+{
+    earCalibrator.OnEARCalibrationFinished += FinishedEARCalibration;
+}
 
     public void StartEARCalibration()
     {

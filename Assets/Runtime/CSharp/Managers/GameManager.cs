@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        gameStateManager.SetState(GameState.EARCalibration);
+        gameStateManager.SetState(GameState.PythonPreparation);
         // oder GameState.Gameplay, wenn du direkt starten willst
     }
     public void OnPause()

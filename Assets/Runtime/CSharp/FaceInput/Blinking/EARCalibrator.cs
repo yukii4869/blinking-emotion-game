@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class EARCalibrator : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class EARCalibrator : MonoBehaviour
     private bool startedCalibration;
     public float blinkThreshold;
     public bool StartedCalibration => startedCalibration;
+    public event Action OnEARCalibrationFinished;
 
     private void Update()
     {
@@ -53,7 +55,7 @@ public class EARCalibrator : MonoBehaviour
         neutralEAR = ComputeNeutralEAR(cleaned);
         blinkThreshold = ComputeBlinkThreshold(neutralEAR);
         finishedCalibration = true;
-
+        OnEARCalibrationFinished?.Invoke();
         gameStateManager.SetState(GameState.EmotionCalibration);
     }
     private List<float> SortList(List<float> earValues)

@@ -1,5 +1,6 @@
 public enum GameState
 {
+    PythonPreparation,
     EARCalibration,
     EmotionCalibration,
     Gameplay,
