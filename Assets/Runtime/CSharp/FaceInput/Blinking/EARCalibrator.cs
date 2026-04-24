@@ -46,6 +46,11 @@ public class EARCalibrator : MonoBehaviour
         isCalibrating = true;
         finishedCalibration = false;
     }
+    public void WriteEARToProfile(PlayerProfile profile)
+    {
+        profile.neutralEAR = neutralEAR;
+        profile.blinkThreshold = blinkThreshold;
+    }
 
     private void FinishCalibration()
     {
@@ -85,4 +90,5 @@ public class EARCalibrator : MonoBehaviour
     {
         return meanEAR * blinkFactor;
     }
+
 }

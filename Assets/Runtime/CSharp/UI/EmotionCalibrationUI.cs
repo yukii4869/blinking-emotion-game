@@ -10,10 +10,12 @@ public class EmotionCalibrationUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI promptText;
     [SerializeField] private Slider progressBar;
     [SerializeField] private EARCalibrator eARCalibrator;
-    [SerializeField] GameObject button;
+    [SerializeField] GameObject okayButton;
+    [SerializeField] GameObject retryButton;
     private bool phaseRunning = false;
     private bool calibrationStarted = false;
     private bool emoteCalibrationFinished = false;
+    private EmotionCalibrationPhase currentUIPhase = EmotionCalibrationPhase.None;
 
     private void Update()
     {
@@ -23,7 +25,8 @@ public class EmotionCalibrationUI : MonoBehaviour
         {
             calibrationStarted = true;
             progressBar.value = 0f;
-            button.SetActive(true);
+            okayButton.SetActive(true);
+            retryButton.SetActive(true);
         }
 
     }
@@ -37,6 +40,7 @@ public class EmotionCalibrationUI : MonoBehaviour
         if (!IsPhaseFinished(EmotionCalibrationPhase.Neutral))
         {
             StartCoroutine(RunPhase("Schau neutral", EmotionCalibrationPhase.Neutral));
+            retryButton.SetActive(true);
         }
         else if (IsPhaseFinished(EmotionCalibrationPhase.Neutral) && !IsPhaseFinished(EmotionCalibrationPhase.SmileMax))
         {
@@ -62,6 +66,20 @@ public class EmotionCalibrationUI : MonoBehaviour
             return;
         }
     }
+    public void StartReCalibrationEmotion()
+    {
+        if (phaseRunning|| currentUIPhase == EmotionCalibrationPhase.None)
+        {
+            return;
+        }
+        
+
+        // 1. Emotion zurücksetzen
+        emotionCalibrator.StartReCalibrateEmotion(currentUIPhase);
+
+        // 2. Phase erneut starten
+        StartCoroutine(RunPhase(GetPrompt(currentUIPhase), currentUIPhase));
+    }
     private IEnumerator RunPhase(string prompt, EmotionCalibrationPhase phase)
     {
         if (phaseRunning)
@@ -69,6 +87,7 @@ public class EmotionCalibrationUI : MonoBehaviour
             yield break;// verhindert Doppelstart
         }
         phaseRunning = true;
+        currentUIPhase = phase;
         promptText.text = prompt;
 
         yield return StartCoroutine(Countdown());
@@ -94,6 +113,16 @@ public class EmotionCalibrationUI : MonoBehaviour
 
         yield return StartCoroutine(ProgressCalibration(phase));
         phaseRunning = false;
+    }
+    public void ResetUI()
+    {
+        calibrationStarted = false;
+        emoteCalibrationFinished = false;
+        phaseRunning = false;
+        currentUIPhase = EmotionCalibrationPhase.None;
+
+        progressBar.value = 0f;
+        promptText.text = "Bereit zur Kalibrierung";
     }
 
 
@@ -128,6 +157,18 @@ public class EmotionCalibrationUI : MonoBehaviour
             EmotionCalibrationPhase.SadMax => emotionCalibrator.finishedSad,
             EmotionCalibrationPhase.SurprisedMax => emotionCalibrator.finishedSurprised,
             _ => false
+        };
+    }
+    private string GetPrompt(EmotionCalibrationPhase phase)
+    {
+        return phase switch
+        {
+            EmotionCalibrationPhase.Neutral => "Schau neutral",
+            EmotionCalibrationPhase.SmileMax => "Zeig dein schönstes Lächeln",
+            EmotionCalibrationPhase.AngryMax => "Schau richtig wütend",
+            EmotionCalibrationPhase.SadMax => "Schau traurig",
+            EmotionCalibrationPhase.SurprisedMax => "Schau überrascht",
+            _ => ""
         };
     }
 }

@@ -1,10 +1,13 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 public class EmotionCalibrator : MonoBehaviour
 {
     [SerializeField] private MediaPipeProvider provider;
     [SerializeField] private GameStateManager gameStateManager;
-    
+    public event Action OnEmotionCalibrationFinished;
+
+
     //Dictionaries
     private Dictionary<string, float> accumulator = new();
     private Dictionary<string, float> neutralBase = new();
@@ -124,10 +127,11 @@ public class EmotionCalibrator : MonoBehaviour
               finishedSurprised)
         {
             finishedCalibration = true;
-
-            gameStateManager.SetState(GameState.Gameplay);
+            OnEmotionCalibrationFinished?.Invoke();
+            gameStateManager.SetState(GameState.EmotionTest);
         }
     }
+
 
     private Dictionary<string, float> GetDictionary(EmotionCalibrationPhase currentPhase)
     {
@@ -164,6 +168,27 @@ public class EmotionCalibrator : MonoBehaviour
             finishedSurprised = true;
         }
     }
+    private void ResetFlag(EmotionCalibrationPhase calibrationPhase)
+    {
+        switch (calibrationPhase)
+        {
+            case EmotionCalibrationPhase.Neutral: finishedNeutral = false; break;
+            case EmotionCalibrationPhase.SmileMax: finishedSmile = false; break;
+            case EmotionCalibrationPhase.AngryMax: finishedAngry = false; break;
+            case EmotionCalibrationPhase.SadMax: finishedSad = false; break;
+            case EmotionCalibrationPhase.SurprisedMax: finishedSurprised = false; break;
+        }
+    }
+    private void RecalibrateEmotion(EmotionCalibrationPhase calibrationPhase)
+    {
+        if (calibrationPhase == EmotionCalibrationPhase.None)
+        {
+            return;
+        }
+        // 1. Reset der Daten für diese Emotion
+        GetDictionary(calibrationPhase).Clear();
+        ResetFlag(calibrationPhase);
+    }
 
     //Methoden für die Buttons oder für die UI die man einzeln triggern kann
     public void StartNeutralCalibration()
@@ -190,6 +215,10 @@ public class EmotionCalibrator : MonoBehaviour
     {
         ComputeGlobalMax(finishedBaseLines);
     }
+    public void StartReCalibrateEmotion(EmotionCalibrationPhase calibrationPhase)
+    {
+        RecalibrateEmotion(calibrationPhase);
+    }
     public IReadOnlyDictionary<string, float> GetGobalMax() //Damit Werte nicht verfälscht werden können
     {
         return globalMax;
@@ -198,7 +227,48 @@ public class EmotionCalibrator : MonoBehaviour
     {
         return neutralBase;
     }
+    public void WriteEmotionToProfile(PlayerProfile profile)
+    {
+        profile.neutralBase = new SerializableDictionary<string, float>();
+        profile.globalMax = new SerializableDictionary<string, float>();
 
+        foreach (var kvp in neutralBase)
+            profile.neutralBase[kvp.Key] = kvp.Value;
+
+        foreach (var kvp in globalMax)
+            profile.globalMax[kvp.Key] = kvp.Value;
+    }
+    public void ResetAllCalibration()
+    {
+        // Flags zurücksetzen
+        finishedNeutral = false;
+        finishedSmile = false;
+        finishedAngry = false;
+        finishedSad = false;
+        finishedSurprised = false;
+        finishedCalibration = false;
+
+        // Dictionaries leeren
+        neutralBase.Clear();
+        smileBase.Clear();
+        angryBase.Clear();
+        sadBase.Clear();
+        surprisedBase.Clear();
+        globalMax.Clear();
+
+        // globalMax wieder initialisieren
+        foreach (string relBs in relevantBlendshapes)
+            globalMax[relBs] = 0f;
+
+        // Baselines-Liste leeren
+        finishedBaseLines.Clear();
+
+        // Frames zurücksetzen
+        collectedFrames = 0;
+
+        // Phase zurücksetzen
+        currentPhase = EmotionCalibrationPhase.None;
+    }
 
 }
 public enum EmotionCalibrationPhase
@@ -208,6 +278,7 @@ public enum EmotionCalibrationPhase
     SmileMax,
     AngryMax,
     SadMax,
-    SurprisedMax
+    SurprisedMax,
+    WaitForValidate
 }
 

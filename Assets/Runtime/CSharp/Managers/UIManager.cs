@@ -4,9 +4,11 @@ public class UIManager : MonoBehaviour
 {
     [SerializeField] private GameStateManager gameStateManager;
     [Header("UI Screens")]
+    [SerializeField] private GameObject calibrationBackground;
     [SerializeField] private GameObject pythonLoadingUI;
     [SerializeField] private GameObject earCalibrationUI;
     [SerializeField] private GameObject emotionCalibrationUI;
+    [SerializeField] private GameObject emotionTestUI;
     [SerializeField] private GameObject liveFaceUI;
     [SerializeField] private GameObject gameplayHUD;
     [SerializeField] private GameObject pauseMenu;
@@ -20,9 +22,11 @@ public class UIManager : MonoBehaviour
     private void HandleStateChanged(GameState state)
     {
         // Alles aus
+        calibrationBackground.SetActive(false);
         pythonLoadingUI.SetActive(false);
         earCalibrationUI.SetActive(false);
         emotionCalibrationUI.SetActive(false);
+        emotionTestUI.SetActive(false);
         liveFaceUI.SetActive(false);
         gameplayHUD.SetActive(false);
         pauseMenu.SetActive(false);
@@ -33,15 +37,26 @@ public class UIManager : MonoBehaviour
         {
             case GameState.PythonPreparation:
                 pythonLoadingUI.SetActive(true);
+                calibrationBackground.SetActive(true);
                 break;
 
             case GameState.EARCalibration:
                 earCalibrationUI.SetActive(true);
+                calibrationBackground.SetActive(true);
+                liveFaceUI.SetActive(true);
                 break;
 
             case GameState.EmotionCalibration:
                 earCalibrationUI.SetActive(true);
                 emotionCalibrationUI.SetActive(true);
+                calibrationBackground.SetActive(true);
+                liveFaceUI.SetActive(true);
+                break;
+
+            case GameState.EmotionTest:
+                calibrationBackground.SetActive(true);
+                liveFaceUI.SetActive(true);
+                emotionTestUI.SetActive(true);
                 break;
 
             case GameState.Gameplay:
