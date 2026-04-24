@@ -7,7 +7,6 @@ public class CalibrationValidationUI : MonoBehaviour
     [SerializeField] EmotionCalibrator emotionCalibrator;
     [SerializeField] EmotionCalibrationUI emotionCalibrationUI;
 
-
     public void OnRetryPressed()
     {
         emotionCalibrator.ResetAllCalibration();
@@ -18,7 +17,7 @@ public class CalibrationValidationUI : MonoBehaviour
 
     public void OnAcceptPressed()
     {
-        gameStateManager.SetState(GameState.Gameplay);
+         gameStateManager.SetState(GameState.ProfileSave);
 
     }
 }

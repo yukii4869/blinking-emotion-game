@@ -1,7 +1,14 @@
+using System;
 using UnityEngine;
 
 public class EmotionHoldCondition : BaseCondition
 {
+    public event Action OnStarted;
+    public event Action OnPreDelayStarted;
+    public event Action OnHoldStarted;
+    public event Action<float> OnProgress; // 0–1
+    // OnCompleted & OnFailed kommen aus BaseCondition
+
     [Header("References")]
     [SerializeField] private FaceInputManager faceInputManager;
 
@@ -12,13 +19,7 @@ public class EmotionHoldCondition : BaseCondition
 
     private float timer = 0f;
 
-    private enum Phase
-    {
-        None,
-        PreDelay,
-        Hold
-    }
-
+    private enum Phase { None, PreDelay, Hold }
     private Phase currentPhase = Phase.None;
 
     public override void ActivateCondition()
@@ -28,7 +29,8 @@ public class EmotionHoldCondition : BaseCondition
         timer = 0f;
         currentPhase = Phase.PreDelay;
 
-        OnPreDelayStarted();
+        OnStarted?.Invoke();
+        OnPreDelayStarted?.Invoke();
     }
 
     private void Update()
@@ -48,15 +50,6 @@ public class EmotionHoldCondition : BaseCondition
         }
     }
 
-    // -----------------------------
-    // PHASE 1: PRE DELAY
-    // -----------------------------
-    private void OnPreDelayStarted()
-    {
-        // UI: "Bereit machen..."
-        // Debug.Log("[Condition] PreDelay started");
-    }
-
     private void UpdatePreDelay()
     {
         timer += Time.deltaTime;
@@ -67,16 +60,12 @@ public class EmotionHoldCondition : BaseCondition
         }
     }
 
-    // -----------------------------
-    // PHASE 2: HOLD PHASE
-    // -----------------------------
     private void StartHoldPhase()
     {
         currentPhase = Phase.Hold;
         timer = 0f;
 
-        // UI: "Halte Emotion..."
-        // Debug.Log("[Condition] Hold phase started");
+        OnHoldStarted?.Invoke();
     }
 
     private void UpdateHoldPhase()
@@ -91,7 +80,7 @@ public class EmotionHoldCondition : BaseCondition
 
         timer += Time.deltaTime;
 
-        // UI: Fortschritt anzeigen (timer / holdTime)
+        OnProgress?.Invoke(timer / holdTime);
 
         if (timer >= holdTime)
         {

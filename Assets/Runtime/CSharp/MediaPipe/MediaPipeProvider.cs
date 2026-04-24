@@ -39,7 +39,7 @@ public class MediaPipeProvider : MonoBehaviour
         PythonReady = receiver.PythonReady;
         if(PythonReady && !activated)
         {
-            gameStateManager.SetState(GameState.EARCalibration);
+            gameStateManager.SetState(GameState.ProfileSelection);
             activated = true;
         }
     }

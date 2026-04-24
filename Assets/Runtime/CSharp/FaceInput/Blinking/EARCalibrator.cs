@@ -90,5 +90,12 @@ public class EARCalibrator : MonoBehaviour
     {
         return meanEAR * blinkFactor;
     }
+    public void LoadFromProfile(PlayerProfile profile)
+    {
+        neutralEAR = profile.neutralEAR; // oder dein Dictionary
+        blinkThreshold = profile.blinkThreshold;
+
+        finishedCalibration = true;
+    }
 
 }
