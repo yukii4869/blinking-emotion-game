@@ -1,0 +1,23 @@
+@startuml sequenzLoadProfile
+title Sequence: Profil laden
+
+actor Player
+
+Player -> LoadProfileUI: wählt Profil aus Dropdown
+LoadProfileUI -> ProfileManager: GetAllProfiles()
+
+Player -> LoadProfileUI: klickt "Load"
+LoadProfileUI -> ProfileManager: LoadProfile(name)
+ProfileManager --> LoadProfileUI: PlayerProfile
+
+LoadProfileUI -> ProfileLoader: ApplyProfile(profile)
+
+ProfileLoader -> EARCalibrator: LoadFromProfile(profile)
+EARCalibrator --> ProfileLoader: OK
+
+ProfileLoader -> EmotionCalibrator: LoadFromProfile(profile)
+EmotionCalibrator --> ProfileLoader: OK
+
+ProfileLoader -> GameStateManager: SetState(Gameplay)
+
+@enduml

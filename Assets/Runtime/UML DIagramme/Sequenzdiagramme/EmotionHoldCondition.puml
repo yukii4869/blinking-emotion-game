@@ -1,0 +1,33 @@
+@startuml emotionHoldCondition
+title Sequence: Emotion Hold Condition (Gameplay Flow)
+
+actor Player
+
+Player -> InteractionController: Interact()
+InteractionController -> Door: Interact()
+
+alt Door hat Condition
+    Door -> EmotionHoldCondition: ActivateCondition()
+    EmotionHoldCondition -> EmotionConditionUI: OnStarted / Show("Bereit machen…")
+    EmotionHoldCondition -> EmotionConditionUI: OnPreDelayStarted
+    EmotionHoldCondition -> FaceInputManager: (wird später abgefragt)
+
+    loop PreDelay Phase
+        EmotionHoldCondition -> EmotionHoldCondition: timer += dt
+    end
+
+    EmotionHoldCondition -> EmotionConditionUI: OnHoldStarted / Show("Schau überrascht!")
+
+    loop Hold Phase
+        EmotionHoldCondition -> FaceInputManager: currentEmotion?
+        FaceInputManager --> EmotionHoldCondition: Emotion.Surprised
+        EmotionHoldCondition -> EmotionConditionUI: OnProgress(p)
+    end
+
+    EmotionHoldCondition -> EmotionConditionUI: OnCompleted / Hide()
+    EmotionHoldCondition -> Door: Open()
+else Tür ohne Condition
+    Door -> Door: Open()
+end
+
+@enduml

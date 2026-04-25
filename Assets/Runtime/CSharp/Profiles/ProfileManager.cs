@@ -23,6 +23,12 @@ public static class ProfileManager
         string json = File.ReadAllText(path);
         return JsonUtility.FromJson<PlayerProfile>(json);
     }
+    public static void DeleteProfile(string name)
+    {
+        string path = Folder + name + ".json";
+        if (File.Exists(path))
+            File.Delete(path);
+    }
 
     public static string[] GetAllProfiles()
     {

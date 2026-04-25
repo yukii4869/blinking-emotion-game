@@ -1,0 +1,182 @@
+@startuml InputDetectionSystem
+title Input & Detection System
+
+' ============================
+' INPUT LAYER
+' ============================
+
+class MediaPipeProvider {
+    - receiver : UdpReceiverService
+    - python : PythonProcessService
+    - pythonExe : string
+    - scriptPath : string
+    - gameStateManager : GameStateManager
+    - activated : bool
+
+    + Landmarks : Landmark[]
+    + Blendshapes : Dictionary<string, float>
+    + PythonReady : bool
+
+    + HasValidLandmarks : bool
+    + HasValidBlendshapes : bool
+}
+
+MediaPipeProvider --> UdpReceiverService
+MediaPipeProvider --> PythonProcessService
+MediaPipeProvider --> GameStateManager
+MediaPipeProvider --> Landmark
+MediaPipeProvider --> BlendshapeEntry
+
+
+class PythonProcessService {
+    - process : Process
+
+    + StartPython(exe : string, script : string)
+    + StopPython()
+}
+
+class UdpReceiverService {
+    - client : UdpClient
+    - thread : Thread
+    - running : bool
+    - lockObj : object
+
+    + PythonReady : bool
+    + LatestBlendshapes : Dictionary<string, float>
+    + LatestLandmarks : Landmark[]
+
+    + Start(port : int)
+    + Stop()
+}
+
+UdpReceiverService --> FaceData
+UdpReceiverService --> Landmark
+UdpReceiverService --> BlendshapeEntry
+
+
+class FaceData {
+    + landmarks : Landmark[]
+    + blendshapes : BlendshapeEntry[]
+}
+
+class Landmark {
+    + x : float
+    + y : float
+    + z : float
+}
+
+class BlendshapeEntry {
+    + key : string
+    + value : float
+}
+
+
+' ============================
+' INPUT STATE HANDLER
+' ============================
+
+class InputStateHandler {
+    - playerInput : PlayerInput
+    - gameStateManager : GameStateManager
+
+    + HandleStateChanged(state : GameState)
+    + SwitchToGameplayMap()
+    + SwitchToUIMap()
+}
+
+InputStateHandler --> PlayerInput
+InputStateHandler --> GameStateManager
+InputStateHandler --> GameState
+
+
+' ============================
+' DETECTION LAYER
+' ============================
+
+class FaceInputManager {
+    - provider : MediaPipeProvider
+    - emotionCalibrator : EmotionCalibrator
+    - eARCalibrator : EARCalibrator
+
+    - emotionFeatureCalculator : EmotionFeatureCalculator
+    - emotionDetector : EmotionDetector
+    - blendshapeNormalizer : BlendshapeNormalizer
+    - eARCalculator : EARCalculator
+    - blinkDetectorNew : BlinkDetector
+
+    + currentEmotion : Emotion
+    + blinkStarted : bool
+    + blinkEnded : bool
+    + isBlinking : bool
+    + blinkCount : int
+    + currentEAR : float
+    + blinkThreshold : float
+}
+
+FaceInputManager --> MediaPipeProvider
+FaceInputManager --> EmotionCalibrator
+FaceInputManager --> EARCalibrator
+FaceInputManager --> EmotionFeatureCalculator
+FaceInputManager --> EmotionDetector
+FaceInputManager --> BlendshapeNormalizer
+FaceInputManager --> EARCalculator
+FaceInputManager --> BlinkDetector
+FaceInputManager --> Emotion
+
+
+class EARCalculator {
+    - leftEye : int[]
+    - rightEye : int[]
+
+    + ComputeEAR(lm : Landmark[], idx : int[]) : float
+    + ComputeBothEyes(lm : Landmark[]) : float
+}
+
+EARCalculator --> Landmark
+
+
+class BlinkDetector {
+    - framesBelowThreshold : int
+    - framesAboveThreshold : int
+    - requiredFrames : int
+    - blinkThreshold : float
+    - isBlinking : bool
+    - blinkStartedThisFrame : bool
+    - blinkEndedThisFrame : bool
+
+    + UpdateEAR(ear : float)
+    + IsBlinking : bool
+    + BlinkStartedThisFrame : bool
+    + BlinkEndedThisFrame : bool
+}
+
+
+class BlendshapeNormalizer {
+    - neutralBase : Dictionary<string, float>
+    - globalMaxBase : Dictionary<string, float>
+
+    + NormalizeBlendshapes(raw : Dictionary<string, float>) : Dictionary<string, float>
+}
+
+class EmotionFeatureCalculator {
+    + CalculateEmotionFeatures(normalized : Dictionary<string, float>) : Dictionary<string, float>
+}
+
+class EmotionDetector {
+    - smileThreshold : float
+    - angryThreshold : float
+    - sadThreshold : float
+    - surprisedThreshold : float
+
+    - strongestEmotion : string
+    - strongestValue : float
+    - requiredStableFrames : int
+    - lastDetectedEmotion : Emotion
+    - stableFrames : int
+
+    + ClassifyEmotion(scores : Dictionary<string, float>) : Emotion
+}
+
+EmotionDetector --> Emotion
+
+@enduml

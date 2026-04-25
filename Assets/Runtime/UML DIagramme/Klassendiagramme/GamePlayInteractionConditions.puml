@@ -1,0 +1,148 @@
+@startuml gameplayInteractionConditions
+title Gameplay, Interaction & Conditions
+
+' ============================
+' CONDITIONS
+' ============================
+
+class BaseCondition {
+    - isActive : bool
+
+    + ActivateCondition()
+    # Complete()
+    # Fail()
+
+    + OnCompleted : event
+    + OnFailed : event
+}
+
+class EmotionHoldCondition {
+    + OnStarted : event
+    + OnPreDelayStarted : event
+    + OnHoldStarted : event
+    + OnProgress : event(float)
+
+    - faceInputManager : FaceInputManager
+    - targetEmotion : Emotion
+    - preDelay : float
+    - holdTime : float
+    - timer : float
+
+    - Phase : enum { None, PreDelay, Hold }
+}
+
+EmotionHoldCondition --> BaseCondition
+EmotionHoldCondition --> FaceInputManager
+EmotionHoldCondition --> Emotion
+
+
+' ============================
+' CONDITION UI + BINDER
+' ============================
+
+class EmotionConditionUI {
+    - promptText : TextMeshProUGUI
+    - progressBar : Slider
+
+    + Show(prompt : string)
+    + UpdateProgress(value : float)
+    + Hide()
+}
+
+class EmotionConditionUIBinder {
+    - condition : EmotionHoldCondition
+    - ui : EmotionConditionUI
+}
+
+EmotionConditionUIBinder --> EmotionHoldCondition
+EmotionConditionUIBinder --> EmotionConditionUI
+EmotionHoldCondition --> EmotionConditionUI : "updates via events"
+
+
+' ============================
+' INTERACTION SYSTEM
+' ============================
+
+interface IInteractable {
+    + Interact()
+}
+
+class PickupItem {
+    - IsHeld : bool
+
+    + SetHeld(held : bool)
+    + Interact()
+    + PickUp(holder : ItemHolder)
+}
+
+PickupItem ..|> IInteractable
+PickupItem --> ItemHolder
+
+
+class Door {
+    - animator : Animator
+    - condition : BaseCondition
+    - isOpen : bool
+
+    + Interact()
+    - Open()
+}
+
+Door ..|> IInteractable
+Door --> BaseCondition
+
+
+class InteractionController {
+    - cam : Camera
+    - interactDistance : float
+    - itemHolder : ItemHolder
+
+    + OnInteract(context : InputAction.CallbackContext)
+}
+
+InteractionController --> IInteractable
+InteractionController --> PickupItem
+InteractionController --> ItemHolder
+
+
+class ItemHolder {
+    - handSlot : Transform
+    - currentItem : GameObject
+
+    + HasItem : bool
+    + PickUp(item : GameObject)
+    + DropCurrentItem()
+}
+
+ItemHolder --> PickupItem
+
+
+' ============================
+' PLAYER CONTROLLER
+' ============================
+
+class PlayerController {
+    - gameStateManager : GameStateManager
+    - moveSpeed : float
+    - gravity : float
+    - jumpHeight : float
+    - cameraTransform : Transform
+    - mouseSensitivity : float
+    - maxLookAngle : float
+
+    - controller : CharacterController
+    - moveInput : Vector2
+    - lookInput : Vector2
+    - verticalVelocity : float
+    - cameraPitch : float
+
+    + OnMove(ctx)
+    + OnLook(ctx)
+    + OnJump(ctx)
+}
+
+PlayerController --> GameStateManager
+PlayerController --> CharacterController
+PlayerController --> Transform
+
+@enduml

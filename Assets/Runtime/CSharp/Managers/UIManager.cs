@@ -11,7 +11,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject earCalibrationUI;
     [SerializeField] private GameObject emotionCalibrationUI;
     [SerializeField] private GameObject emotionTestUI;
-        [SerializeField] private GameObject saveProfileUI;
+    [SerializeField] private GameObject saveProfileUI;
     [SerializeField] private GameObject liveFaceUI;
     [SerializeField] private GameObject gameplayHUD;
     [SerializeField] private GameObject pauseMenu;

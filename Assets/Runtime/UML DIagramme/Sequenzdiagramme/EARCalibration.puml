@@ -1,0 +1,19 @@
+@startuml earCalibration
+title Sequence: EAR Kalibrierung
+
+actor Player
+
+Player -> EARCalibrator: StartEARCalibration()
+
+loop 50 Frames
+    EARCalibrator -> MediaPipeProvider: Get Landmarks
+    MediaPipeProvider --> EARCalibrator: Landmarks
+    EARCalibrator -> EARCalculator: ComputeBothEyes()
+    EARCalculator --> EARCalibrator: EAR value
+end
+
+EARCalibrator -> EARCalibrator: FinishCalibration()
+EARCalibrator -> PlayerProfile: WriteEARToProfile()
+EARCalibrator -> GameStateManager: SetState(EmotionCalibration)
+
+@enduml

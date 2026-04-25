@@ -1,0 +1,199 @@
+@startuml gameFlowUIManagement
+title Game Flow & UI Management
+
+' ============================
+' GAME FLOW
+' ============================
+
+class GameManager {
+    - gameStateManager : GameStateManager
+
+    + OnPause()
+    + OnResume()
+}
+
+class GameStateManager {
+    + CurrentState : GameState
+    + OnStateChanged : event
+
+    + SetState(newState : GameState)
+}
+
+enum GameState {
+    PythonPreparation
+    ProfileSelection
+    EARCalibration
+    EmotionCalibration
+    EmotionTest
+    ProfileSave
+    Gameplay
+    Pause
+    GameOver
+}
+
+GameManager --> GameStateManager
+GameStateManager --> GameState
+
+
+' ============================
+' UI SYSTEM
+' ============================
+
+class UIManager {
+    - gameStateManager : GameStateManager
+
+    - calibrationBackground : GameObject
+    - pythonLoadingUI : GameObject
+    - profileLoaderUI : GameObject
+    - earCalibrationUI : GameObject
+    - emotionCalibrationUI : GameObject
+    - emotionTestUI : GameObject
+    - saveProfileUI : GameObject
+    - liveFaceUI : GameObject
+    - gameplayHUD : GameObject
+    - pauseMenu : GameObject
+    - gameOverUI : GameObject
+}
+
+UIManager --> GameStateManager
+
+
+class LoadProfileUI {
+    - profileDropdown : TMP_Dropdown
+    - gsm : GameStateManager
+    - loader : ProfileLoader
+    - profiles : List<string>
+
+    + OnLoadPressed()
+    + OnNewCalibrationPressed()
+}
+
+LoadProfileUI --> GameStateManager
+LoadProfileUI --> ProfileLoader
+LoadProfileUI --> PlayerProfile
+LoadProfileUI --> ProfileManager
+
+
+class SaveProfileUI {
+    - saver : CalibrationProfileSaver
+    - gsm : GameStateManager
+    - nameField : TMP_InputField
+
+    + Show()
+    + Hide()
+    + OnConfirmPressed()
+    + OnCancelPressed()
+}
+
+SaveProfileUI --> CalibrationProfileSaver
+SaveProfileUI --> GameStateManager
+
+
+class CalibrationValidationUI {
+    - gameStateManager : GameStateManager
+    - emotionCalibrator : EmotionCalibrator
+    - emotionCalibrationUI : EmotionCalibrationUI
+
+    + OnRetryPressed()
+    + OnAcceptPressed()
+}
+
+CalibrationValidationUI --> GameStateManager
+CalibrationValidationUI --> EmotionCalibrator
+CalibrationValidationUI --> EmotionCalibrationUI
+
+
+' ============================
+' CALIBRATION UI
+' ============================
+
+class EmotionCalibrationUI {
+    - emotionCalibrator : EmotionCalibrator
+    - promptText : TextMeshProUGUI
+    - progressBar : Slider
+    - eARCalibrator : EARCalibrator
+    - okayButton : GameObject
+    - retryButton : GameObject
+
+    - phaseRunning : bool
+    - calibrationStarted : bool
+    - emoteCalibrationFinished : bool
+    - currentUIPhase : EmotionCalibrationPhase
+
+    + StartCalibrationEmotion()
+    + StartReCalibrationEmotion()
+    + ResetUI()
+}
+
+EmotionCalibrationUI --> EmotionCalibrator
+EmotionCalibrationUI --> EARCalibrator
+EmotionCalibrationUI --> EmotionCalibrationPhase
+
+
+class EARCalibrationUI {
+    - earCalibrator : EARCalibrator
+    - provider : MediaPipeProvider
+    - startEARCalibrationButton : GameObject
+    - statusText : TextMeshProUGUI
+
+    + StartEARCalibration()
+    + FinishedEARCalibration()
+}
+
+EARCalibrationUI --> EARCalibrator
+EARCalibrationUI --> MediaPipeProvider
+
+
+class EmotionTestUI {
+    + Show()
+    + Hide()
+}
+
+class LiveFaceUI {
+    - faceInputManager : FaceInputManager
+    - emotionImage : RawImage
+    - emotionText : TextMeshProUGUI
+    - blinkCounterText : TextMeshProUGUI
+    - textures : List<Texture>
+
+    + UpdateEmotion()
+    + UpdateBlinkCount()
+}
+
+LiveFaceUI --> FaceInputManager
+LiveFaceUI --> Emotion
+
+
+class FaceUIManager {
+    - liveUI : LiveFaceUI
+
+    + Update()
+}
+
+FaceUIManager --> LiveFaceUI
+
+
+class GameplayHUD {
+    + Show()
+    + Hide()
+}
+
+class PauseMenu {
+    + Show()
+    + Hide()
+}
+
+class GameOverUI {
+    + Show()
+    + Hide()
+}
+
+UIManager --> EARCalibrationUI
+UIManager --> EmotionCalibrationUI
+UIManager --> EmotionTestUI
+UIManager --> LiveFaceUI
+UIManager --> GameplayHUD
+UIManager --> PauseMenu
+UIManager --> GameOverUI
+
+@enduml

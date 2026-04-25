@@ -1,0 +1,220 @@
+@startuml calibrationProfileSystem
+title Calibration & Profile System
+
+' ============================
+' EAR CALIBRATION
+' ============================
+
+class EARCalibrator {
+    - provider : MediaPipeProvider
+    - gameStateManager : GameStateManager
+    - earCalculator : EARCalculator
+    - isCalibrating : bool
+    + finishedCalibration : bool
+    - collectedFrames : int
+    - maxFrames : int
+    - lowerCutPercentage : float
+    - blinkFactor : float
+    - earSamples : List<float>
+    + neutralEAR : float
+    - startedCalibration : bool
+    + blinkThreshold : float
+    + StartedCalibration : bool
+    + OnEARCalibrationFinished : event
+
+    + StartEARCalibration()
+    + WriteEARToProfile(profile : PlayerProfile)
+    + LoadFromProfile(profile : PlayerProfile)
+}
+
+class EARCalculator {
+    - leftEye : int[]
+    - rightEye : int[]
+
+    + ComputeEAR(lm : Landmark[], idx : int[]) : float
+    + ComputeBothEyes(lm : Landmark[]) : float
+}
+
+class BlinkDetector {
+    - framesBelowThreshold : int
+    - framesAboveThreshold : int
+    - requiredFrames : int
+    - blinkThreshold : float
+    - isBlinking : bool
+    - blinkStartedThisFrame : bool
+    - blinkEndedThisFrame : bool
+
+    + IsBlinking : bool
+    + BlinkStartedThisFrame : bool
+    + BlinkEndedThisFrame : bool
+
+    + BlinkDetector(blinkThreshold : float)
+    + UpdateEAR(ear : float)
+}
+
+EARCalibrator --> EARCalculator
+EARCalibrator --> PlayerProfile
+BlinkDetector ..> EARCalibrator : uses threshold
+
+
+' ============================
+' EMOTION CALIBRATION
+' ============================
+
+class EmotionCalibrator {
+    - provider : MediaPipeProvider
+    - gameStateManager : GameStateManager
+    + OnEmotionCalibrationFinished : event
+
+    - accumulator : Dictionary<string, float>
+    - neutralBase : Dictionary<string, float>
+    - smileBase : Dictionary<string, float>
+    - angryBase : Dictionary<string, float>
+    - sadBase : Dictionary<string, float>
+    - surprisedBase : Dictionary<string, float>
+    - globalMax : Dictionary<string, float>
+    - finishedBaseLines : List<Dictionary<string, float>>
+
+    - isCalibrating : bool
+    - currentPhase : EmotionCalibrationPhase
+    + finishedNeutral : bool
+    + finishedSmile : bool
+    + finishedAngry : bool
+    + finishedSad : bool
+    + finishedSurprised : bool
+    + finishedCalibration : bool
+
+    + collectedFrames : int
+    + maxFrames : int
+
+    + StartNeutralCalibration()
+    + StartSmileCalibration()
+    + StartAngryCalibration()
+    + StartSadCalibration()
+    + StartSurprisedCalibration()
+    + StartComputeGlobalMax()
+    + StartReCalibrateEmotion(phase : EmotionCalibrationPhase)
+
+    + GetGobalMax() : IReadOnlyDictionary<string, float>
+    + GetNeutralBase() : IReadOnlyDictionary<string, float>
+
+    + WriteEmotionToProfile(profile : PlayerProfile)
+    + ResetAllCalibration()
+    + LoadFromProfile(profile : PlayerProfile)
+}
+
+enum EmotionCalibrationPhase {
+    None
+    Neutral
+    SmileMax
+    AngryMax
+    SadMax
+    SurprisedMax
+    WaitForValidate
+}
+
+EmotionCalibrator --> EmotionCalibrationPhase
+EmotionCalibrator --> PlayerProfile
+
+
+' ============================
+' EMOTION PROCESSING
+' ============================
+
+class EmotionDetector {
+    - smileThreshold : float
+    - angryThreshold : float
+    - sadThreshold : float
+    - surprisedThreshold : float
+
+    - strongestEmotion : string
+    - strongestValue : float
+    - requiredStableFrames : int
+    - lastDetectedEmotion : Emotion
+    - stableFrames : int
+
+    + ClassifyEmotion(emotionScores : Dictionary<string, float>) : Emotion
+}
+
+enum Emotion {
+    Neutral
+    Happy
+    Angry
+    Sad
+    Surprised
+}
+
+EmotionDetector --> Emotion
+
+class EmotionFeatureCalculator {
+    + CalculateEmotionFeatures(normalizedBs : Dictionary<string, float>) : Dictionary<string, float>
+}
+
+class BlendshapeNormalizer {
+    - neutralBase : Dictionary<string, float>
+    - globalMaxBase : Dictionary<string, float>
+
+    + BlendshapeNormalizer(neutralBase : IReadOnlyDictionary<string, float>, globalMaxBase : IReadOnlyDictionary<string, float>)
+    + NormalizeBlendshapes(rawBlendshapes : Dictionary<string, float>) : Dictionary<string, float>
+}
+
+
+' ============================
+' PROFILE SYSTEM
+' ============================
+
+class CalibrationProfileSaver {
+    - earCalibrator : EARCalibrator
+    - emotionCalibrator : EmotionCalibrator
+
+    + SaveProfile(playerName : string)
+}
+
+class ProfileLoader {
+    - earCalibrator : EARCalibrator
+    - emotionCalibrator : EmotionCalibrator
+
+    + ApplyProfile(profile : PlayerProfile)
+}
+
+class ProfileManager {
+    - Folder : string
+
+    + SaveProfile(profile : PlayerProfile)
+    + LoadProfile(name : string) : PlayerProfile
+    + GetAllProfiles() : string[]
+}
+
+class PlayerProfile {
+    + playerName : string
+
+    + neutralEAR : float
+    + blinkThreshold : float
+
+    + neutralBase : SerializableDictionary<string, float>
+    + globalMax : SerializableDictionary<string, float>
+}
+
+class SerializableDictionary<TKey, TValue> {
+    - keys : List<TKey>
+    - values : List<TValue>
+
+    + OnBeforeSerialize()
+    + OnAfterDeserialize()
+}
+
+SerializableDictionary ..|> Dictionary
+SerializableDictionary ..|> ISerializationCallbackReceiver
+
+CalibrationProfileSaver --> EARCalibrator
+CalibrationProfileSaver --> EmotionCalibrator
+CalibrationProfileSaver --> PlayerProfile
+CalibrationProfileSaver --> ProfileManager
+
+ProfileLoader --> EARCalibrator
+ProfileLoader --> EmotionCalibrator
+ProfileLoader --> PlayerProfile
+
+ProfileManager --> PlayerProfile
+
+@enduml

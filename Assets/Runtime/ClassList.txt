@@ -1,0 +1,107 @@
+Modul 1 – Calibration & Profile System 
+
+    EAR‑Kalibrierung
+
+        EARCalibrator
+
+        EARCalculator
+
+        BlinkDetector
+
+    Emotion‑Kalibrierung
+
+        EmotionCalibrator
+
+        EmotionCalibrationPhase (enum)
+
+    Emotion‑Feature‑Pipeline
+
+        EmotionDetector
+
+        EmotionFeatureCalculator
+
+        BlendshapeNormalizer
+
+        Emotion (enum)
+
+    Profile‑System
+
+        CalibrationProfileSaver
+
+        PlayerProfile
+
+        ProfileLoader
+
+        ProfileManager
+
+        SerializableDictionary<TKey, TValue>
+
+Modul 2 – Game Flow & UI Management
+
+    Game Flow
+
+        GameManager
+
+        GameStateManager
+
+        GameState (enum)
+
+    UI‑Manager
+
+        UIManager
+
+    UI‑Screens (GameState‑gesteuert)
+
+        LoadProfileUI
+
+        SaveProfileUI
+
+        CalibrationValidationUI
+
+    Kalibrierungs‑UI
+
+        EmotionCalibrationUI
+
+        EARCalibrationUI
+
+    Live‑UI
+
+        LiveFaceUI
+
+        FaceUIManager
+
+    Gameplay‑UI
+
+        EmotionTestUI
+
+        GameplayHUD
+
+        PauseMenu
+
+        GameOverUI
+
+Modul 3 – Input & Detection
+
+(Diese Klassen wurden referenziert, aber du hast sie mir noch nicht geschickt.)
+
+Du hast erwähnt oder referenziert:
+
+    MediaPipeProvider
+
+    FaceInputManager
+
+    Landmark
+
+⭐ Modul 4 – Conditions & Gameplay
+
+(Diese Klassen wurden erwähnt, aber noch nicht geschickt.)
+
+    BaseCondition
+
+    EmotionHoldCondition
+
+    EmotionConditionUI
+
+    EmotionConditionUIBinder
+
+    ConditionManager (falls vorhanden)

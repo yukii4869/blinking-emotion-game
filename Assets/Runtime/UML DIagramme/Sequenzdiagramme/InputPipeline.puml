@@ -1,0 +1,57 @@
+@startuml inputPipeline
+title Sequence: Input Pipeline (Python → UDP → Provider → FaceInputManager)
+
+actor UnityEngine as Unity
+
+Unity -> PythonProcessService: StartPython(exe, script)
+PythonProcessService -> Python: Launch Mediapipe_sender.py
+
+== Python sends data ==
+
+loop Every frame (Python)
+    Python -> UdpReceiverService: Send JSON (landmarks + blendshapes)
+end
+
+== Unity receives data ==
+
+UdpReceiverService -> UdpReceiverService: ReceiveLoop()
+UdpReceiverService -> FaceData: Parse JSON
+UdpReceiverService -> MediaPipeProvider: Update LatestLandmarks / LatestBlendshapes
+UdpReceiverService -> MediaPipeProvider: PythonReady = true
+
+== Provider updates ==
+
+Unity -> MediaPipeProvider: Update()
+MediaPipeProvider -> GameStateManager: SetState(ProfileSelection) (first time only)
+
+== FaceInputManager processes input ==
+
+Unity -> FaceInputManager: Update()
+
+alt Blink detection ready
+    FaceInputManager -> EARCalculator: ComputeBothEyes(landmarks)
+    EARCalculator --> FaceInputManager: EAR value
+
+    FaceInputManager -> BlinkDetector: UpdateEAR(EAR)
+    BlinkDetector --> FaceInputManager: BlinkStarted / BlinkEnded
+end
+
+alt Emotion detection ready
+    FaceInputManager -> BlendshapeNormalizer: NormalizeBlendshapes(raw)
+    BlendshapeNormalizer --> FaceInputManager: normalized blendshapes
+
+    FaceInputManager -> EmotionFeatureCalculator: CalculateEmotionFeatures()
+    EmotionFeatureCalculator --> FaceInputManager: emotionScores
+
+    FaceInputManager -> EmotionDetector: ClassifyEmotion(scores)
+    EmotionDetector --> FaceInputManager: currentEmotion
+end
+
+== UI / Conditions react ==
+
+FaceInputManager -> LiveFaceUI: UpdateEmotion()
+FaceInputManager -> LiveFaceUI: UpdateBlinkCount()
+
+FaceInputManager -> EmotionHoldCondition: currentEmotion (queried during Hold phase)
+
+@enduml

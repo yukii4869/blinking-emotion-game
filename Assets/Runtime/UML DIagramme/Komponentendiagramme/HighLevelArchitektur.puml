@@ -1,0 +1,49 @@
+@startuml highlevelArchitektur
+title High-Level Architekturübersicht
+
+package "Modul 1\nCalibration & Profile" as M1 {
+    [EARCalibrator]
+    [EmotionCalibrator]
+    [ProfileManager]
+    [ProfileLoader]
+    [CalibrationProfileSaver]
+}
+
+package "Modul 2\nGame Flow & UI" as M2 {
+    [GameStateManager]
+    [UIManager]
+    [LoadProfileUI]
+    [SaveProfileUI]
+    [Calibration UIs]
+    [Gameplay UIs]
+}
+
+package "Modul 3\nInput & Detection" as M3 {
+    [MediaPipeProvider]
+    [FaceInputManager]
+    [BlinkDetector]
+    [EmotionDetector]
+    [EARCalculator]
+    [BlendshapeNormalizer]
+}
+
+package "Modul 4\nGameplay, Interaction & Conditions" as M4 {
+    [PlayerController]
+    [InteractionController]
+    [IInteractable + Items + Doors]
+    [BaseCondition]
+    [EmotionHoldCondition]
+    [Condition UI + Binder]
+}
+
+' --- Beziehungen zwischen Modulen ---
+
+M3 --> M1 : liefert Rohdaten\nfür Kalibrierung
+M3 --> M4 : liefert Emotionen\nund Blinks für Gameplay
+M1 --> M3 : liefert Kalibrierungswerte
+M2 --> M4 : aktiviert Gameplay\nüber GameState
+M4 --> M2 : sendet Events an UI
+M2 --> M1 : startet Kalibrierung
+M2 --> M3 : zeigt Live-Daten an
+
+@enduml

@@ -1,31 +1,58 @@
 using UnityEngine;
-using TMPro;
 using System.Collections.Generic;
 
 public class LoadProfileUI : MonoBehaviour
 {
-    [SerializeField] private TMP_Dropdown profileDropdown;
+    [SerializeField] private List<ProfileSlot> slots;
     [SerializeField] private GameStateManager gsm;
-
-
-    private List<string> profiles;
-
     [SerializeField] private ProfileLoader loader;
 
-    public void OnLoadPressed()
+    private void OnEnable()
     {
-        string selected = profiles[profileDropdown.value];
-        PlayerProfile profile = ProfileManager.LoadProfile(selected);
+        RefreshSlots();
+    }
 
+    private void RefreshSlots()
+    {
+        var profiles = ProfileManager.GetAllProfiles();
+
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (i < profiles.Length)
+            {
+                string name = profiles[i];
+                slots[i].SetupFilled(
+                    name,
+                    onLoad: () => LoadProfile(name),
+                    onDelete: () => DeleteProfile(name)
+                );
+            }
+            else
+            {
+                slots[i].SetupEmpty(
+                    onNew: StartNewCalibration
+                );
+            }
+        }
+    }
+
+    private void LoadProfile(string name)
+    {
+        var profile = ProfileManager.LoadProfile(name);
         loader.ApplyProfile(profile);
-
-        gameObject.SetActive(false);
         gsm.SetState(GameState.Gameplay);
-    }
-        public void OnNewCalibrationPressed()
-    {
         gameObject.SetActive(false);
-        gsm.SetState(GameState.EARCalibration);
     }
 
+    private void DeleteProfile(string name)
+    {
+        ProfileManager.DeleteProfile(name);
+        RefreshSlots();
+    }
+
+    private void StartNewCalibration()
+    {
+        gsm.SetState(GameState.EARCalibration);
+        gameObject.SetActive(false);
+    }
 }
