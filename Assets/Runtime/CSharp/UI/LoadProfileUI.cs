@@ -4,7 +4,6 @@ using System.Collections.Generic;
 public class LoadProfileUI : MonoBehaviour
 {
     [SerializeField] private List<ProfileSlot> slots;
-    [SerializeField] private GameStateManager gsm;
     [SerializeField] private ProfileLoader loader;
 
     private void OnEnable()
@@ -40,7 +39,7 @@ public class LoadProfileUI : MonoBehaviour
     {
         var profile = ProfileManager.LoadProfile(name);
         loader.ApplyProfile(profile);
-        gsm.SetState(GameState.Gameplay);
+        GameStateManager.Instance.SetState(GameState.Gameplay);
         gameObject.SetActive(false);
     }
 
@@ -52,7 +51,7 @@ public class LoadProfileUI : MonoBehaviour
 
     private void StartNewCalibration()
     {
-        gsm.SetState(GameState.EARCalibration);
+        GameStateManager.Instance.SetState(GameState.EARCalibration);
         gameObject.SetActive(false);
     }
 }

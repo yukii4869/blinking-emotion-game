@@ -2,12 +2,10 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private GameStateManager gameStateManager;
     [Header("UI Screens")]
     [SerializeField] private GameObject calibrationBackground;
     [SerializeField] private GameObject pythonLoadingUI;
     [SerializeField] private GameObject profileLoaderUI;
-
     [SerializeField] private GameObject earCalibrationUI;
     [SerializeField] private GameObject emotionCalibrationUI;
     [SerializeField] private GameObject emotionTestUI;
@@ -19,8 +17,8 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        gameStateManager.OnStateChanged += HandleStateChanged;
-        HandleStateChanged(gameStateManager.CurrentState);
+        GameStateManager.Instance.OnStateChanged += HandleStateChanged;
+        HandleStateChanged(GameStateManager.Instance.CurrentState);
     }
     private void HandleStateChanged(GameState state)
     {

@@ -4,8 +4,6 @@ using TMPro;
 public class EARCalibrationUI : MonoBehaviour
 {
     [SerializeField] EARCalibrator earCalibrator;
-    [SerializeField] MediaPipeProvider provider;
-    [SerializeField] GameObject startEARCalibrationButton;
     [SerializeField] private TextMeshProUGUI statusText;
     private void Start()
 {

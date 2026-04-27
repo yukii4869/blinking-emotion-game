@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using System;
 public class EmotionCalibrator : MonoBehaviour
 {
-    [SerializeField] private MediaPipeProvider provider;
-    [SerializeField] private GameStateManager gameStateManager;
     public event Action OnEmotionCalibrationFinished;
-
-
     //Dictionaries
     private Dictionary<string, float> accumulator = new();
     private Dictionary<string, float> neutralBase = new();
@@ -58,12 +54,12 @@ public class EmotionCalibrator : MonoBehaviour
     }
     private void Update()
     {
-        if (!provider.PythonReady || !isCalibrating)
+        if (!MediaPipeProvider.Instance.PythonReady || !isCalibrating)
         {
             return;
         }
 
-        var blendshapes = provider.Blendshapes;
+        var blendshapes = MediaPipeProvider.Instance.Blendshapes;
         if (blendshapes == null || blendshapes.Count == 0)
             return;
 
@@ -128,7 +124,7 @@ public class EmotionCalibrator : MonoBehaviour
         {
             finishedCalibration = true;
             OnEmotionCalibrationFinished?.Invoke();
-            gameStateManager.SetState(GameState.EmotionTest);
+            GameStateManager.Instance.SetState(GameState.EmotionTest);
         }
     }
 

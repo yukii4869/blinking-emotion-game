@@ -4,9 +4,6 @@ using System;
 
 public class EARCalibrator : MonoBehaviour
 {
-    [SerializeField] MediaPipeProvider provider;
-    [SerializeField] private GameStateManager gameStateManager;
-
     private readonly EARCalculator earCalculator = new();
     private bool isCalibrating;
     public bool finishedCalibration = false;
@@ -23,13 +20,13 @@ public class EARCalibrator : MonoBehaviour
 
     private void Update()
     {
-        if (!provider.PythonReady || !isCalibrating)
+        if (!MediaPipeProvider.Instance.PythonReady || !isCalibrating)
         {
             return;
         }
         if (collectedFrames < maxFrames)
         {
-            float currentEAR = earCalculator.ComputeBothEyes(provider.Landmarks);
+            float currentEAR = earCalculator.ComputeBothEyes(MediaPipeProvider.Instance.Landmarks);
             earSamples.Add(currentEAR);
             collectedFrames++;
         }
@@ -61,7 +58,7 @@ public class EARCalibrator : MonoBehaviour
         blinkThreshold = ComputeBlinkThreshold(neutralEAR);
         finishedCalibration = true;
         OnEARCalibrationFinished?.Invoke();
-        gameStateManager.SetState(GameState.EmotionCalibration);
+        GameStateManager.Instance.SetState(GameState.EmotionCalibration);
     }
     private List<float> SortList(List<float> earValues)
     {

@@ -9,14 +9,13 @@ Entscheidet welche Action Map gerade aktiv ist
 public class InputStateHandler : MonoBehaviour
 {
     [SerializeField] private PlayerInput playerInput;
-    [SerializeField] private GameStateManager gameStateManager;
     private void Start()
     {
         // Registriert sich beim GameStateManager
-        gameStateManager.OnStateChanged += HandleStateChanged;
+        GameStateManager.Instance.OnStateChanged += HandleStateChanged;
 
         // Initialer State (falls das Spiel nicht im Gameplay startet)
-        HandleStateChanged(gameStateManager.CurrentState);
+        HandleStateChanged(GameStateManager.Instance.CurrentState);
     }
     private void HandleStateChanged(GameState state)
     {
@@ -42,7 +41,7 @@ public class InputStateHandler : MonoBehaviour
     }
     private void OnDestroy()
     {
-        gameStateManager.OnStateChanged -= HandleStateChanged;
+        GameStateManager.Instance.OnStateChanged -= HandleStateChanged;
     }
 
 }

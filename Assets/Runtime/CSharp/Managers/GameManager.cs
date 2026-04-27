@@ -2,26 +2,24 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private GameStateManager gameStateManager;
-
     private void Start()
     {
-        gameStateManager.SetState(GameState.PythonPreparation);
+        GameStateManager.Instance.SetState(GameState.PythonPreparation);
         // oder GameState.Gameplay, wenn du direkt starten willst
     }
     public void OnPause()
     {
-        if (gameStateManager.CurrentState == GameState.Gameplay)
+        if (GameStateManager.Instance.CurrentState == GameState.Gameplay)
         {
 
-            gameStateManager.SetState(GameState.Pause);
+            GameStateManager.Instance.SetState(GameState.Pause);
         }
     }
     public void OnResume()
     {
-        if (gameStateManager.CurrentState == GameState.Pause)
+        if (GameStateManager.Instance.CurrentState == GameState.Pause)
         {
-            gameStateManager.SetState(GameState.Gameplay);
+            GameStateManager.Instance.SetState(GameState.Gameplay);
         }
 
     }

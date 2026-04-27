@@ -3,7 +3,6 @@ using TMPro;
 
 public class CalibrationValidationUI : MonoBehaviour
 {
-    [SerializeField] GameStateManager gameStateManager;
     [SerializeField] EmotionCalibrator emotionCalibrator;
     [SerializeField] EmotionCalibrationUI emotionCalibrationUI;
 
@@ -12,12 +11,12 @@ public class CalibrationValidationUI : MonoBehaviour
         emotionCalibrator.ResetAllCalibration();
         emotionCalibrationUI.ResetUI();
 
-        gameStateManager.SetState(GameState.EmotionCalibration);
+        GameStateManager.Instance.SetState(GameState.EmotionCalibration);
     }
 
     public void OnAcceptPressed()
     {
-         gameStateManager.SetState(GameState.ProfileSave);
+         GameStateManager.Instance.SetState(GameState.ProfileSave);
 
     }
 }

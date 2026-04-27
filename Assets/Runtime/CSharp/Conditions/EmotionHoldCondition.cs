@@ -9,9 +9,6 @@ public class EmotionHoldCondition : BaseCondition
     public event Action<float> OnProgress; // 0–1
     // OnCompleted & OnFailed kommen aus BaseCondition
 
-    [Header("References")]
-    [SerializeField] private FaceInputManager faceInputManager;
-
     [Header("Settings")]
     [SerializeField] private Emotion targetEmotion;
     [SerializeField] private float preDelay = 1f;
@@ -70,7 +67,7 @@ public class EmotionHoldCondition : BaseCondition
 
     private void UpdateHoldPhase()
     {
-        Emotion current = faceInputManager.currentEmotion;
+        Emotion current = FaceInputManager.Instance.currentEmotion;
 
         if (current != targetEmotion)
         {

@@ -2,14 +2,9 @@ using UnityEngine;
 
 public class FaceInputManager : MonoBehaviour
 {
-    [SerializeField] private MediaPipeProvider provider;
     [SerializeField] private EmotionCalibrator emotionCalibrator;
     [SerializeField] private EARCalibrator eARCalibrator;
-    private readonly EmotionFeatureCalculator emotionFeatureCalculator = new();
-    private readonly EmotionDetector emotionDetector = new();
-    private BlendshapeNormalizer blendshapeNormalizer;
-    private EARCalculator eARCalculator = new();
-    private BlinkDetector blinkDetectorNew;
+    /* Public Variablen */
     public Emotion currentEmotion = Emotion.Neutral;
     public bool blinkStarted = false;
     public bool blinkEnded = false;
@@ -17,6 +12,25 @@ public class FaceInputManager : MonoBehaviour
     public int blinkCount = 0;
     public float currentEAR;
     public float blinkThreshold;
+    
+    /*Erstelle alle Werkzeuge*/
+    private readonly EmotionFeatureCalculator emotionFeatureCalculator = new();
+    private readonly EmotionDetector emotionDetector = new();
+    private BlendshapeNormalizer blendshapeNormalizer;
+    private EARCalculator eARCalculator = new();
+    private BlinkDetector blinkDetectorNew;
+
+    public static FaceInputManager Instance { get; private set; }
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
 
     private void Update()
     {
@@ -39,7 +53,7 @@ public class FaceInputManager : MonoBehaviour
             return;
         }
         // 5. EAR berechnen
-        currentEAR = eARCalculator.ComputeBothEyes(provider.Landmarks);
+        currentEAR = eARCalculator.ComputeBothEyes(MediaPipeProvider.Instance.Landmarks);
 
         // 6. BlinkDetector updaten
         blinkDetectorNew.UpdateEAR(currentEAR);
@@ -69,7 +83,7 @@ public class FaceInputManager : MonoBehaviour
 
         }
         // 1.  Blendshapes holen
-        var rawBlendshapes = provider.Blendshapes;
+        var rawBlendshapes = MediaPipeProvider.Instance.Blendshapes;
         if (rawBlendshapes == null)
         {
             return;

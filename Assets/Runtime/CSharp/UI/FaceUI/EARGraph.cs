@@ -6,7 +6,6 @@ using TMPro;
 
 public class EARGraph : MonoBehaviour
 {
-    [SerializeField] private FaceInputManager faceInputManager;
     [SerializeField] private RawImage graphImage;
     [SerializeField] private int maxSamples = 300;
     [SerializeField] private TextMeshProUGUI[] yAxisLabels;
@@ -48,7 +47,7 @@ public class EARGraph : MonoBehaviour
     {
         if (!visible) return;
 
-        float ear = faceInputManager.currentEAR;
+        float ear = FaceInputManager.Instance.currentEAR;
         smoothedEAR = Mathf.Lerp(smoothedEAR, ear, smoothing);
         ear = smoothedEAR;
 
@@ -76,7 +75,7 @@ public class EARGraph : MonoBehaviour
         float scale = 400f;
 
         // 1. Threshold-Linie zeichnen
-        float threshold = faceInputManager.blinkThreshold;
+        float threshold = FaceInputManager.Instance.blinkThreshold;
         int ty = Mathf.Clamp((int)(threshold * scale), 0, texture.height - 1);
         texture.DrawLine(0, ty, texture.width - 1, ty, Color.red);
 

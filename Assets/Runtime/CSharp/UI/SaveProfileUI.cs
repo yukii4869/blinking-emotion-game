@@ -4,7 +4,6 @@ using TMPro;
 public class SaveProfileUI : MonoBehaviour
 {
     [SerializeField] private CalibrationProfileSaver saver;
-    [SerializeField] private GameStateManager gsm;
     [SerializeField] private TMP_InputField nameField;
 
     public void Show()
@@ -25,7 +24,7 @@ public class SaveProfileUI : MonoBehaviour
 
         saver.SaveProfile(nameField.text);
         Hide();
-        gsm.SetState(GameState.Gameplay);
+        GameStateManager.Instance.SetState(GameState.Gameplay);
     }
 
     public void OnCancelPressed()
