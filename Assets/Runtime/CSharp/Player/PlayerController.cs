@@ -4,10 +4,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
-    private Vector3 knockbackVelocity;
-    public float knockbackStrength = 8f;
-    public float knockbackDecay = 10f;
-    public float knockbackUpwardStrength = 3f;
+
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
     public float gravity = -9.81f;
@@ -17,6 +14,10 @@ public class PlayerController : MonoBehaviour
     public Transform cameraTransform;
     public float mouseSensitivity = 1.5f;
     public float maxLookAngle = 80f;
+
+    private Vector3 knockbackVelocity;
+    public float knockbackDecay = 10f;
+
 
     private CharacterController controller;
     private Vector2 moveInput;
@@ -124,17 +125,14 @@ public class PlayerController : MonoBehaviour
         cameraTransform.localRotation = Quaternion.Euler(cameraPitch, 0f, 0f);
     }
 
-    public void ApplyKnockback(Vector3 direction)
-{
-    direction.Normalize();
+    public void ApplyKnockback(Vector3 direction, float strength, float upward)
+    {
+        direction.Normalize();
 
-    // Horizontaler Knockback
-    Vector3 horizontal = new Vector3(direction.x, 0, direction.z) * knockbackStrength;
+        Vector3 horizontal = new Vector3(direction.x, 0, direction.z) * strength;
+        Vector3 vertical = Vector3.up * upward;
 
-    // Vertikaler Knockback
-    Vector3 upward = Vector3.up * knockbackUpwardStrength;
-
-    knockbackVelocity = horizontal + upward;
-}
+        knockbackVelocity = horizontal + vertical;
+    }
 
 }
