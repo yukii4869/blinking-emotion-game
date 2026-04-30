@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class PlayerVision : MonoBehaviour
 {
-    [SerializeField] private Camera cam;
+
+    public bool isLooking;
     public static PlayerVision Instance { get; private set; }
     private void Awake()
     {
@@ -16,19 +17,65 @@ public class PlayerVision : MonoBehaviour
     }
     public bool IsLookingAt(Transform target)
     {
-        Vector3 viewportPos = cam.WorldToViewportPoint(target.position);
+        Camera cam = Camera.main;
 
-        // Wenn Z < 0 → Objekt ist hinter der Kamera
-        if (viewportPos.z < 0)
+        Vector3 vp = cam.WorldToViewportPoint(target.position);
+
+        // 1) Gegner im Bild?
+        if (vp.z < 0 || vp.x < 0 || vp.x > 1 || vp.y < 0 || vp.y > 1)
+        {
+            isLooking = false;
+            Debug.Log("Nicht in View Space");
             return false;
+        }
 
-        // Wenn X oder Y außerhalb von 0–1 → Objekt ist nicht im Bild
-        if (viewportPos.x < 0 || viewportPos.x > 1)
-            return false;
+        // 2) Winkel prüfen
+        Vector3 dir = (target.position - cam.transform.position).normalized;
+        float angle = Vector3.Angle(cam.transform.forward, dir);
+        isLooking = (angle < 30f);
+        Debug.Log("Angle nicht richtig");
 
-        if (viewportPos.y < 0 || viewportPos.y > 1)
-            return false;
-
-        return true;
+        return angle < 30f;
     }
+    public bool IsLookingAttest(Transform target)
+{
+    Camera cam = Camera.main;
+
+    Collider col = target.GetComponent<Collider>();
+    if (col == null)
+        return false;
+
+    Bounds b = col.bounds;
+
+    // Wichtige Punkte des Colliders
+    Vector3[] points =
+    {
+        b.center,
+        b.min,
+        b.max,
+        new Vector3(b.min.x, b.center.y, b.center.z),
+        new Vector3(b.max.x, b.center.y, b.center.z),
+        new Vector3(b.center.x, b.min.y, b.center.z),
+        new Vector3(b.center.x, b.max.y, b.center.z),
+        new Vector3(b.center.x, b.center.y, b.min.z),
+        new Vector3(b.center.x, b.center.y, b.max.z)
+    };
+
+    foreach (var p in points)
+    {
+        Vector3 vp = cam.WorldToViewportPoint(p);
+
+        // Punkt hinter der Kamera → ignorieren
+        if (vp.z < 0.1f)
+            continue;
+
+        // Punkt im Bild?
+        if (vp.x > 0f && vp.x < 1f && vp.y > 0f && vp.y < 1f)
+            return true;
+    }
+
+    return false;
+}
+
+
 }

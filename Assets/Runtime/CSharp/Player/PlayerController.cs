@@ -4,6 +4,10 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
+    private Vector3 knockbackVelocity;
+    public float knockbackStrength = 8f;
+    public float knockbackDecay = 10f;
+    public float knockbackUpwardStrength = 3f;
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
     public float gravity = -9.81f;
@@ -85,14 +89,24 @@ public class PlayerController : MonoBehaviour
         Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
         move *= moveSpeed;
 
+        // Gravity
         if (controller.isGrounded && verticalVelocity < 0)
             verticalVelocity = -2f;
 
         verticalVelocity += gravity * Time.deltaTime;
         move.y = verticalVelocity;
 
+        //  Knockback hinzufügen
+        if (knockbackVelocity.magnitude > 0.1f)
+        {
+            move += knockbackVelocity;
+            knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, knockbackDecay * Time.deltaTime);
+        }
+
+        // Finaler Move
         controller.Move(move * Time.deltaTime);
     }
+
 
     // -----------------------------
     // Camera
@@ -109,4 +123,18 @@ public class PlayerController : MonoBehaviour
 
         cameraTransform.localRotation = Quaternion.Euler(cameraPitch, 0f, 0f);
     }
+
+    public void ApplyKnockback(Vector3 direction)
+{
+    direction.Normalize();
+
+    // Horizontaler Knockback
+    Vector3 horizontal = new Vector3(direction.x, 0, direction.z) * knockbackStrength;
+
+    // Vertikaler Knockback
+    Vector3 upward = Vector3.up * knockbackUpwardStrength;
+
+    knockbackVelocity = horizontal + upward;
+}
+
 }

@@ -2,6 +2,10 @@ using UnityEngine;
 
 public abstract class EnemyBase : MonoBehaviour
 {
+    public virtual void Start()
+    {
+        
+    }
     protected virtual void Update()
     {
         // 1) Gegner nur im Gameplay aktiv
