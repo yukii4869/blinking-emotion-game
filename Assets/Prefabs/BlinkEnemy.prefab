@@ -252,7 +252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc0643fa47130b5469213ccf1a4001d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BlinkEnemy
-  stepDistance: 1
+  stepDistance: 2
   moveCooldown: 0.5
   stopDistance: 2.3
   attackDistance: 2
