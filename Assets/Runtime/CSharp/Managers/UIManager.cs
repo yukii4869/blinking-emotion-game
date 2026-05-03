@@ -49,7 +49,7 @@ public class UIManager : MonoBehaviour
                 break;
 
             case GameState.EARCalibration:
-                earCalibrationUI.SetActive(true);
+                earCalibrationUI.SetActive(true); 
                 calibrationBackground.SetActive(true);
                 liveFaceUI.SetActive(true);
                 break;

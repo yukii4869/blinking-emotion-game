@@ -51,6 +51,7 @@ public class LoadProfileUI : MonoBehaviour
 
     private void StartNewCalibration()
     {
+        Debug.Log("New Calibration");
         GameStateManager.Instance.SetState(GameState.EARCalibration);
         gameObject.SetActive(false);
     }
