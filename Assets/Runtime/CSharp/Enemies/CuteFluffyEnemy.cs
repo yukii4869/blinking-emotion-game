@@ -13,9 +13,10 @@ public class CuteFluffyEnemy : EnemyBase
     [SerializeField] private Animator animator;
 
     [Header("Flee Settings")]
-    [SerializeField] private float fleeDistance = 8.0f;
+    [SerializeField] private float fleeDistance = 5.0f;
     [SerializeField] private float fleeSpeed = 4.0f;
     [SerializeField] private float noiseLoudness = 1.0f;
+
 
 
     private FluffyState currentState = FluffyState.Approach;
@@ -33,7 +34,7 @@ public class CuteFluffyEnemy : EnemyBase
                 break;
 
             case FluffyState.Flee:
-                TickFlee(angry);
+                Flee(angry);
                 Debug.Log("Flee");
                 break;
         }
@@ -43,36 +44,36 @@ public class CuteFluffyEnemy : EnemyBase
     // APPROACH
     // -----------------------------
     private void TickApproach(bool angry)
-{
-    if (angry)
     {
-        currentState = FluffyState.Flee;
-        animator.SetBool("Bounce", false);
-        return;
-    }
+        if (angry)
+        {
+            currentState = FluffyState.Flee;
+            animator.SetBool("Bounce", false);
+            return;
+        }
 
-    agent.speed = stats.moveSpeed;
+        agent.speed = stats.moveSpeed;
 
-    float dist = Vector3.Distance(transform.position, player.transform.position);
+        float dist = Vector3.Distance(transform.position, player.transform.position);
 
-    if (dist > stats.stopDistance)
-    {
-        agent.SetDestination(player.transform.position);
-        animator.SetBool("Bounce", false);
+        if (dist > stats.stopDistance)
+        {
+            agent.SetDestination(player.transform.position);
+            animator.SetBool("Bounce", false);
+        }
+        else
+        {
+            agent.ResetPath();
+            animator.SetBool("Bounce", true);
+            animator.SetInteger("BounceType", Random.Range(0, 3));
+        }
     }
-    else
-    {
-        agent.ResetPath();
-        animator.SetBool("Bounce", true);
-        animator.SetInteger("BounceType", Random.Range(0, 3));
-    }
-}
 
 
     // -----------------------------
     // FLEE
     // -----------------------------
-    private void TickFlee(bool angry)
+    private void Flee(bool angry)
     {
         if (!angry)
         {
@@ -82,8 +83,13 @@ public class CuteFluffyEnemy : EnemyBase
             return;
         }
         animator.SetBool("Bounce", false);
-
         agent.speed = fleeSpeed;
+        float dist = Vector3.Distance(transform.position, player.transform.position);
+        if (dist >= fleeDistance)
+        {
+            agent.ResetPath();
+            return; // <-- WICHTIG
+        }
 
         Vector3 dir = (transform.position - player.transform.position).normalized;
 
@@ -97,5 +103,4 @@ public class CuteFluffyEnemy : EnemyBase
         else
             agent.SetDestination(transform.position + dir * 3f);
     }
-
 }

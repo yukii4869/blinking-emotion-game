@@ -648,10 +648,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CuteFluffyEnemy
   stats: {fileID: 11400000, guid: 782577ec2a49e1e44995d11bd5f234e4, type: 2}
-  fleeDistance: 8
+  model: {fileID: 5215404127859234943}
+  animator: {fileID: 0}
+  fleeDistance: 10
   fleeSpeed: 4
   noiseLoudness: 1
-  model: {fileID: 5215404127859234943}
 --- !u!135 &3850511128128664494
 SphereCollider:
   m_ObjectHideFlags: 0
