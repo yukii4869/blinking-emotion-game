@@ -124,7 +124,7 @@ public class EmotionCalibrator : MonoBehaviour
         {
             finishedCalibration = true;
             OnEmotionCalibrationFinished?.Invoke();
-            GameStateManager.Instance.SetState(GameState.EmotionTest);
+            CalibrationStateManager.Instance.SetState(CalibrationState.EmotionTest);
         }
     }
 

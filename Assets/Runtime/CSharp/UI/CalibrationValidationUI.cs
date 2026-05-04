@@ -11,12 +11,12 @@ public class CalibrationValidationUI : MonoBehaviour
         emotionCalibrator.ResetAllCalibration();
         emotionCalibrationUI.ResetUI();
 
-        GameStateManager.Instance.SetState(GameState.EmotionCalibration);
+        CalibrationStateManager.Instance.SetState(CalibrationState.EmotionCalibration);
     }
 
     public void OnAcceptPressed()
     {
-         GameStateManager.Instance.SetState(GameState.ProfileSave);
+         CalibrationStateManager.Instance.SetState(CalibrationState.ProfileSave);
 
     }
 }

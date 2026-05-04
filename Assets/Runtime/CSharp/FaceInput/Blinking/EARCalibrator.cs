@@ -58,7 +58,7 @@ public class EARCalibrator : MonoBehaviour
         blinkThreshold = ComputeBlinkThreshold(neutralEAR);
         finishedCalibration = true;
         OnEARCalibrationFinished?.Invoke();
-        GameStateManager.Instance.SetState(GameState.EmotionCalibration);
+        CalibrationStateManager.Instance.SetState(CalibrationState.EmotionCalibration);
     }
     private List<float> SortList(List<float> earValues)
     {

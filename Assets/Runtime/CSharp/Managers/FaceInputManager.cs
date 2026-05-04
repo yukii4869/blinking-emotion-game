@@ -1,9 +1,9 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FaceInputManager : MonoBehaviour
 {
-    [SerializeField] private EmotionCalibrator emotionCalibrator;
-    [SerializeField] private EARCalibrator eARCalibrator;
+    public FaceInputMode mode = FaceInputMode.Gameplay;
     /* Public Variablen */
     public Emotion currentEmotion = Emotion.Neutral;
     public bool blinkStarted = false;
@@ -12,13 +12,18 @@ public class FaceInputManager : MonoBehaviour
     public int blinkCount = 0;
     public float currentEAR;
     public float blinkThreshold;
-    
+
     /*Erstelle alle Werkzeuge*/
     private readonly EmotionFeatureCalculator emotionFeatureCalculator = new();
     private readonly EmotionDetector emotionDetector = new();
     private BlendshapeNormalizer blendshapeNormalizer;
     private EARCalculator eARCalculator = new();
-    private BlinkDetector blinkDetectorNew;
+    private BlinkDetector blinkDetector;
+
+    private PlayerProfile profile;
+    [Header("Calibration References")]
+    [SerializeField] private EARCalibrator earCalibrator;
+    [SerializeField] private EmotionCalibrator emotionCalibrator;
 
     public static FaceInputManager Instance { get; private set; }
     private void Awake()
@@ -30,41 +35,74 @@ public class FaceInputManager : MonoBehaviour
         }
 
         Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+
+    private void OnEnable()
+    {
+        string scene = SceneManager.GetActiveScene().name;
+
+        if (scene == "CalibrationScene")
+            mode = FaceInputMode.Calibration;
+        else
+            mode = FaceInputMode.Gameplay;
+    }
+    private void Start()
+    {
+        if (mode == FaceInputMode.Gameplay)
+        {
+            profile = ActiveProfile.Instance.CurrentProfile;
+
+            blinkThreshold = profile.blinkThreshold;
+
+            blinkDetector = new BlinkDetector(profile.blinkThreshold);
+
+            blendshapeNormalizer = new BlendshapeNormalizer(
+                profile.neutralBase,
+                profile.globalMax
+            );
+        }
     }
 
     private void Update()
     {
-        InitializeBlinkDetectorIfReady();
+        if (mode == FaceInputMode.Calibration)
+        {
+
+            if (!earCalibrator.finishedCalibration || !emotionCalibrator.finishedCalibration)
+                return;
+
+            if (blinkDetector == null)
+            {
+                blinkThreshold = earCalibrator.blinkThreshold;
+                blinkDetector = new BlinkDetector(blinkThreshold);
+            }
+
+            if (blendshapeNormalizer == null)
+            {
+                blendshapeNormalizer = new BlendshapeNormalizer(
+                    emotionCalibrator.GetNeutralBase(),
+                    emotionCalibrator.GetGobalMax()
+                );
+            }
+        }
         ProcessBlinkDetection();
         ProcessEmotionDetection();
     }
-    private void InitializeBlinkDetectorIfReady()
-    {
-        if (blinkDetectorNew == null && eARCalibrator.finishedCalibration)
-        {
-            blinkThreshold = eARCalibrator.blinkThreshold;
-            blinkDetectorNew = new BlinkDetector(blinkThreshold);
-        }
-    }
     private void ProcessBlinkDetection()
     {
-        if (!eARCalibrator.finishedCalibration || blinkDetectorNew == null)
-        {
-            return;
-        }
-        // 5. EAR berechnen
         currentEAR = eARCalculator.ComputeBothEyes(MediaPipeProvider.Instance.Landmarks);
 
-        // 6. BlinkDetector updaten
-        blinkDetectorNew.UpdateEAR(currentEAR);
-        if (blinkDetectorNew.BlinkStartedThisFrame)
+        blinkDetector.UpdateEAR(currentEAR);
+        if (blinkDetector.BlinkStartedThisFrame)
         {
             blinkCount++;
             blinkEnded = false;
             blinkStarted = true;
             isBlinking = true;
         }
-        if (blinkDetectorNew.BlinkEndedThisFrame)
+        if (blinkDetector.BlinkEndedThisFrame)
         {
             blinkStarted = false;
             blinkEnded = true;
@@ -73,15 +111,6 @@ public class FaceInputManager : MonoBehaviour
     }
     private void ProcessEmotionDetection()
     {
-        if (!emotionCalibrator.finishedCalibration || !eARCalibrator.finishedCalibration)
-        {
-            return;
-        }
-        if (blendshapeNormalizer == null)
-        {
-            blendshapeNormalizer = new BlendshapeNormalizer(emotionCalibrator.GetNeutralBase(), emotionCalibrator.GetGobalMax());
-
-        }
         // 1.  Blendshapes holen
         var rawBlendshapes = MediaPipeProvider.Instance.Blendshapes;
         if (rawBlendshapes == null)
@@ -98,3 +127,10 @@ public class FaceInputManager : MonoBehaviour
         currentEmotion = emotionDetector.ClassifyEmotion(emotionScores);
     }
 }
+public enum FaceInputMode
+{
+    Calibration,
+    Gameplay
+}
+
+

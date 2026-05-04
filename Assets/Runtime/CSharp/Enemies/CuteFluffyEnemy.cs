@@ -17,19 +17,47 @@ public class CuteFluffyEnemy : EnemyBase
     [SerializeField] private float fleeSpeed = 4.0f;
     [SerializeField] private float noiseLoudness = 1.0f;
 
-
-
     private FluffyState currentState = FluffyState.Approach;
-    private float calmTimer = 0f;
-
-    public override void TickBehavior()
+    public override void Start()
     {
+        base.Start();
+        agent.updateRotation = false;
+    }
+    // Schauen immer Spieler an
+    private void LateUpdate()
+    {
+        Vector3 desiredDir;
+
+        // Wenn der Agent sich bewegt → in Bewegungsrichtung drehen
+        if (agent.velocity.sqrMagnitude > 0.1f)
+        {
+            desiredDir = agent.velocity.normalized;
+        }
+        else
+        {
+            // Wenn er steht → zum Spieler drehen
+            desiredDir = (player.transform.position - transform.position).normalized;
+        }
+
+        desiredDir.y = 0;
+
+        if (desiredDir.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(desiredDir);
+            model.rotation = Quaternion.Slerp(model.rotation, targetRot, Time.deltaTime * 8f);
+        }
+    }
+
+
+    public override void UpdateBehavior()
+    {
+        base.UpdateBehavior();
         bool angry = FaceInputManager.Instance.currentEmotion == Emotion.Angry;
 
         switch (currentState)
         {
             case FluffyState.Approach:
-                TickApproach(angry);
+                Approach(angry);
                 Debug.Log("Approach");
                 break;
 
@@ -43,7 +71,7 @@ public class CuteFluffyEnemy : EnemyBase
     // -----------------------------
     // APPROACH
     // -----------------------------
-    private void TickApproach(bool angry)
+    private void Approach(bool angry)
     {
         if (angry)
         {
@@ -63,6 +91,8 @@ public class CuteFluffyEnemy : EnemyBase
         }
         else
         {
+
+
             agent.ResetPath();
             animator.SetBool("Bounce", true);
             animator.SetInteger("BounceType", Random.Range(0, 3));

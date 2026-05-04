@@ -5,7 +5,7 @@ public class CalibrationProfileSaver : MonoBehaviour
     [SerializeField] private EARCalibrator earCalibrator;
     [SerializeField] private EmotionCalibrator emotionCalibrator;
 
-    public void SaveProfile(string playerName)
+    public PlayerProfile SaveProfile(string playerName)
     {
         PlayerProfile profile = new PlayerProfile();
         profile.playerName = playerName;
@@ -14,5 +14,6 @@ public class CalibrationProfileSaver : MonoBehaviour
         emotionCalibrator.WriteEmotionToProfile(profile);
 
         ProfileManager.SaveProfile(profile);
+         return profile;
     }
 }

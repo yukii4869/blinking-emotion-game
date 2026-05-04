@@ -17,8 +17,9 @@ public class BlinkEnemy : EnemyBase
         agent.updateRotation = false;
     }
 
-    public override void TickBehavior()
+    public override void UpdateBehavior()
     {
+        base.UpdateBehavior();
         float dist = Vector3.Distance(transform.position, Camera.main.transform.position);
         bool blinking = FaceInputManager.Instance.isBlinking;
         bool looking = PlayerVision.Instance.IsInView(transform);

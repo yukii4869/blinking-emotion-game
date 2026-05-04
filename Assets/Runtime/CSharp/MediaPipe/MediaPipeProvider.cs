@@ -29,6 +29,7 @@ public class MediaPipeProvider : MonoBehaviour
         }
 
         Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
@@ -50,7 +51,7 @@ public class MediaPipeProvider : MonoBehaviour
         PythonReady = receiver.PythonReady;
         if (PythonReady && !activated)
         {
-            GameStateManager.Instance.SetState(GameState.ProfileSelection);
+            CalibrationStateManager.Instance.SetState(CalibrationState.ProfileSelection);
             activated = true;
         }
     }

@@ -28,26 +28,24 @@ public abstract class EnemyBase : MonoBehaviour
     }
 
     // Jede Gegnerart implementiert ihre eigene Logik
-    private void UpdateBehavior()
-{
-    if (GameStateManager.Instance.CurrentState == GameState.Pause)
+    public virtual void UpdateBehavior()
     {
-        agent.isStopped = true;
-        return;
+        if (GameStateManager.Instance.CurrentState == GameState.Pause)
+        {
+            agent.isStopped = true;
+            return;
+        }
+
+        if (GameStateManager.Instance.CurrentState != GameState.Gameplay)
+        {
+            agent.isStopped = true;
+            return;
+        }
+
+        agent.isStopped = false;
     }
 
-    if (GameStateManager.Instance.CurrentState != GameState.Gameplay)
-    {
-        agent.isStopped = true;
-        return;
-    }
 
-    agent.isStopped = false;
-
-    TickBehavior();
-}
-
-    public virtual void TickBehavior() { }
     protected virtual void TryAttack()
     {
         float dist = Vector3.Distance(transform.position, player.transform.position);

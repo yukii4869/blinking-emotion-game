@@ -10,8 +10,9 @@ public class SmileSwarmEnemy : EnemyBase
         player = FindFirstObjectByType<PlayerController>();
     }
 
-    public override void TickBehavior()
+    public override void UpdateBehavior()
     {
+        base.UpdateBehavior();
         bool smiling = FaceInputManager.Instance.currentEmotion == Emotion.Happy;
         float dist = Vector3.Distance(transform.position, player.transform.position);
 

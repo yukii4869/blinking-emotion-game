@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class LoadProfileUI : MonoBehaviour
 {
@@ -39,7 +40,8 @@ public class LoadProfileUI : MonoBehaviour
     {
         var profile = ProfileManager.LoadProfile(name);
         loader.ApplyProfile(profile);
-        GameStateManager.Instance.SetState(GameState.Gameplay);
+        ActiveProfile.Instance.SetProfile(profile);
+        SceneManager.LoadScene("GameScene");
         gameObject.SetActive(false);
     }
 
@@ -52,7 +54,7 @@ public class LoadProfileUI : MonoBehaviour
     private void StartNewCalibration()
     {
         Debug.Log("New Calibration");
-        GameStateManager.Instance.SetState(GameState.EARCalibration);
+        CalibrationStateManager.Instance.SetState(CalibrationState.EARCalibration);
         gameObject.SetActive(false);
     }
 }

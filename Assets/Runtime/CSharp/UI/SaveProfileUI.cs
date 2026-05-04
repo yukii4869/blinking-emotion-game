@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class SaveProfileUI : MonoBehaviour
 {
@@ -22,9 +23,10 @@ public class SaveProfileUI : MonoBehaviour
         if (string.IsNullOrWhiteSpace(nameField.text))
             return;
 
-        saver.SaveProfile(nameField.text);
+        var profile = saver.SaveProfile(nameField.text);
+        ActiveProfile.Instance.SetProfile(profile);
         Hide();
-        GameStateManager.Instance.SetState(GameState.Gameplay);
+        SceneManager.LoadScene("GameScene");
     }
 
     public void OnCancelPressed()
