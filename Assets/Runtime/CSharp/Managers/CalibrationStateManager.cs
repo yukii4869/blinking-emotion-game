@@ -16,6 +16,7 @@ public class CalibrationStateManager : MonoBehaviour
 
         Instance = this;
     }
+    
     public void SetState(CalibrationState newState)
     {
         Debug.Log(CurrentState);

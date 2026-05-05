@@ -21,7 +21,7 @@ public class BlinkEnemy : EnemyBase
     {
         base.UpdateBehavior();
         float dist = Vector3.Distance(transform.position, Camera.main.transform.position);
-        bool blinking = FaceInputManager.Instance.isBlinking;
+        bool blinking = GameplayFaceInput.Instance.isBlinking;
         bool looking = PlayerVision.Instance.IsInView(transform);
 
         // 1) Stun blockiert alles

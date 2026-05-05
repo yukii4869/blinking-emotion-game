@@ -1,11 +1,10 @@
 using UnityEngine;
 
-public class CalibrationManger : MonoBehaviour
+public class CalibrationUIManger : MonoBehaviour
 {
     [Header("UI Screens")]
     [SerializeField] private GameObject calibrationBackground;
     [SerializeField] private GameObject pythonLoadingUI;
-    [SerializeField] private GameObject profileLoaderUI;
     [SerializeField] private GameObject earCalibrationUI;
     [SerializeField] private GameObject emotionCalibrationUI;
     [SerializeField] private GameObject emotionTestUI;
@@ -15,6 +14,7 @@ public class CalibrationManger : MonoBehaviour
     private void Start()
     {
         CalibrationStateManager.Instance.OnStateChanged += HandleStateChanged;
+        CalibrationStateManager.Instance.SetState(CalibrationState.PythonPreparation);
         HandleStateChanged(CalibrationStateManager.Instance.CurrentState);
     }
     private void HandleStateChanged(CalibrationState state)
@@ -22,7 +22,6 @@ public class CalibrationManger : MonoBehaviour
         // Alles aus
         calibrationBackground.SetActive(false);
         pythonLoadingUI.SetActive(false);
-        profileLoaderUI.SetActive(false);
         earCalibrationUI.SetActive(false);
         emotionCalibrationUI.SetActive(false);
         emotionTestUI.SetActive(false);
@@ -35,11 +34,6 @@ public class CalibrationManger : MonoBehaviour
             case CalibrationState.PythonPreparation:
                 pythonLoadingUI.SetActive(true);
                 calibrationBackground.SetActive(true);
-                break;
-
-            case CalibrationState.ProfileSelection:
-                calibrationBackground.SetActive(true);
-                profileLoaderUI.SetActive(true);
                 break;
 
             case CalibrationState.EARCalibration:

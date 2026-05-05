@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 public class LoadProfileUI : MonoBehaviour
 {
     [SerializeField] private List<ProfileSlot> slots;
-    [SerializeField] private ProfileLoader loader;
 
     private void OnEnable()
     {
@@ -39,10 +38,9 @@ public class LoadProfileUI : MonoBehaviour
     private void LoadProfile(string name)
     {
         var profile = ProfileManager.LoadProfile(name);
-        loader.ApplyProfile(profile);
         ActiveProfile.Instance.SetProfile(profile);
-        SceneManager.LoadScene("GameScene");
-        gameObject.SetActive(false);
+        MediaPipeProvider.Instance.StartMediaPipe();
+        GameSceneManager.Instance.LoadGame();
     }
 
     private void DeleteProfile(string name)
@@ -53,8 +51,8 @@ public class LoadProfileUI : MonoBehaviour
 
     private void StartNewCalibration()
     {
-        Debug.Log("New Calibration");
-        CalibrationStateManager.Instance.SetState(CalibrationState.EARCalibration);
+        MediaPipeProvider.Instance.StartMediaPipe();
+        GameSceneManager.Instance.LoadCalibration();
         gameObject.SetActive(false);
     }
 }

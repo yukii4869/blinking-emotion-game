@@ -13,7 +13,7 @@ public class SmileSwarmEnemy : EnemyBase
     public override void UpdateBehavior()
     {
         base.UpdateBehavior();
-        bool smiling = FaceInputManager.Instance.currentEmotion == Emotion.Happy;
+        bool smiling = GameplayFaceInput.Instance.currentEmotion == Emotion.Happy;
         float dist = Vector3.Distance(transform.position, player.transform.position);
 
         // 1) Spieler lächelt → Idle

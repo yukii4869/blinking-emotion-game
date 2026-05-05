@@ -16,6 +16,8 @@ public class EARGraph : MonoBehaviour
 
     private Texture2D texture;
     private bool visible = false;
+    private float ear;
+    private float threshold;
 
     private InputAction toggleAction;
 
@@ -46,8 +48,16 @@ public class EARGraph : MonoBehaviour
     void Update()
     {
         if (!visible) return;
+        // Abfrage in welcher Szene wir uns quasi befinden
+        if(CalibrationFaceInput.Instance != null)
+        {
+            ear = CalibrationFaceInput.Instance.currentEAR;
+        }
+        if(GameplayFaceInput.Instance != null)
+        {
+            ear = GameplayFaceInput.Instance.currentEAR;
+        }
 
-        float ear = FaceInputManager.Instance.currentEAR;
         smoothedEAR = Mathf.Lerp(smoothedEAR, ear, smoothing);
         ear = smoothedEAR;
 
@@ -75,7 +85,14 @@ public class EARGraph : MonoBehaviour
         float scale = 400f;
 
         // 1. Threshold-Linie zeichnen
-        float threshold = FaceInputManager.Instance.blinkThreshold;
+        if(CalibrationFaceInput.Instance != null)
+        {
+            threshold = CalibrationFaceInput.Instance.blinkThreshold;
+        }
+        if(GameplayFaceInput.Instance != null)
+        {
+            threshold = GameplayFaceInput.Instance.blinkThreshold;
+        }
         int ty = Mathf.Clamp((int)(threshold * scale), 0, texture.height - 1);
         texture.DrawLine(0, ty, texture.width - 1, ty, Color.red);
 

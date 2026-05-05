@@ -19,6 +19,7 @@ public class MediaPipeProvider : MonoBehaviour
     public bool HasValidLandmarks => Landmarks != null && Landmarks.Length >= 381;
     public bool HasValidBlendshapes => Blendshapes != null;
     public static MediaPipeProvider Instance { get; private set; }
+    public bool IsRunning { get; private set; }
 
     private void Awake()
     {
@@ -32,31 +33,61 @@ public class MediaPipeProvider : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    private void Start()
-    {
-        // Python starten
-        python = new PythonProcessService();
-        python.StartPython(pythonExe, scriptPath);
-
-        // UDP Receiver starten
-        receiver = new UdpReceiverService();
-        receiver.Start(5005);
-    }
-
     private void Update()
     {
+        if (!IsRunning)
+            return;
         // Daten aus dem UDP-Service holen
         Landmarks = receiver.LatestLandmarks;
         Blendshapes = receiver.LatestBlendshapes;
         PythonReady = receiver.PythonReady;
         if (PythonReady && !activated)
         {
-            CalibrationStateManager.Instance.SetState(CalibrationState.ProfileSelection);
+            if(CalibrationStateManager.Instance!= null)
+            {
+                CalibrationStateManager.Instance.SetState(CalibrationState.EARCalibration);
+            }
+            if(GameStateManager.Instance != null)
+            {
+                
+                GameStateManager.Instance.SetState(GameState.Gameplay);
+            }
+            
             activated = true;
         }
     }
+    public void StartMediaPipe()
+    {
+        if (python == null)
+            python = new PythonProcessService();
 
-    private void OnDestroy()
+        python.StartPython(pythonExe, scriptPath);
+
+        if (receiver == null)
+            receiver = new UdpReceiverService();
+
+        receiver.Start(5005);
+
+        IsRunning = true;
+    }
+
+    public void StopMediaPipe()
+    {
+        receiver?.Stop();
+        python?.StopPython();
+
+        receiver = null;
+        python = null;
+
+        Landmarks = null;
+        Blendshapes = null;
+        PythonReady = false;
+        activated = false;
+
+        IsRunning = false;
+    }
+
+    public void OnDestroy()
     {
         receiver?.Stop();
         python?.StopPython();

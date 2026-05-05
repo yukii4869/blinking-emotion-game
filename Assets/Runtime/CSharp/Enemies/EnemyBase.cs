@@ -18,7 +18,7 @@ public abstract class EnemyBase : MonoBehaviour
     protected virtual void Update()
     {
         /// Warten bis Systeme bereit sind
-        if (FaceInputManager.Instance == null ||
+        if (GameplayFaceInput.Instance == null ||
             PlayerVision.Instance == null ||
             MediaPipeProvider.Instance == null)
             return;

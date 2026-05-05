@@ -52,18 +52,16 @@ public class CuteFluffyEnemy : EnemyBase
     public override void UpdateBehavior()
     {
         base.UpdateBehavior();
-        bool angry = FaceInputManager.Instance.currentEmotion == Emotion.Angry;
+        bool angry = GameplayFaceInput.Instance.currentEmotion == Emotion.Angry;
 
         switch (currentState)
         {
             case FluffyState.Approach:
                 Approach(angry);
-                Debug.Log("Approach");
                 break;
 
             case FluffyState.Flee:
                 Flee(angry);
-                Debug.Log("Flee");
                 break;
         }
     }

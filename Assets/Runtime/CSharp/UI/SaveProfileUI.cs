@@ -26,7 +26,7 @@ public class SaveProfileUI : MonoBehaviour
         var profile = saver.SaveProfile(nameField.text);
         ActiveProfile.Instance.SetProfile(profile);
         Hide();
-        SceneManager.LoadScene("GameScene");
+        GameSceneManager.Instance.LoadGame();
     }
 
     public void OnCancelPressed()

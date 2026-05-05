@@ -3,9 +3,17 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuUI : MonoBehaviour
 {
-    public void PlayGame()
+    [SerializeField] private GameObject mainMenuUI;
+    [SerializeField] private GameObject loadProfileUI;
+    private void Start()
     {
-        SceneManager.LoadScene("GameScene"); // Name deiner Spielszene
+        mainMenuUI.SetActive(true);
+        loadProfileUI.SetActive(false);
+    }
+    public void StartButton()
+    {
+        mainMenuUI.SetActive(false);
+        loadProfileUI.SetActive(true);
     }
 
     public void OpenSettings()

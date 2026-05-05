@@ -67,7 +67,7 @@ public class EmotionHoldCondition : BaseCondition
 
     private void UpdateHoldPhase()
     {
-        Emotion current = FaceInputManager.Instance.currentEmotion;
+        Emotion current = GameplayFaceInput.Instance.currentEmotion;
 
         if (current != targetEmotion)
         {
