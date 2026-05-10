@@ -1,42 +1,76 @@
 using UnityEngine;
-using UnityEngine.AI;
 
 public class SmileSwarmEnemy : EnemyBase
 {
-
-    public override void Start()
-    {
-        base.Start();
-        player = FindFirstObjectByType<PlayerController>();
-    }
+    public Transform formationSlot;
+    public SwarmRootMover swarmRoot;
 
     public override void UpdateBehavior()
+{
+    if (GameStateManager.Instance.CurrentState != GameState.Gameplay)
     {
-        base.UpdateBehavior();
-        bool smiling = GameplayFaceInput.Instance.currentEmotion == Emotion.Happy;
-        float dist = Vector3.Distance(transform.position, player.transform.position);
+        agent.isStopped = true;
+        return;
+    }
 
-        // 1) Spieler lächelt → Idle
-        if (smiling)
-        {
-            agent.ResetPath();
-            return;
-        }
+    agent.isStopped = false;
 
-        // 2) Spieler lächelt NICHT → Aggro
-        if (dist > stats.stopDistance)
-        {
-            agent.SetDestination(player.transform.position);
-        }
-        else
-        {
-            agent.ResetPath();
-        }
+    bool smiling = GameplayFaceInput.Instance != null &&
+                   GameplayFaceInput.Instance.currentEmotion == Emotion.Happy;
 
-        // 3) Attack
-        if (dist < stats.attackRange)
-        {
-           TryAttack();
-        }
+    // Root steuern
+    if (swarmRoot != null)
+        swarmRoot.isWandering = smiling;
+
+    float dist = Vector3.Distance(transform.position, player.transform.position);
+
+    // 1. Attack hat höchste Priorität
+    if (!smiling && dist <= stats.attackRange)
+    {
+        SetState(EnemyState.Attack);
+    }
+    // 2. Chase wenn nicht lächeln
+    else if (!smiling)
+    {
+        SetState(EnemyState.Chase);
+    }
+    // 3. Wander wenn lächeln
+    else
+    {
+        SetState(EnemyState.Wander);
+    }
+
+    // State ausführen
+    switch (CurrentState)
+    {
+        case EnemyState.Wander:
+            WanderBehavior();
+            break;
+
+        case EnemyState.Chase:
+            ChaseBehavior();
+            break;
+
+        case EnemyState.Attack:
+            AttackBehavior();
+            break;
+    }
+}
+
+
+    protected override void WanderBehavior()
+    {
+        if (formationSlot == null) return;
+
+        agent.stoppingDistance = 0.1f;
+        agent.SetDestination(formationSlot.position);
+    }
+
+    protected override void ChaseBehavior()
+    {
+        if (player == null) return;
+
+        agent.stoppingDistance = stats.stopDistance;
+        agent.SetDestination(player.transform.position);
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,6 +7,7 @@ public class CuteFluffyEnemy : EnemyBase
 {
     private enum FluffyState
     {
+        Wander,
         Approach,
         Flee,
     }
@@ -22,6 +24,7 @@ public class CuteFluffyEnemy : EnemyBase
     {
         base.Start();
         agent.updateRotation = false;
+        currentState = FluffyState.Approach;
     }
     // Schauen immer Spieler an
     private void LateUpdate()
@@ -56,6 +59,9 @@ public class CuteFluffyEnemy : EnemyBase
 
         switch (currentState)
         {
+            case (FluffyState.Wander):
+                WanderBehavior();
+                break;
             case FluffyState.Approach:
                 Approach(angry);
                 break;

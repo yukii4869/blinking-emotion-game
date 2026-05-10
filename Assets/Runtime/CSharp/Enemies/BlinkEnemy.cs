@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -35,7 +36,7 @@ public class BlinkEnemy : EnemyBase
         if (dist < stats.attackRange && (!looking || blinking))
         {
             agent.ResetPath();
-            TryAttack();
+            SetState(EnemyState.Attack);
             StartCoroutine(Stun());
             return;
         }
@@ -48,16 +49,15 @@ public class BlinkEnemy : EnemyBase
         // 3) Stoppen: wenn angeschaut UND nicht blinzeln
         if (looking && !blinking)
         {
-            agent.ResetPath();
+            // Blink Enemy soll statisch wie eine Statue sein und nicht wandern
+            SetState(EnemyState.Wander);
             return;
         }
 
         // 4) Bewegung: wenn wegschauen ODER blinzeln
-        Move();
+        SetState(EnemyState.Chase);
     }
-
-
-    private void Move()
+    protected override void ChaseBehavior()
     {
         if (Time.time < lastMoveTime + moveCooldown)
             return;
@@ -84,7 +84,8 @@ public class BlinkEnemy : EnemyBase
 
         lastMoveTime = Time.time;
     }
-
-
-
+    protected override void WanderBehavior()
+    {
+        agent.ResetPath();
+    }
 }
