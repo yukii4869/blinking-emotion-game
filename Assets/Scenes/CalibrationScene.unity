@@ -1795,6 +1795,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 726650254}
+  - component: {fileID: 726650255}
   m_Layer: 5
   m_Name: Audio
   m_TagString: Untagged
@@ -1823,6 +1824,26 @@ RectTransform:
   m_AnchoredPosition: {x: 727, y: -213.25974}
   m_SizeDelta: {x: 386.63147, y: 545.2077}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &726650255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 726650253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 265dc74a9a1c995428aab14e5cc27199, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MicrophoneDetector
+  pegelBalken: {fileID: 1707306294}
+  sensitivitySlider: {fileID: 1569618737}
+  sensitivity: 1
+  sampleSize: 246
+  triggerThreshold: 0.5
+  onVolumeChange:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &809756680
 GameObject:
   m_ObjectHideFlags: 0
@@ -3834,7 +3855,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 726650255}
         m_TargetAssemblyTypeName: MicrophoneDetector, Assembly-CSharp
         m_MethodName: ChangeSensitivitySliderEvent
         m_Mode: 1

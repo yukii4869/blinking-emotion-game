@@ -3,6 +3,7 @@ public class ItemHolder : MonoBehaviour
 {
     [SerializeField] private Transform handSlot;
     private GameObject currentItem;
+    public GameObject CurrentItem => currentItem;
     public bool HasItem => currentItem != null;
 
     public void PickUp(GameObject item)

@@ -31,14 +31,14 @@ public class CuteFluffyEnemy : EnemyBase
     {
         Vector3 desiredDir;
 
-        // Wenn der Agent sich bewegt → in Bewegungsrichtung drehen
+        // Wenn der Spieler sich bewegt in Bewegungsrichtung drehen
         if (agent.velocity.sqrMagnitude > 0.1f)
         {
             desiredDir = agent.velocity.normalized;
         }
         else
         {
-            // Wenn er steht → zum Spieler drehen
+            // Wenn er steht -> zum Spieler drehen
             desiredDir = (player.transform.position - transform.position).normalized;
         }
 
@@ -72,9 +72,6 @@ public class CuteFluffyEnemy : EnemyBase
         }
     }
 
-    // -----------------------------
-    // APPROACH
-    // -----------------------------
     private void Approach(bool angry)
     {
         if (angry)
@@ -103,10 +100,6 @@ public class CuteFluffyEnemy : EnemyBase
         }
     }
 
-
-    // -----------------------------
-    // FLEE
-    // -----------------------------
     private void Flee(bool angry)
     {
         if (!angry)

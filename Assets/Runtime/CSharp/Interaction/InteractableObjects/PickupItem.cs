@@ -1,6 +1,8 @@
 using UnityEngine;
 public class PickupItem : MonoBehaviour, IInteractable
 {
+    [SerializeField] private string itemName;
+    public string ItemName => itemName;
     public bool IsHeld { get; private set; }
     public void SetHeld(bool held)
     {

@@ -1,33 +1,82 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 public class InteractionController : MonoBehaviour
 {
     [SerializeField] private Camera cam;
     [SerializeField] private float interactDistance = 3f;
     [SerializeField] private ItemHolder itemHolder;
 
+    private DeliverySpot currentSpot;
+    private PickupItem currentPickup;
+
+    private void Update()
+    {
+        UpdateRaycast();
+    }
+
+    private void UpdateRaycast()
+    {
+        currentSpot = null;
+        currentPickup = null;
+
+        Ray ray = new(cam.transform.position, cam.transform.forward);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
+        {
+            // 1️⃣ DeliverySpot (nur wenn Item in der Hand)
+            if (itemHolder.HasItem && hit.collider.TryGetComponent(out DeliverySpot spot))
+            {
+                currentSpot = spot;
+                GameplayUIManager.Instance.ShowInteractionHint("Liefern (E)");
+                return;
+            }
+
+            // 2️⃣ PickupItem (nur wenn KEIN Item in der Hand)
+            if (!itemHolder.HasItem && hit.collider.TryGetComponent(out PickupItem pickup))
+            {
+                currentPickup = pickup;
+                GameplayUIManager.Instance.ShowInteractionHint("Aufheben (E)");
+                return;
+            }
+        }
+
+        // 3️⃣ Drop (wenn Item in der Hand)
+        if (itemHolder.HasItem)
+        {
+            GameplayUIManager.Instance.ShowInteractionHint("Droppen (E)");
+        }
+        else
+        {
+            GameplayUIManager.Instance.HideInteractionHint();
+        }
+    }
+
     public void OnInteract(InputAction.CallbackContext context)
     {
         if (!context.performed)
             return;
-        Ray ray = new(cam.transform.position, cam.transform.forward);
-        bool interacted = false;
 
-        if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
+        // 1️⃣ Delivery
+        if (currentSpot != null && itemHolder.HasItem)
         {
-            if (hit.collider.TryGetComponent(out IInteractable interactable))
-            {
-                interactable.Interact();
-
-            }
-            if (hit.collider.TryGetComponent(out PickupItem item))
-            {
-                item.PickUp(itemHolder);
-            }
+            var item = itemHolder.CurrentItem.GetComponent<PickupItem>();
+            currentSpot.TryDeliver(item);
+            itemHolder.DropCurrentItem();
             return;
         }
-        // Wenn nichts interagierbar → droppen
-        if (!interacted && itemHolder.HasItem)
+
+        // 2️⃣ Pickup
+        if (currentPickup != null)
+        {
+            currentPickup.PickUp(itemHolder);
+            return;
+        }
+
+        // 3️⃣ Drop
+        if (itemHolder.HasItem)
+        {
             itemHolder.DropCurrentItem();
+        }
     }
 }
