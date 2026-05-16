@@ -58,5 +58,9 @@ public class ItemHolder : MonoBehaviour
 
         currentItem = null;
     }
+    public void ClearItem()
+    {
+        currentItem = null;
+    }
 
 }

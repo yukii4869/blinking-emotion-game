@@ -61,7 +61,7 @@ public class InteractionController : MonoBehaviour
         if (currentSpot != null && itemHolder.HasItem)
         {
             var item = itemHolder.CurrentItem.GetComponent<PickupItem>();
-            currentSpot.TryDeliver(item);
+            currentSpot.TryDeliver(item, itemHolder);
             itemHolder.DropCurrentItem();
             return;
         }

@@ -4,17 +4,9 @@ public class DeliverySpot : MonoBehaviour
 {
     [SerializeField] private string requiredItemName;
 
-    public void TryDeliver(PickupItem item)
+    public void TryDeliver(PickupItem item, ItemHolder holder)
     {
-        if (item.ItemName == requiredItemName)
-        {
-            GameplayUIManager.Instance.ShowDeliveryFeedback($"{item.ItemName} erfolgreich geliefert!");
-            Destroy(item.gameObject);
-        }
-        else
-        {
-            GameplayUIManager.Instance.ShowDeliveryFeedback($"{item.ItemName} passt hier nicht!");
-        }
-
+        DeliveryManager.Instance.OnItemDelivered(item, this, holder);
+        
     }
 }
