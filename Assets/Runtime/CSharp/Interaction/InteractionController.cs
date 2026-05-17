@@ -57,7 +57,6 @@ public class InteractionController : MonoBehaviour
         if (!context.performed)
             return;
 
-        // 1️⃣ Delivery
         if (currentSpot != null && itemHolder.HasItem)
         {
             var item = itemHolder.CurrentItem.GetComponent<PickupItem>();
@@ -66,14 +65,12 @@ public class InteractionController : MonoBehaviour
             return;
         }
 
-        // 2️⃣ Pickup
         if (currentPickup != null)
         {
             currentPickup.PickUp(itemHolder);
             return;
         }
 
-        // 3️⃣ Drop
         if (itemHolder.HasItem)
         {
             itemHolder.DropCurrentItem();
