@@ -1,4 +1,4 @@
-using UnityEngine;
+/*using UnityEngine;
 
 public class EmotionConditionUIBinder : MonoBehaviour
 {
@@ -14,4 +14,4 @@ public class EmotionConditionUIBinder : MonoBehaviour
         condition.OnCompleted += ui.Hide;
         condition.OnFailed += ui.Hide;
     }
-}
+}*/

@@ -1,9 +1,35 @@
 using UnityEngine;
 
-public class SmileSwarmEnemy : EnemyBase
+public class SmileSwarmEnemy : EmotionEnemyBase
 {
     public Transform formationSlot;
     public SwarmRootMover swarmRoot;
+
+    // Emotion → State Mapping:
+    // Happy  → Wander
+    // Not Happy → Chase/Attack
+
+    protected override void HandleEmotion(Emotion e)
+    {
+        base.HandleEmotion(e);
+
+        bool smiling = (e == Emotion.Happy);
+
+        // Root Movement steuern
+        if (swarmRoot != null)
+            swarmRoot.isWandering = smiling;
+
+        // Statewechsel basierend auf Emotion
+        if (smiling)
+        {
+            SetState(EnemyState.Wander);
+        }
+        else
+        {
+            // Wenn nicht lächelnd → Chase (Attack wird später im Update geprüft)
+            SetState(EnemyState.Chase);
+        }
+    }
 
     public override void UpdateBehavior()
     {
@@ -15,29 +41,12 @@ public class SmileSwarmEnemy : EnemyBase
 
         agent.isStopped = false;
 
-        bool smiling = GameplayFaceInput.Instance != null &&
-                       GameplayFaceInput.Instance.currentEmotion == Emotion.Happy;
-
-        // Root steuern
-        if (swarmRoot != null)
-            swarmRoot.isWandering = smiling;
-
         float dist = Vector3.Distance(transform.position, player.transform.position);
 
-        // 1. Attack hat höchste Priorität
-        if (!smiling && dist <= stats.attackRange)
+        // Attack hat höchste Priorität
+        if (currentEmotion != Emotion.Happy && dist <= stats.attackRange)
         {
             SetState(EnemyState.Attack);
-        }
-        // 2. Chase wenn nicht lächeln
-        else if (!smiling)
-        {
-            SetState(EnemyState.Chase);
-        }
-        // 3. Wander wenn lächeln
-        else
-        {
-            SetState(EnemyState.Wander);
         }
 
         // State ausführen
@@ -56,7 +65,6 @@ public class SmileSwarmEnemy : EnemyBase
                 break;
         }
     }
-
 
     protected override void WanderBehavior()
     {

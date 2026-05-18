@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using UnityEngine;
 public class FaceUIManager : MonoBehaviour
 {
@@ -18,4 +18,4 @@ public class FaceUIManager : MonoBehaviour
         liveUI.UpdateBlinkCount();
         liveUI.UpdateEmotion();
     }
-}
+}*/

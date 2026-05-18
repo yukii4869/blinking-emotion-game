@@ -41,7 +41,6 @@ public class InteractionController : MonoBehaviour
             }
         }
 
-        // 3️⃣ Drop (wenn Item in der Hand)
         if (itemHolder.HasItem)
         {
             GameplayUIManager.Instance.ShowInteractionHint("Droppen (E)");

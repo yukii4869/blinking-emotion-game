@@ -3325,7 +3325,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 0f0ca4566daaece42b5ed1fd40b2f08c, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 1e1888b4c2050cc4293891e5b28fe0e0, type: 2}
   m_BuildHeightMesh: 0
 --- !u!4 &383869884
 Transform:
@@ -7330,7 +7330,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4467c5ebd5063df4d930d11f7403106e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameplayFaceInput
-  currentEmotion: 0
   currentEAR: 0
   isBlinking: 0
   blinkCount: 0
@@ -24866,7 +24865,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmotionDoor
   animator: {fileID: 390410493}
-  condition: {fileID: 1622966385}
+  condition: {fileID: 0}
 --- !u!114 &1622966385
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26250,8 +26249,8 @@ GameObject:
   - component: {fileID: 1701051427}
   - component: {fileID: 1701051426}
   - component: {fileID: 1701051425}
-  - component: {fileID: 1701051424}
   - component: {fileID: 1701051423}
+  - component: {fileID: 1701051429}
   m_Layer: 0
   m_Name: EssenItem
   m_TagString: Untagged
@@ -26286,19 +26285,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1701051424
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1701051422}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad36ba3760072894cb2504332f64b10c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PickupItem
-  itemName: Essen
 --- !u!65 &1701051425
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -26392,6 +26378,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1701051429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1701051422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cd6adb41683c884280ba6d98dd090b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HeatItem
+  itemName: Essen
+  heatRate: 5
+  maxHeat: 50
+  currentHeat: 0
 --- !u!4 &1701288068 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 314727716773278902, guid: 3ff4f900014162540954ec8357e1bf58, type: 3}

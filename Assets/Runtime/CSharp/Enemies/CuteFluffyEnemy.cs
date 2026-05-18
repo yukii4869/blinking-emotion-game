@@ -1,9 +1,8 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class CuteFluffyEnemy : EnemyBase
+public class CuteFluffyEnemy : EmotionEnemyBase
 {
     private enum FluffyState
     {
@@ -11,34 +10,60 @@ public class CuteFluffyEnemy : EnemyBase
         Approach,
         Flee,
     }
+
     [SerializeField] private Transform model;
     [SerializeField] private Animator animator;
 
     [Header("Flee Settings")]
     [SerializeField] private float fleeDistance = 5.0f;
     [SerializeField] private float fleeSpeed = 4.0f;
-    [SerializeField] private float noiseLoudness = 1.0f;
 
     private FluffyState currentState = FluffyState.Approach;
+
     public override void Start()
     {
         base.Start();
         agent.updateRotation = false;
         currentState = FluffyState.Approach;
     }
-    // Schauen immer Spieler an
+
+    // -------------------------
+    // EMOTION EVENT HANDLING
+    // -------------------------
+    protected override void HandleEmotion(Emotion e)
+    {
+        base.HandleEmotion(e);
+
+        if (e == Emotion.Angry)
+        {
+            currentState = FluffyState.Flee;
+            animator.SetBool("Bounce", false);
+        }
+        else
+        {
+            // Spieler ist nicht mehr wütend → zurück zu Approach
+            if (currentState == FluffyState.Flee)
+            {
+                StartCoroutine(Stun());
+                currentState = FluffyState.Approach;
+                agent.ResetPath();
+            }
+        }
+    }
+
+    // -------------------------
+    // ROTATION / LOOK AT PLAYER
+    // -------------------------
     private void LateUpdate()
     {
         Vector3 desiredDir;
 
-        // Wenn der Spieler sich bewegt in Bewegungsrichtung drehen
         if (agent.velocity.sqrMagnitude > 0.1f)
         {
             desiredDir = agent.velocity.normalized;
         }
         else
         {
-            // Wenn er steht -> zum Spieler drehen
             desiredDir = (player.transform.position - transform.position).normalized;
         }
 
@@ -51,36 +76,34 @@ public class CuteFluffyEnemy : EnemyBase
         }
     }
 
-
+    // -------------------------
+    // MAIN BEHAVIOR LOOP
+    // -------------------------
     public override void UpdateBehavior()
     {
         base.UpdateBehavior();
-        bool angry = GameplayFaceInput.Instance.currentEmotion == Emotion.Angry;
 
         switch (currentState)
         {
-            case (FluffyState.Wander):
+            case FluffyState.Wander:
                 WanderBehavior();
                 break;
+
             case FluffyState.Approach:
-                Approach(angry);
+                Approach();
                 break;
 
             case FluffyState.Flee:
-                Flee(angry);
+                Flee();
                 break;
         }
     }
 
-    private void Approach(bool angry)
+    // -------------------------
+    // APPROACH PLAYER
+    // -------------------------
+    private void Approach()
     {
-        if (angry)
-        {
-            currentState = FluffyState.Flee;
-            animator.SetBool("Bounce", false);
-            return;
-        }
-
         agent.speed = stats.moveSpeed;
 
         float dist = Vector3.Distance(transform.position, player.transform.position);
@@ -92,30 +115,25 @@ public class CuteFluffyEnemy : EnemyBase
         }
         else
         {
-
-
             agent.ResetPath();
             animator.SetBool("Bounce", true);
             animator.SetInteger("BounceType", Random.Range(0, 3));
         }
     }
 
-    private void Flee(bool angry)
+    // -------------------------
+    // FLEE FROM PLAYER
+    // -------------------------
+    private void Flee()
     {
-        if (!angry)
-        {
-            StartCoroutine(Stun());
-            currentState = FluffyState.Approach;
-            agent.ResetPath();
-            return;
-        }
         animator.SetBool("Bounce", false);
         agent.speed = fleeSpeed;
+
         float dist = Vector3.Distance(transform.position, player.transform.position);
         if (dist >= fleeDistance)
         {
             agent.ResetPath();
-            return; // <-- WICHTIG
+            return;
         }
 
         Vector3 dir = (transform.position - player.transform.position).normalized;

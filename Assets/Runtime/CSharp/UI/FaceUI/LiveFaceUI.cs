@@ -5,51 +5,39 @@ using System.Collections.Generic;
 
 public class LiveFaceUI : MonoBehaviour
 {
-     [SerializeField] private RawImage emotionImage;
-     [SerializeField] private TextMeshProUGUI emotionText;
-     [SerializeField] private TextMeshProUGUI blinkCounterText;
-     [SerializeField] private List<Texture> textures;
+    [SerializeField] private RawImage emotionImage;
+    [SerializeField] private TextMeshProUGUI emotionText;
+    [SerializeField] private TextMeshProUGUI blinkCounterText;
+    [SerializeField] private List<Texture> textures;
 
+    private void OnEnable()
+    {
+        GameplayFaceInput.OnEmotionChanged += HandleEmotion;
+        GameplayFaceInput.OnBlink += HandleBlink;   // optional, siehe unten
+    }
 
-     private Emotion GetCurrentEmotion()
-     {
-          if (CalibrationFaceInput.Instance != null)
-               return CalibrationFaceInput.Instance.currentEmotion;
+    private void OnDisable()
+    {
+        GameplayFaceInput.OnEmotionChanged -= HandleEmotion;
+        GameplayFaceInput.OnBlink -= HandleBlink;
+    }
 
-          if (GameplayFaceInput.Instance != null)
-               return GameplayFaceInput.Instance.currentEmotion;
+    private void HandleEmotion(Emotion e)
+    {
+        emotionText.text = "Emotion: " + e;
 
-          return Emotion.Neutral;
-     }
+        switch (e)
+        {
+            case Emotion.Happy: emotionImage.texture = textures[0]; break;
+            case Emotion.Sad: emotionImage.texture = textures[1]; break;
+            case Emotion.Angry: emotionImage.texture = textures[2]; break;
+            case Emotion.Surprised: emotionImage.texture = textures[3]; break;
+            default: emotionImage.texture = textures[4]; break;
+        }
+    }
 
-     private int GetBlinkCount()
-     {
-          if (CalibrationFaceInput.Instance != null)
-               return CalibrationFaceInput.Instance.blinkCount;
-
-          if (GameplayFaceInput.Instance != null)
-               return GameplayFaceInput.Instance.blinkCount;
-
-          return 0;
-     }
-
-     public void UpdateEmotion()
-     {
-          Emotion emotion = GetCurrentEmotion();
-          emotionText.text = "Emotion: " + emotion;
-
-          switch (emotion)
-          {
-               case Emotion.Happy: emotionImage.texture = textures[0]; break;
-               case Emotion.Sad: emotionImage.texture = textures[1]; break;
-               case Emotion.Angry: emotionImage.texture = textures[2]; break;
-               case Emotion.Surprised: emotionImage.texture = textures[3]; break;
-               default: emotionImage.texture = textures[4]; break;
-          }
-     }
-
-     public void UpdateBlinkCount()
-     {
-          blinkCounterText.text = "Blinks: " + GetBlinkCount();
-     }
+    private void HandleBlink(int blinkCount)
+    {
+        blinkCounterText.text = "Blinks: " + blinkCount;
+    }
 }

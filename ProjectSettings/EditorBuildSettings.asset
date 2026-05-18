@@ -14,9 +14,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CalibrationScene.unity
     guid: a6cb1f274f53362468c5dc46befa1789
+  - enabled: 0
+    path: Assets/Scenes/TestScene.unity
+    guid: d4fce126b70fae84e9bb4d7f872bfd49
   - enabled: 1
     path: Assets/Scenes/GameScene.unity
-    guid: d4fce126b70fae84e9bb4d7f872bfd49
+    guid: c5ed6423ba586784f84ebc4854485f45
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

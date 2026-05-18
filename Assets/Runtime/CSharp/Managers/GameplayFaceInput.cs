@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class GameplayFaceInput : MonoBehaviour
 {
-    public Emotion currentEmotion;
+    private Emotion currentEmotion;
     public float currentEAR;
     public bool isBlinking;
     public int blinkCount;
@@ -14,7 +14,13 @@ public class GameplayFaceInput : MonoBehaviour
     private EmotionDetector emotionDetector = new();
     private BlendshapeNormalizer normalizer;
     private BlinkDetector blinkDetector;
+    public static event System.Action<Emotion> OnEmotionChanged;
+    public static event System.Action<int> OnBlink;
+    private Emotion lastEmotion = Emotion.Neutral;
+
+
     public static GameplayFaceInput Instance { get; private set; }
+
     private bool ready;
 
     private void Awake()
@@ -59,10 +65,14 @@ public class GameplayFaceInput : MonoBehaviour
         blinkDetector.UpdateEAR(currentEAR);
 
         if (blinkDetector.BlinkStartedThisFrame)
+        {
             blinkCount++;
+            OnBlink?.Invoke(blinkCount);
+        }
 
         isBlinking = blinkDetector.IsBlinking;
     }
+
 
     private void ProcessEmotionDetection()
     {
@@ -70,5 +80,10 @@ public class GameplayFaceInput : MonoBehaviour
         var norm = normalizer.NormalizeBlendshapes(raw);
         var scores = emotionFeatureCalc.CalculateEmotionFeatures(norm);
         currentEmotion = emotionDetector.ClassifyEmotion(scores);
+        if (currentEmotion != lastEmotion)
+        {
+            OnEmotionChanged?.Invoke(currentEmotion);
+            lastEmotion = currentEmotion;
+        }
     }
 }
