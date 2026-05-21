@@ -15,7 +15,7 @@ public class GameplayFaceInput : MonoBehaviour
     private BlendshapeNormalizer normalizer;
     private BlinkDetector blinkDetector;
     public static event System.Action<Emotion> OnEmotionChanged;
-    public static event System.Action<int> OnBlink;
+    public static event System.Action OnBlink;
     private Emotion lastEmotion = Emotion.Neutral;
 
 
@@ -67,7 +67,7 @@ public class GameplayFaceInput : MonoBehaviour
         if (blinkDetector.BlinkStartedThisFrame)
         {
             blinkCount++;
-            OnBlink?.Invoke(blinkCount);
+            OnBlink?.Invoke();
         }
 
         isBlinking = blinkDetector.IsBlinking;

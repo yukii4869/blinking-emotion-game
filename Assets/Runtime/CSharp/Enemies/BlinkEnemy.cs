@@ -9,6 +9,10 @@ public class BlinkEnemy : EnemyBase
     [SerializeField] private float moveCooldown = 0.5f;
     [SerializeField] private float stepSize = 0.8f;
     private float lastMoveTime = 0f;
+    private bool blinkedThisFrame = false;
+    private float blinkCooldown = 0.2f;
+    private float blinkTimer = 0f;
+
 
 
     public override void Start()
@@ -17,22 +21,41 @@ public class BlinkEnemy : EnemyBase
         agent.updatePosition = false;
         agent.updateRotation = false;
     }
+    private void OnEnable()
+    {
+        GameplayFaceInput.OnBlink += HandleBlink;
+    }
+    private void OnDisable()
+    {
+        GameplayFaceInput.OnBlink -= HandleBlink;
+    }
+    private void HandleBlink()
+    {
+        blinkedThisFrame = true;
+        blinkTimer = blinkCooldown;
+    }
 
     public override void UpdateBehavior()
     {
         base.UpdateBehavior();
-        float dist = Vector3.Distance(transform.position, Camera.main.transform.position);
-        bool blinking = GameplayFaceInput.Instance.isBlinking;
-        bool looking = PlayerVision.Instance.IsInView(transform);
 
-        // 1) Stun blockiert alles
+        // Blink-Timer abbauen
+        if (blinkTimer > 0f)
+            blinkTimer -= Time.deltaTime;
+        else
+            blinkedThisFrame = false;
+
+        float dist = Vector3.Distance(transform.position, Camera.main.transform.position);
+        bool looking = PlayerVision.Instance.IsInView(transform);
+        bool blinking = blinkedThisFrame;
+
         if (stunned)
         {
             agent.ResetPath();
             return;
         }
 
-        // 2) Angriff: nur wenn nah UND (wegschauen ODER blinzeln)
+        // Angriff
         if (dist < stats.attackRange && (!looking || blinking))
         {
             agent.ResetPath();
@@ -40,21 +63,21 @@ public class BlinkEnemy : EnemyBase
             StartCoroutine(Stun());
             return;
         }
+
         if (dist < stats.stopDistance)
         {
             agent.ResetPath();
             return;
         }
 
-        // 3) Stoppen: wenn angeschaut UND nicht blinzeln
+        // Statue wenn angeschaut und nicht geblinzelt
         if (looking && !blinking)
         {
-            // Blink Enemy soll statisch wie eine Statue sein und nicht wandern
             SetState(EnemyState.Wander);
             return;
         }
 
-        // 4) Bewegung: wenn wegschauen ODER blinzeln
+        // Bewegung
         SetState(EnemyState.Chase);
     }
     protected override void ChaseBehavior()

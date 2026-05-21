@@ -14,16 +14,6 @@ public class GameplayUIManager : MonoBehaviour
     [SerializeField] private TMPro.TextMeshProUGUI taskCounterText;
     [SerializeField] private TMPro.TextMeshProUGUI taskDescriptionText;
 
-    public void UpdateTaskCounter(int current, int total)
-    {
-        taskCounterText.text = $"{current}/{total}";
-    }
-
-    public void UpdateTaskDescription(string text)
-    {
-        taskDescriptionText.text = text;
-    }
-
     private void Awake()
     {
         Instance = this;
@@ -52,4 +42,21 @@ public class GameplayUIManager : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         deliveryFeedback.SetActive(false);
     }
+    public void UpdateTaskUI(DeliveryTask task, int current, int total)
+    {
+        taskCounterText.text = $"{current}/{total}";
+
+        if (task == null)
+        {
+            taskDescriptionText.text = "Alle Lieferungen abgeschlossen!";
+            return;
+        }
+
+        taskDescriptionText.text = $"Bringe {task.itemName} zu Zimmer {task.roomNumber}";
+    }
+
+    public void ShowWrongSpot() => ShowDeliveryFeedback("Falscher Ort!");
+    public void ShowWrongItem() => ShowDeliveryFeedback("Falsches Item!");
+    public void ShowConditionFailed() => ShowDeliveryFeedback("Bedingung nicht erfüllt!");
+    public void ShowDeliverySuccess() => ShowDeliveryFeedback("Lieferung erfolgreich!");
 }

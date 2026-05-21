@@ -6,6 +6,8 @@ public class DeliveryManager : MonoBehaviour
 
     [SerializeField] private DeliveryTask[] tasks;
     private int currentTaskIndex = 0;
+    public DeliveryTask CurrentTask => tasks[currentTaskIndex];
+
 
     private void Awake()
     {
@@ -14,43 +16,48 @@ public class DeliveryManager : MonoBehaviour
 
     private void Start()
     {
-        UpdateUI();
+        GameplayUIManager.Instance.UpdateTaskUI(CurrentTask, currentTaskIndex, tasks.Length);
     }
-
-    public DeliveryTask CurrentTask => tasks[currentTaskIndex];
 
     public void OnItemDelivered(PickupItem item, DeliverySpot spot, ItemHolder holder)
     {
-        if (spot == CurrentTask.spot && item.ItemName == CurrentTask.itemName)
+        var task = CurrentTask;
+
+        if (spot != task.spot)
         {
-            GameplayUIManager.Instance.ShowDeliveryFeedback("Lieferung erfolgreich!");
+            GameplayUIManager.Instance.ShowWrongSpot();
+            return;
+        }
 
-            holder.ClearItem();
-            Destroy(item.gameObject);
+        if (item.ItemName != task.itemName)
+        {
+            GameplayUIManager.Instance.ShowWrongItem();
+            return;
+        }
+        var cond = item as ICondition;
 
-            currentTaskIndex++;
+        if (cond != null && !cond.IsMet)
+        {
+            GameplayUIManager.Instance.ShowConditionFailed();
+            return;
+        }
 
-            if (currentTaskIndex < tasks.Length)
-            {
-                UpdateUI();
-            }
-            else
-            {
-                GameplayUIManager.Instance.UpdateTaskDescription("Alle Lieferungen abgeschlossen!");
-                GameplayUIManager.Instance.UpdateTaskCounter(tasks.Length, tasks.Length);
-            }
+        GameplayUIManager.Instance.ShowDeliverySuccess();
+
+        holder.ClearItem();
+        Destroy(item.gameObject);
+
+        currentTaskIndex++;
+
+        if (currentTaskIndex < tasks.Length)
+        {
+            GameplayUIManager.Instance.UpdateTaskUI(CurrentTask, currentTaskIndex, tasks.Length);
         }
         else
         {
-            GameplayUIManager.Instance.ShowDeliveryFeedback("Falsches Item!");
+            GameplayUIManager.Instance.ShowDeliverySuccess();
+            GameplayUIManager.Instance.UpdateTaskUI(null, tasks.Length, tasks.Length);
         }
-    }
 
-    private void UpdateUI()
-    {
-        GameplayUIManager.Instance.UpdateTaskCounter(currentTaskIndex, tasks.Length);
-        GameplayUIManager.Instance.UpdateTaskDescription(
-            $"Bringe {CurrentTask.itemName} zu Zimmer {CurrentTask.roomNumber}"
-        );
     }
 }

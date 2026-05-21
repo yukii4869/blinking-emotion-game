@@ -36,8 +36,8 @@ public class LiveFaceUI : MonoBehaviour
         }
     }
 
-    private void HandleBlink(int blinkCount)
+    private void HandleBlink()
     {
-        blinkCounterText.text = "Blinks: " + blinkCount;
+        blinkCounterText.text = "Blinks: " + GameplayFaceInput.Instance.blinkCount;
     }
 }
