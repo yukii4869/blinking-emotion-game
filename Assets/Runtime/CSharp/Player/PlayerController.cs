@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
     private float verticalVelocity;
     private float cameraPitch = 0f;
 
+    public bool IsOnMovingPlatform { get; set; }
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -91,8 +92,13 @@ public class PlayerController : MonoBehaviour
         move *= moveSpeed;
 
         // Gravity
-        if (controller.isGrounded && verticalVelocity < 0)
-            verticalVelocity = -2f;
+
+        if (!IsOnMovingPlatform)
+        {
+            if (controller.isGrounded && verticalVelocity < 0)
+                verticalVelocity = -2f;
+        }
+
 
         verticalVelocity += gravity * Time.deltaTime;
         move.y = verticalVelocity;
@@ -134,5 +140,6 @@ public class PlayerController : MonoBehaviour
 
         knockbackVelocity = horizontal + vertical;
     }
+
 
 }

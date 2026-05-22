@@ -18,8 +18,6 @@ public class GameStateManager : MonoBehaviour
     }
     public void SetState(GameState newState)
     {
-        Debug.Log(newState);
-        Debug.Log("TimeScale: " + Time.timeScale);
         CurrentState = newState;
         OnStateChanged?.Invoke(newState);
 

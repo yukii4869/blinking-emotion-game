@@ -1,14 +1,45 @@
+using UnityEngine;
+
 public class CandleItem : PickupItem, ICondition
 {
-    private BlinkCondition blinkCondition;
+    [Header("Visuals")]
+    [SerializeField] private GameObject flame;
 
-    public bool IsMet => blinkCondition.IsMet;
-    public string Description => blinkCondition.Description;
 
-    public bool IsExtinguished => !blinkCondition.IsMet;
+    private bool extinguished = false;
 
-    private void Start()
+    public bool IsMet => !extinguished;
+    public string Description => "Nicht blinzeln!";
+
+    private void OnEnable()
     {
-        blinkCondition = new BlinkCondition();
+        GameplayFaceInput.OnBlink += HandleBlink;
     }
+
+    private void OnDisable()
+    {
+        GameplayFaceInput.OnBlink -= HandleBlink;
+    }
+
+    private void HandleBlink()
+    {
+        // Kerze geht NUR aus, wenn sie gehalten wird
+        if (IsHeld)
+        {
+            extinguished = true;
+            flame.SetActive(false);
+
+
+        }
+    }
+    public void Relight()
+{
+    if (!extinguished)
+        return;
+
+    extinguished = false;
+
+    flame.SetActive(true);
+
+}
 }
