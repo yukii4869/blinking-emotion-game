@@ -4,7 +4,7 @@ using UnityEngine;
 public class EnemyStats : ScriptableObject
 {
     public float attackRange = 1.5f;
-    public float damage = 10f;
+    public int damage = 10;
     public float knockbackForce = 5f;
     public float knockbackUpwardForce = 1f;
     public float attackCooldown = 1f;

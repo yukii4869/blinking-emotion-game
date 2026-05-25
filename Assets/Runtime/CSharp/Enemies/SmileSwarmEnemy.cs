@@ -9,6 +9,13 @@ public class SmileSwarmEnemy : EmotionEnemyBase
     // Happy  → Wander
     // Not Happy → Chase/Attack
 
+    public override void Start()
+    {
+        base.Start();
+
+        // Initial Emotion anwenden
+        HandleEmotion(GameplayFaceInput.Instance.currentEmotion);
+    }
     protected override void HandleEmotion(Emotion e)
     {
         base.HandleEmotion(e);

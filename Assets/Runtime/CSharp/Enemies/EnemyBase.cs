@@ -104,8 +104,7 @@ public abstract class EnemyBase : MonoBehaviour
 
         lastAttackTime = Time.time;
 
-        // Schaden
-        //player.TakeDamage(stats.damage);
+        PlayerHealth.Instance.TakeDamage(stats.damage);
 
         // Knockback
         Vector3 dir = (player.transform.position - transform.position).normalized;

@@ -56,7 +56,7 @@ public class BlinkEnemy : EnemyBase
         }
 
         // Angriff
-        if (dist < stats.attackRange && (!looking || blinking))
+        if (dist <= stats.attackRange && (!looking || blinking))
         {
             agent.ResetPath();
             SetState(EnemyState.Attack);

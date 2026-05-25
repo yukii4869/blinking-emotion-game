@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject gameplayHUD;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject gameOverUI;
+    [SerializeField] private GameObject healthUI;
 
     private void Start()
     {
@@ -16,7 +17,6 @@ public class UIManager : MonoBehaviour
         if (MediaPipeProvider.Instance.PythonReady)
         {
             GameStateManager.Instance.SetState(GameState.Gameplay);
-
         }
         else
         {
@@ -33,6 +33,7 @@ public class UIManager : MonoBehaviour
         gameplayHUD.SetActive(false);
         pauseMenu.SetActive(false);
         gameOverUI.SetActive(false);
+        healthUI.SetActive(false);
 
         // Passende UI an
         switch (state)
@@ -45,6 +46,7 @@ public class UIManager : MonoBehaviour
             case GameState.Gameplay:
                 gameplayHUD.SetActive(true);
                 liveFaceUI.SetActive(true);
+                healthUI.SetActive(true);
                 break;
 
             case GameState.Pause:

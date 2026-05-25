@@ -19,5 +19,5 @@ MonoBehaviour:
   attackCooldown: 1
   moveSpeed: 4
   health: 50
-  stopDistance: 2.2
+  stopDistance: 0.5
   stunDuration: 2

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class GameplayFaceInput : MonoBehaviour
 {
-    private Emotion currentEmotion;
+    public Emotion currentEmotion;
     public float currentEAR;
     public bool isBlinking;
     public int blinkCount;

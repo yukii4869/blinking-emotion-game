@@ -11,6 +11,9 @@ public class SadnessElevator : MonoBehaviour
     private bool isSad = false;
     private bool playerInside = false;
     private Vector3 startPos;
+    private GameObject activeUI;
+
+    public GameObject elevatorUIPrefab; // Prefab
 
     private void Start()
     {
@@ -48,27 +51,45 @@ public class SadnessElevator : MonoBehaviour
         transform.localPosition = startPos + new Vector3(0, y, 0);
     }
 
-  private void OnTriggerEnter(Collider other)
-{
-    if (other.CompareTag("Player"))
+    private void OnTriggerEnter(Collider other)
     {
-        playerInside = true;
-        other.transform.SetParent(transform);
+        if (other.CompareTag("Player"))
+        {
+            playerInside = true;
+            other.transform.SetParent(transform);
 
-        other.GetComponent<PlayerController>().IsOnMovingPlatform = true;
+            other.GetComponent<PlayerController>().IsOnMovingPlatform = true;
+            if (activeUI == null)
+            {
+                Canvas canvas = GameObject.FindGameObjectWithTag("GameplayCanvas").GetComponent<Canvas>();
+
+                activeUI = Instantiate(elevatorUIPrefab, canvas.transform);
+
+                // Elevator referenzieren
+                activeUI.GetComponent<ElevatorUI>().SetElevator(this);
+            }
+        }
     }
-}
 
-private void OnTriggerExit(Collider other)
-{
-    if (other.CompareTag("Player"))
+    private void OnTriggerExit(Collider other)
     {
-        playerInside = false;
-        other.transform.SetParent(null);
+        if (other.CompareTag("Player"))
+        {
+            playerInside = false;
+            other.transform.SetParent(null);
 
-        other.GetComponent<PlayerController>().IsOnMovingPlatform = false;
+            other.GetComponent<PlayerController>().IsOnMovingPlatform = false;
+            if (activeUI != null)
+            {
+                Destroy(activeUI);
+                activeUI = null;
+            }
+        }
     }
-}
+    public float GetFillAmount()
+    {
+        return fillAmount;
+    }
 
 
 }
