@@ -81,12 +81,11 @@ public class CuteFluffyEnemy : EmotionEnemyBase
     // -------------------------
     public override void UpdateBehavior()
     {
-        base.UpdateBehavior();
 
         switch (currentState)
         {
             case FluffyState.Wander:
-                WanderBehavior();
+                //WanderBehavior();
                 break;
 
             case FluffyState.Approach:

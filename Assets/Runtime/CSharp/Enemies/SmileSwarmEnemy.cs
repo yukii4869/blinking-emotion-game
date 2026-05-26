@@ -5,62 +5,33 @@ public class SmileSwarmEnemy : EmotionEnemyBase
     public Transform formationSlot;
     public SwarmRootMover swarmRoot;
 
-    // Emotion → State Mapping:
-    // Happy  → Wander
-    // Not Happy → Chase/Attack
-
     public override void Start()
     {
         base.Start();
-
-        // Initial Emotion anwenden
         HandleEmotion(GameplayFaceInput.Instance.currentEmotion);
     }
+
     protected override void HandleEmotion(Emotion e)
     {
-        base.HandleEmotion(e);
-
         bool smiling = (e == Emotion.Happy);
 
-        // Root Movement steuern
         if (swarmRoot != null)
             swarmRoot.isWandering = smiling;
 
-        // Statewechsel basierend auf Emotion
-        if (smiling)
-        {
-            SetState(EnemyState.Wander);
-        }
-        else
-        {
-            // Wenn nicht lächelnd → Chase (Attack wird später im Update geprüft)
-            SetState(EnemyState.Chase);
-        }
+        SetState(smiling ? EnemyState.Wander : EnemyState.Chase);
     }
 
     public override void UpdateBehavior()
     {
-        if (GameStateManager.Instance.CurrentState != GameState.Gameplay)
-        {
-            agent.isStopped = true;
-            return;
-        }
-
-        agent.isStopped = false;
-
         float dist = Vector3.Distance(transform.position, player.transform.position);
 
-        // Attack hat höchste Priorität
-        if (currentEmotion != Emotion.Happy && dist <= stats.attackRange)
-        {
+        if (CurrentState == EnemyState.Chase && dist <= stats.attackRange)
             SetState(EnemyState.Attack);
-        }
 
-        // State ausführen
         switch (CurrentState)
         {
             case EnemyState.Wander:
-                WanderBehavior();
+                DoFormationWander();
                 break;
 
             case EnemyState.Chase:
@@ -73,19 +44,15 @@ public class SmileSwarmEnemy : EmotionEnemyBase
         }
     }
 
-    protected override void WanderBehavior()
+    private void DoFormationWander()
     {
         if (formationSlot == null) return;
-
         agent.stoppingDistance = 0.1f;
         agent.SetDestination(formationSlot.position);
     }
 
     protected override void ChaseBehavior()
     {
-        if (player == null) return;
-
-        agent.stoppingDistance = stats.stopDistance;
-        agent.SetDestination(player.transform.position);
+        base.ChaseBehavior();
     }
 }

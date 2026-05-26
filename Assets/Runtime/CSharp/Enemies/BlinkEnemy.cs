@@ -1,19 +1,16 @@
-using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class BlinkEnemy : EnemyBase
 {
-    [Header("Movement")]
-    [SerializeField] private float moveCooldown = 0.5f;
+    [Header("Blink Movement")]
+    [SerializeField] private float moveCooldown = 0.4f;
     [SerializeField] private float stepSize = 0.8f;
+
     private float lastMoveTime = 0f;
-    private bool blinkedThisFrame = false;
-    private float blinkCooldown = 0.2f;
+    private bool blinked = false;
     private float blinkTimer = 0f;
-
-
+    private float blinkDuration = 0.2f;
 
     public override void Start()
     {
@@ -21,33 +18,30 @@ public class BlinkEnemy : EnemyBase
         agent.updatePosition = false;
         agent.updateRotation = false;
     }
+
     private void OnEnable()
     {
-        GameplayFaceInput.OnBlink += HandleBlink;
+        GameplayFaceInput.OnBlink += OnBlink;
     }
+
     private void OnDisable()
     {
-        GameplayFaceInput.OnBlink -= HandleBlink;
+        GameplayFaceInput.OnBlink -= OnBlink;
     }
-    private void HandleBlink()
+
+    private void OnBlink()
     {
-        blinkedThisFrame = true;
-        blinkTimer = blinkCooldown;
+        blinked = true;
+        blinkTimer = blinkDuration;
     }
 
     public override void UpdateBehavior()
     {
-        base.UpdateBehavior();
-
-        // Blink-Timer abbauen
+        // Blink decay
         if (blinkTimer > 0f)
             blinkTimer -= Time.deltaTime;
         else
-            blinkedThisFrame = false;
-
-        float dist = Vector3.Distance(transform.position, Camera.main.transform.position);
-        bool looking = PlayerVision.Instance.IsInView(transform);
-        bool blinking = blinkedThisFrame;
+            blinked = false;
 
         if (stunned)
         {
@@ -55,60 +49,61 @@ public class BlinkEnemy : EnemyBase
             return;
         }
 
-        // Angriff
-        if (dist <= stats.attackRange && (!looking || blinking))
+        float dist = Vector3.Distance(transform.position, player.transform.position);
+        bool looking = PlayerVision.Instance.IsInView(transform);
+
+        //  ATTACK-BEDINGUNG (final):
+        // Wenn in AttackRange UND (nicht schauen ODER blinzeln)
+        if (dist <= stats.attackRange && (!looking || blinked))
         {
-            agent.ResetPath();
-            SetState(EnemyState.Attack);
+            AttackBehavior();
             StartCoroutine(Stun());
             return;
         }
 
-        if (dist < stats.stopDistance)
+        //  STATUE: Spieler schaut hin & blinzelt NICHT
+        if (looking && !blinked)
         {
             agent.ResetPath();
+            LookAtPlayer();
             return;
         }
 
-        // Statue wenn angeschaut und nicht geblinzelt
-        if (looking && !blinking)
+        //  STOPDISTANCE: Nur Anti-Clipping, NICHT Attack-Blocker
+        if (dist < stats.stopDistance && dist > stats.attackRange)
         {
-            SetState(EnemyState.Wander);
+            agent.ResetPath();
+            LookAtPlayer();
             return;
         }
 
-        // Bewegung
-        SetState(EnemyState.Chase);
+        // CHASE: Spieler schaut weg ODER blinzelt
+        ChaseBehavior();
     }
+
     protected override void ChaseBehavior()
     {
         if (Time.time < lastMoveTime + moveCooldown)
             return;
 
-        // 1) Path berechnen lassen
         agent.SetDestination(player.transform.position);
 
-        // 2) Wenn kein Path → nichts tun
         if (agent.path.corners.Length < 2)
             return;
 
-        // 3) Richtung zum nächsten Path-Knoten
         Vector3 nextCorner = agent.path.corners[1];
         Vector3 dir = (nextCorner - transform.position).normalized;
 
-        // 4) Ruckartige Bewegung
-        transform.position += dir * stepSize;
+        float dist = Vector3.Distance(transform.position, player.transform.position);
+        float step = Mathf.Min(stepSize, dist - stats.stopDistance);
 
-        // 5) Agent synchronisieren
-        agent.nextPosition = transform.position;
-
-        // 6) Rotation anpassen
-        transform.rotation = Quaternion.LookRotation(dir);
+        if (step > 0f)
+        {
+            transform.position += dir * step;
+            agent.nextPosition = transform.position;
+            transform.rotation = Quaternion.LookRotation(dir);
+        }
 
         lastMoveTime = Time.time;
-    }
-    protected override void WanderBehavior()
-    {
-        agent.ResetPath();
     }
 }

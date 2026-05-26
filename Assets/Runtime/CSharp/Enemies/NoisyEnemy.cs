@@ -10,6 +10,13 @@ public class NoiseEnemy : EnemyBase
     private float smoothedLoudness;
     private float smoothSpeed = 10f;
     private float alertTimer;
+    private WanderComponent wander;
+
+    public override void Start()
+    {
+        base.Start();
+        wander = GetComponent<WanderComponent>();
+    }
 
     public override void UpdateBehavior()
     {
@@ -92,13 +99,13 @@ public class NoiseEnemy : EnemyBase
         }
     }
 
-    protected override void WanderBehavior()
+    private void WanderBehavior()
     {
         Debug.Log("[NoiseEnemy] Wander → moving randomly");
-        base.WanderBehavior();
+       wander.Tick();
     }
 
-    protected override void AlertBehavior()
+    private void AlertBehavior()
     {
         alertTimer -= Time.deltaTime;
 

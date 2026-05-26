@@ -39,7 +39,7 @@ public class HeatItem : PickupItem, ICondition
         if (prefab != null)
         {
             GameObject ui = Instantiate(prefab, transform);
-            ui.transform.localPosition = new Vector3(0, 0.75f, 0);
+            ui.transform.localPosition = new Vector3(0, 0.15f, 0);
             ui.transform.localRotation = Quaternion.identity;
 
             heatUIInstance = ui.GetComponent<HeatUI>();
