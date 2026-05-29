@@ -78,10 +78,10 @@ public class BlinkEnemy : EnemyBase
         }
 
         // CHASE: Spieler schaut weg ODER blinzelt
-        ChaseBehavior();
+        ApproachPlayer();
     }
 
-    protected override void ChaseBehavior()
+    protected override void ApproachPlayer()
     {
         if (Time.time < lastMoveTime + moveCooldown)
             return;

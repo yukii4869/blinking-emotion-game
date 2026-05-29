@@ -35,7 +35,7 @@ public class SmileSwarmEnemy : EmotionEnemyBase
                 break;
 
             case EnemyState.Chase:
-                ChaseBehavior();
+                ApproachPlayer();
                 break;
 
             case EnemyState.Attack:
@@ -49,10 +49,5 @@ public class SmileSwarmEnemy : EmotionEnemyBase
         if (formationSlot == null) return;
         agent.stoppingDistance = 0.1f;
         agent.SetDestination(formationSlot.position);
-    }
-
-    protected override void ChaseBehavior()
-    {
-        base.ChaseBehavior();
     }
 }

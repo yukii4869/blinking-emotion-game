@@ -55,7 +55,7 @@ public abstract class EnemyBase : MonoBehaviour
         dir.y = stats.knockbackUpwardForce;
         player.ApplyKnockback(dir, stats.knockbackForce, stats.knockbackUpwardForce);
     }
-    protected virtual void ChaseBehavior()
+    protected virtual void ApproachPlayer()
     {
         if (player == null) return;
 

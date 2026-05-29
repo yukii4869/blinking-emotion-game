@@ -89,7 +89,7 @@ public class NoiseEnemy : EnemyBase
 
             case EnemyState.Chase:
                 Debug.Log("[NoiseEnemy] Executing ChaseBehavior()");
-                ChaseBehavior();
+                ApproachPlayer();
                 break;
 
             case EnemyState.Attack:
@@ -122,7 +122,7 @@ public class NoiseEnemy : EnemyBase
         }
     }
 
-    protected override void ChaseBehavior()
+    protected override void ApproachPlayer()
     {
         Debug.Log("[NoiseEnemy] Chase → Moving toward player");
         agent.stoppingDistance = stats.stopDistance;
