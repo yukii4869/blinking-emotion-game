@@ -15,8 +15,8 @@ MonoBehaviour:
   attackRange: 2
   damage: 10
   attackCooldown: 1
-  moveSpeed: 4
-  stopDistance: 1.5
+  moveSpeed: 2
+  stopDistance: 2
   knockbackForce: 50
   knockbackUpwardForce: 5
   stunDuration: 2

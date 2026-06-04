@@ -19,14 +19,20 @@ public class GiftGuest : EmotionEnemyBase
     [Header("Gift Settings")]
     [SerializeField] private float emotionTimeout = 3f;
     [SerializeField] private GameObject giftItemPrefab;
-    [SerializeField] private GameObject eyebroesAngry;
-    [SerializeField] private GameObject eyebrowsNormal;
-    [SerializeField] private Animator animator;
+    [SerializeField] private GameObject lookAngry;
+    [SerializeField] private GameObject lookExpectSmile;
+    [SerializeField] private GameObject lookSurprised;
+    [SerializeField] private GameObject lookDisappointed;
+    [SerializeField] private Animator armAnimator;
+    [SerializeField] private Transform roomPosition;
+    [SerializeField] private GameObject handGiftObject;
 
     private Vector3 leaveTarget;
 
     private GiftState currentState;
     private float emotionTimer;
+    private bool missedSurprise;
+
 
     public override void Start()
     {
@@ -68,6 +74,9 @@ public class GiftGuest : EmotionEnemyBase
             case GiftState.Attack:
                 UpdateAttack();
                 break;
+            case GiftState.Leave:
+                UpdateLeave();
+                break;
         }
     }
 
@@ -86,7 +95,7 @@ public class GiftGuest : EmotionEnemyBase
         {
             case GiftState.OfferGift:
                 agent.ResetPath();
-                animator.SetTrigger("OfferGift");
+                armAnimator.SetTrigger("OfferGift");
                 break;
 
             case GiftState.GiveGift:
@@ -107,6 +116,7 @@ public class GiftGuest : EmotionEnemyBase
                 Debug.Log("[GiftGuest] ATTACKING PLAYER!");
                 break;
             case GiftState.Leave:
+                Debug.Log("[GiftGuest] State: Leave");
                 UpdateLeave();
                 break;
         }
@@ -118,7 +128,6 @@ public class GiftGuest : EmotionEnemyBase
 
     private void UpdateApproach()
     {
-        Debug.Log("[GiftGuest] State: Approach");
 
         float dist = Vector3.Distance(transform.position, player.transform.position);
 
@@ -136,7 +145,8 @@ public class GiftGuest : EmotionEnemyBase
     {
         Debug.Log("[GiftGuest] State: OfferGift");
         LookAtPlayer();
-        if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
+        SetFace(FaceType.Surprised);
+        if (armAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
         {
             SetState(GiftState.ExpectSurprise);
         }
@@ -146,11 +156,13 @@ public class GiftGuest : EmotionEnemyBase
     {
         Debug.Log("[GiftGuest] State: ExpectSurprise");
         LookAtPlayer();
+        SetFace(FaceType.Surprised);
         emotionTimer -= Time.deltaTime;
 
         if (currentEmotion == Emotion.Surprised)
         {
             Debug.Log("[GiftGuest] Surprise detected! Moving to ExpectJoy.");
+            missedSurprise = false;
             SetState(GiftState.ExpectJoy);
             return;
         }
@@ -158,6 +170,7 @@ public class GiftGuest : EmotionEnemyBase
         if (emotionTimer <= 0f)
         {
             Debug.Log("[GiftGuest] Surprise NOT detected → Disappointed");
+            missedSurprise = true;
             SetState(GiftState.Disappointed);
         }
     }
@@ -166,6 +179,7 @@ public class GiftGuest : EmotionEnemyBase
     {
         Debug.Log("[GiftGuest] State: ExpectJoy");
         LookAtPlayer();
+        SetFace(FaceType.ExpectSmile);
         emotionTimer -= Time.deltaTime;
 
         if (currentEmotion == Emotion.Happy)
@@ -185,8 +199,42 @@ public class GiftGuest : EmotionEnemyBase
     private void UpdateDisappointed()
     {
         Debug.Log("[GiftGuest] State: Disappointed");
+        LookAtPlayer();
+        SetFace(FaceType.Disappointed);
         emotionTimer -= Time.deltaTime;
 
+        // Spieler macht Surprise
+        if (currentEmotion == Emotion.Surprised)
+        {
+            Debug.Log("[GiftGuest] Surprise in Disappointed");
+
+            // Egal ob Surprise oder Joy verpasst wurde:
+            // Surprise = "Ich hab's verstanden"
+            SetState(GiftState.ExpectJoy);
+            return;
+        }
+
+        // Spieler macht Happy
+        if (currentEmotion == Emotion.Happy)
+        {
+            Debug.Log("[GiftGuest] Happy in Disappointed");
+
+            if (missedSurprise)
+            {
+                // Spieler hat Surprise verpasst → Happy reicht NICHT
+                // Er muss Surprise nachholen
+                SetState(GiftState.ExpectSurprise);
+            }
+            else
+            {
+                // Spieler hat Joy verpasst → Happy = Quest geschafft
+                SetState(GiftState.GiveGift);
+            }
+
+            return;
+        }
+
+        // Wenn Zeit abläuft → endgültig wütend
         if (emotionTimer <= 0f)
         {
             Debug.Log("[GiftGuest] Disappointment turned into ANGER!");
@@ -194,11 +242,11 @@ public class GiftGuest : EmotionEnemyBase
         }
     }
 
+
     private void UpdateAngry()
     {
         Debug.Log("[GiftGuest] State: Angry");
-        eyebrowsNormal.SetActive(false);
-        eyebroesAngry.SetActive(true);
+        SetFace(FaceType.Angry);
 
         agent.SetDestination(player.transform.position);
 
@@ -215,23 +263,23 @@ public class GiftGuest : EmotionEnemyBase
         Debug.Log("[GiftGuest] State: Attack");
         LookAtPlayer();
         AttackBehavior();
+        SetState(GiftState.Leave);
     }
     private void UpdateLeave()
     {
-        Debug.Log("[GiftGuest] State: Leave");
-
         agent.stoppingDistance = 0f;
-        agent.speed = stats.moveSpeed * 0.8f; // etwas langsamer
-        agent.SetDestination(leaveTarget);
+        agent.speed = stats.moveSpeed * 0.8f;
+        agent.SetDestination(roomPosition.position);
 
-        float dist = Vector3.Distance(transform.position, leaveTarget);
+        float dist = Vector3.Distance(transform.position, roomPosition.position);
 
         if (dist < 0.3f)
         {
-            Debug.Log("[GiftGuest] Left the area. Despawning.");
+            Debug.Log("[GiftGuest] Reached room → despawn");
             Destroy(gameObject);
         }
     }
+
 
 
     // ---------------------------------------------------------
@@ -240,10 +288,49 @@ public class GiftGuest : EmotionEnemyBase
 
     private void GiveGiftToPlayer()
     {
-        Debug.Log("[GiftGuest] Spawning gift item.");
+        Debug.Log("[GiftGuest] Giving gift to player.");
+
+        // Hand-Geschenk ausblenden
+        if (handGiftObject != null)
+            handGiftObject.SetActive(false);
+
+        // Neues Geschenk instanziieren
         Instantiate(giftItemPrefab, transform.position + transform.forward, Quaternion.identity);
 
-        leaveTarget = transform.position - transform.forward * 5f;
+        // Danach in Leave-State
         SetState(GiftState.Leave);
     }
+    private void SetFace(FaceType face)
+    {
+        lookAngry.SetActive(false);
+        lookExpectSmile.SetActive(false);
+        lookSurprised.SetActive(false);
+        lookDisappointed.SetActive(false);
+
+        switch (face)
+        {
+            case FaceType.Surprised:
+                lookSurprised.SetActive(true);
+                break;
+            case FaceType.Disappointed:
+                lookDisappointed.SetActive(true);
+                break;
+            case FaceType.ExpectSmile:
+                lookExpectSmile.SetActive(true);
+                break;
+            case FaceType.Angry:
+                lookAngry.SetActive(true);
+                break;
+        }
+    }
+
+    public enum FaceType
+    {
+        Angry,
+        ExpectSmile,
+        Surprised,
+        Disappointed
+    }
+
+
 }
