@@ -14,9 +14,16 @@ public class GameplayFaceInput : MonoBehaviour
     private EmotionDetector emotionDetector = new();
     private BlendshapeNormalizer normalizer;
     private BlinkDetector blinkDetector;
+    // Events
     public static event System.Action<Emotion> OnEmotionChanged;
     public static event System.Action OnBlink;
+    public static event System.Action OnEyesClosed;
     private Emotion lastEmotion = Emotion.Neutral;
+    public bool eyesClosed;
+    private float eyesClosedTimer = 0f;
+
+   
+    public float requiredClosedDuration = 2f;
 
 
     public static GameplayFaceInput Instance { get; private set; }
@@ -71,9 +78,25 @@ public class GameplayFaceInput : MonoBehaviour
         }
 
         isBlinking = blinkDetector.IsBlinking;
+
+        // --- NEU: Augen wirklich geschlossen halten ---
+        if (currentEAR < blinkThreshold)
+        {
+            eyesClosedTimer += Time.deltaTime;
+
+            if (!eyesClosed && eyesClosedTimer >= requiredClosedDuration)
+            {
+                eyesClosed = true;
+                OnEyesClosed?.Invoke(); // Event für GambleGuest
+            }
+        }
+        else
+        {
+            eyesClosedTimer = 0f;
+            eyesClosed = false;
+        }
+
     }
-
-
     private void ProcessEmotionDetection()
     {
         var raw = MediaPipeProvider.Instance.Blendshapes;

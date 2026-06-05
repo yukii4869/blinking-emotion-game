@@ -5,12 +5,13 @@ using System.Collections;
 public abstract class EnemyBase : MonoBehaviour
 {
     public EnemyStats stats;
-
     protected NavMeshAgent agent;
     protected PlayerController player;
-
     protected bool stunned = false;
     protected float lastAttackTime = 0f;
+    private Room assignedRoom;
+    private bool goingHome = false;
+
 
     public EnemyState CurrentState { get; private set; }
 
@@ -19,6 +20,9 @@ public abstract class EnemyBase : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         player = FindFirstObjectByType<PlayerController>();
         agent.speed = stats.moveSpeed;
+        assignedRoom = RoomManager.instance.GetFreeRoom();
+
+
     }
 
     protected virtual void Update()
@@ -83,5 +87,30 @@ public abstract class EnemyBase : MonoBehaviour
         Quaternion targetRot = Quaternion.LookRotation(dir);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * rotationSpeed);
     }
+    protected void GoToRoom()
+    {
+        if (assignedRoom == null)
+        {
+            Debug.Log("Kein Room assigned!");
+            return;
+        }
+
+        if (!goingHome)
+        {
+            goingHome = true;
+            agent.SetDestination(assignedRoom.transform.position);
+            Debug.Log("Gehe zu Room: " + assignedRoom.name);
+        }
+
+        float dist = Vector3.Distance(transform.position, assignedRoom.transform.position);
+        Debug.Log("Distanz zum Room: " + dist);
+
+        if (dist < 2f)
+        {
+            Debug.Log("Enemy verschwindet!");
+            Destroy(gameObject);
+        }
+    }
+
 
 }

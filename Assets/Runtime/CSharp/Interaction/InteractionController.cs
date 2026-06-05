@@ -50,6 +50,12 @@ public class InteractionController : MonoBehaviour
             GameplayUIManager.Instance.ShowInteractionHint("Benutzen (E)");
             return;
         }
+         if (hit.collider.TryGetComponent(out GambleCard card))
+        {
+            currentInteractable = card;
+            GameplayUIManager.Instance.ShowInteractionHint("Karte ziehen (E)");
+            return;
+        }
     }
 
     // 4) Droppen (wenn Item in der Hand, aber kein Spot/Knopf)

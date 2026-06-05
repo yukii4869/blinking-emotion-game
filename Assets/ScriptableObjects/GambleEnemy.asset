@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8f2a6f400938f48a5e9aa01b8a149b, type: 3}
+  m_Name: GambleEnemy
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
+  attackRange: 2
+  damage: 10
+  attackCooldown: 1
+  moveSpeed: 2
+  stopDistance: 2
+  knockbackForce: 50
+  knockbackUpwardForce: 5
+  stunDuration: 2

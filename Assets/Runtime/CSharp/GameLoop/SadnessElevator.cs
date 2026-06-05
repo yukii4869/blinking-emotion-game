@@ -9,6 +9,7 @@ public class SadnessElevator : MonoBehaviour
     [SerializeField] private float drainSpeed = 0.2f;
     [SerializeField] private Animator doorAnimation;
     [SerializeField] private GameObject elevatorUIPrefab;
+    [SerializeField] private Transform world;
 
     private float fillAmount = 0f;          // 0 = ganz unten, 1 = ganz oben
     private bool isSad = false;
