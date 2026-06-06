@@ -3,20 +3,38 @@ using UnityEngine;
 
 public class GambleGuest : EnemyBase
 {
+    private enum GambleState
+    {
+        Approach,
+        Interact,
+        WaitingForCard,
+        WaitingForEyes,
+        Resolve
+    }
+
     public float approachDistance = 2f;
     public Animator anim;
+
+    [Header("UI")]
     public GameObject uiPrefab;
     private GameObject activeUI;
     private Transform uiRoot;
+
+    [Header("Ritual")]
     public GameObject ritualCirclePrefab;
     private GameObject ritualCircleInstance;
+
+    private GambleState gambleState = GambleState.Approach;
+    private int chosenCard = -1;
+
     public override void Start()
     {
         base.Start();
         uiRoot = GameObject.FindGameObjectWithTag("GameplayCanvas").transform;
-    }
 
-    private int chosenCard = -1;
+        gambleState = GambleState.Approach;
+        SetState(EnemyState.Special); // WICHTIG: alles läuft über Special
+    }
 
     private void OnEnable()
     {
@@ -30,82 +48,105 @@ public class GambleGuest : EnemyBase
 
     private void HandleEyesClosed()
     {
-        if (CurrentState == EnemyState.WaitingForEyes)
-            SetState(EnemyState.Resolve);
+        if (gambleState == GambleState.WaitingForEyes)
+            gambleState = GambleState.Resolve;
     }
 
-    public override void UpdateBehavior()
+    // ---------------------------------------------------------
+    // SPECIAL LOGIC
+    // ---------------------------------------------------------
+    protected override void UpdateSpecial()
     {
-        if (stunned) return;
-
-        switch (CurrentState)
+        switch (gambleState)
         {
-            case EnemyState.Idle:
-                ApproachPlayer();
-                if (Vector3.Distance(transform.position, player.transform.position) <= approachDistance)
-                {
-                    agent.ResetPath();
-                    SpawnRitualCircle();
-                    SetState(EnemyState.Interact);
-                }
+            case GambleState.Approach:
+                LookAtPlayer();
+                UpdateApproachGamble();
                 break;
 
-
-            case EnemyState.Interact:
-                anim.SetTrigger("OpenDeck");
-
-                // UI erzeugen
-                if (activeUI == null)
-                    activeUI = Instantiate(uiPrefab, uiRoot);
-
-                activeUI.SetActive(false); // erst später anzeigen
-
-                SetState(EnemyState.WaitingForCard);
+            case GambleState.Interact:
+                LookAtPlayer();
+                UpdateInteract();
                 break;
 
-            case EnemyState.WaitingForCard:
-                if (chosenCard != -1)
-                {
-                    anim.SetTrigger("CloseDeck");
-
-                    // UI anzeigen
-                    activeUI.SetActive(true);
-
-                    SetState(EnemyState.WaitingForEyes);
-                }
-                break;
-            case EnemyState.WaitingForEyes:
-                // Wir warten NUR auf das Event → kein Code hier
+            case GambleState.WaitingForCard:
+                LookAtPlayer();
+                UpdateWaitingForCard();
                 break;
 
-            case EnemyState.Resolve:
-                if (activeUI != null)
-                    activeUI.SetActive(false);
-
-                bool good = Random.value > 0.5f;
-
-                if (good)
-                    Debug.Log("GOOD OUTCOME");
-                else
-                    Debug.Log("BAD OUTCOME");
-
-                // Optional: Sound nach 3 Sekunden
-                StartCoroutine(PlayRevealSound());
-                Cleanup();
-                SetState(EnemyState.GoingHome);
-                chosenCard = -1;
-                break;
-            case EnemyState.GoingHome:
-                GoToRoom();
+            case GambleState.WaitingForEyes:
+                LookAtPlayer();
+                // wartet nur auf Event
                 break;
 
-
+            case GambleState.Resolve:
+                UpdateResolve();
+                break;
         }
     }
 
+    // ---------------------------------------------------------
+    // STATE LOGIC
+    // ---------------------------------------------------------
+
+    private void UpdateApproachGamble()
+    {
+        ApproachPlayer();
+
+        if (Vector3.Distance(transform.position, player.transform.position) <= approachDistance)
+        {
+            agent.ResetPath();
+            SpawnRitualCircle();
+            gambleState = GambleState.Interact;
+        }
+    }
+
+    private void UpdateInteract()
+    {
+        anim.SetTrigger("OpenDeck");
+
+        if (activeUI == null)
+            activeUI = Instantiate(uiPrefab, uiRoot);
+
+        activeUI.SetActive(false);
+
+        gambleState = GambleState.WaitingForCard;
+    }
+
+    private void UpdateWaitingForCard()
+    {
+        if (chosenCard == -1)
+            return;
+
+        anim.SetTrigger("CloseDeck");
+        activeUI.SetActive(true);
+
+        gambleState = GambleState.WaitingForEyes;
+    }
+
+    private void UpdateResolve()
+    {
+        if (activeUI != null)
+            activeUI.SetActive(false);
+
+        bool good = Random.value > 0.5f;
+        Debug.Log(good ? "GOOD OUTCOME" : "BAD OUTCOME");
+
+        StartCoroutine(PlayRevealSound());
+        Cleanup();
+
+        chosenCard = -1;
+
+        SetState(EnemyState.GoingHome); // EnemyBase übernimmt Heimweg
+    }
+
+    // ---------------------------------------------------------
+    // HELPERS
+    // ---------------------------------------------------------
+
     public void OnCardChosen(int index)
     {
-        if (CurrentState != EnemyState.WaitingForCard)
+        if (gambleState != GambleState.WaitingForCard)
             return;
 
         chosenCard = index;
@@ -114,14 +155,9 @@ public class GambleGuest : EnemyBase
     private IEnumerator PlayRevealSound()
     {
         yield return new WaitForSeconds(3f);
-        // Hier Sound abspielen
         Debug.Log("Reveal Sound!");
     }
-    private void OnDestroy()
-    {
-        if (activeUI != null)
-            Destroy(activeUI);
-    }
+
     private void SpawnRitualCircle()
     {
         if (ritualCircleInstance != null) return;
@@ -129,12 +165,18 @@ public class GambleGuest : EnemyBase
         ritualCircleInstance = Instantiate(ritualCirclePrefab, transform.position, Quaternion.identity);
 
         RitualCircle circle = ritualCircleInstance.GetComponent<RitualCircle>();
-        //circle.center = transform;
         circle.radius = 2.5f;
     }
+
     private void Cleanup()
     {
         if (ritualCircleInstance != null)
             Destroy(ritualCircleInstance);
+    }
+
+    private void OnDestroy()
+    {
+        if (activeUI != null)
+            Destroy(activeUI);
     }
 }

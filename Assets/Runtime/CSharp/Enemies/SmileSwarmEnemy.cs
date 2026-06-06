@@ -2,43 +2,55 @@ using UnityEngine;
 
 public class SmileSwarmEnemy : EmotionEnemyBase
 {
+    private enum SwarmState
+    {
+        Wander,
+        Chase,
+        Attack
+    }
+
     public Transform formationSlot;
     public SwarmRootMover swarmRoot;
+
+    private SwarmState swarmState = SwarmState.Wander;
 
     public override void Start()
     {
         base.Start();
         HandleEmotion(GameplayFaceInput.Instance.currentEmotion);
+        SetState(EnemyState.Special); // läuft komplett über Special
     }
 
     protected override void HandleEmotion(Emotion e)
     {
+        base.HandleEmotion(e);
+
         bool smiling = (e == Emotion.Happy);
 
         if (swarmRoot != null)
             swarmRoot.isWandering = smiling;
 
-        SetState(smiling ? EnemyState.Wander : EnemyState.Chase);
+        swarmState = smiling ? SwarmState.Wander : SwarmState.Chase;
     }
 
-    public override void UpdateBehavior()
+    protected override void UpdateSpecial()
     {
         float dist = Vector3.Distance(transform.position, player.transform.position);
 
-        if (CurrentState == EnemyState.Chase && dist <= stats.attackRange)
-            SetState(EnemyState.Attack);
+        if (swarmState == SwarmState.Chase && dist <= stats.attackRange)
+            swarmState = SwarmState.Attack;
 
-        switch (CurrentState)
+        switch (swarmState)
         {
-            case EnemyState.Wander:
+            case SwarmState.Wander:
                 DoFormationWander();
                 break;
 
-            case EnemyState.Chase:
+            case SwarmState.Chase:
                 ApproachPlayer();
                 break;
 
-            case EnemyState.Attack:
+            case SwarmState.Attack:
                 AttackBehavior();
                 break;
         }
@@ -47,6 +59,7 @@ public class SmileSwarmEnemy : EmotionEnemyBase
     private void DoFormationWander()
     {
         if (formationSlot == null) return;
+
         agent.stoppingDistance = 0.1f;
         agent.SetDestination(formationSlot.position);
     }

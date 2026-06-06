@@ -17,13 +17,15 @@ public class CuteFluffyEnemy : EmotionEnemyBase
     [Header("Flee Settings")]
     [SerializeField] private float fleeDistance = 5.0f;
     [SerializeField] private float fleeSpeed = 4.0f;
-
+    private Vector3 fleeTarget;
+    private bool hasFleeTarget = false;
     private FluffyState currentState = FluffyState.Approach;
 
     public override void Start()
     {
         base.Start();
         agent.updateRotation = false;
+        SetState(EnemyState.Special);
         currentState = FluffyState.Approach;
     }
 
@@ -79,7 +81,7 @@ public class CuteFluffyEnemy : EmotionEnemyBase
     // -------------------------
     // MAIN BEHAVIOR LOOP
     // -------------------------
-    public override void UpdateBehavior()
+    protected override void UpdateSpecial()
     {
 
         switch (currentState)
@@ -129,22 +131,35 @@ public class CuteFluffyEnemy : EmotionEnemyBase
         agent.speed = fleeSpeed;
 
         float dist = Vector3.Distance(transform.position, player.transform.position);
+
+        // Wenn weit genug weg → stoppen
         if (dist >= fleeDistance)
         {
             agent.ResetPath();
+            hasFleeTarget = false;
             return;
         }
 
-        Vector3 dir = (transform.position - player.transform.position).normalized;
+        // Nur EINMAL ein Flee-Ziel setzen
+        if (!hasFleeTarget)
+        {
+            Vector3 dir = (transform.position - player.transform.position).normalized;
 
-        if (dir.sqrMagnitude < 0.1f)
-            dir = -player.transform.forward;
+            if (dir.sqrMagnitude < 0.1f)
+                dir = -player.transform.forward;
 
-        Vector3 fleeTarget = transform.position + dir * fleeDistance;
+            fleeTarget = transform.position + dir * fleeDistance;
 
-        if (NavMesh.SamplePosition(fleeTarget, out NavMeshHit hit, 6f, NavMesh.AllAreas))
-            agent.SetDestination(hit.position);
-        else
-            agent.SetDestination(transform.position + dir * 3f);
+            // NavMesh validieren
+            if (NavMesh.SamplePosition(fleeTarget, out NavMeshHit hit, 6f, NavMesh.AllAreas))
+                fleeTarget = hit.position;
+
+            agent.SetDestination(fleeTarget);
+            hasFleeTarget = true;
+        }
+
+        // Wenn Ziel erreicht → neues Ziel setzen
+        if (!agent.pathPending && agent.remainingDistance < 0.5f)
+            hasFleeTarget = false;
     }
 }

@@ -17,6 +17,7 @@ public class BlinkEnemy : EnemyBase
         base.Start();
         agent.updatePosition = false;
         agent.updateRotation = false;
+        SetState(EnemyState.Special);
     }
 
     private void OnEnable()
@@ -35,7 +36,7 @@ public class BlinkEnemy : EnemyBase
         blinkTimer = blinkDuration;
     }
 
-    public override void UpdateBehavior()
+    protected override void UpdateSpecial()
     {
         // Blink decay
         if (blinkTimer > 0f)
@@ -78,10 +79,10 @@ public class BlinkEnemy : EnemyBase
         }
 
         // CHASE: Spieler schaut weg ODER blinzelt
-        ApproachPlayer();
+        ApproachStepByStep();
     }
 
-    protected override void ApproachPlayer()
+    private void ApproachStepByStep()
     {
         if (Time.time < lastMoveTime + moveCooldown)
             return;

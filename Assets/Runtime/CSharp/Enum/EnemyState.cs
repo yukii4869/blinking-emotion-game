@@ -20,5 +20,6 @@ public enum EnemyState
     Attack,
     Stunned,
     GoingHome,
-    Approach
+    Approach,
+    Special
 }

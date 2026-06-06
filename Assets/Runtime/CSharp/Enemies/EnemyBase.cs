@@ -21,8 +21,7 @@ public abstract class EnemyBase : MonoBehaviour
         player = FindFirstObjectByType<PlayerController>();
         agent.speed = stats.moveSpeed;
         assignedRoom = RoomManager.instance.GetFreeRoom();
-
-
+        SetState(EnemyState.Idle);
     }
 
     protected virtual void Update()
@@ -32,18 +31,56 @@ public abstract class EnemyBase : MonoBehaviour
             agent.isStopped = true;
             return;
         }
-
         agent.isStopped = false;
 
-        UpdateBehavior();
+        if (stunned) return;
+
+        switch (CurrentState)
+        {
+            case EnemyState.Idle: UpdateIdle(); break;
+            case EnemyState.Approach: UpdateApproach(); break;
+            case EnemyState.Chase: UpdateChase(); break;
+            case EnemyState.Attack: UpdateAttack(); break;
+            case EnemyState.Special: UpdateSpecial(); break;   // Kind-Enemy
+            case EnemyState.GoingHome: UpdateGoingHome(); break;
+        }
     }
 
     public void SetState(EnemyState newState)
     {
         CurrentState = newState;
     }
+    protected virtual void UpdateIdle() { }
+    protected virtual void UpdateApproach()
+    {
+        ApproachPlayer();
+    }
+    protected virtual void UpdateChase()
+    {
+        agent.stoppingDistance = stats.stopDistance;
+        agent.SetDestination(player.transform.position);
 
-    public abstract void UpdateBehavior();
+        if (Vector3.Distance(transform.position, player.transform.position) <= stats.attackRange)
+            SetState(EnemyState.Attack);
+    }
+    protected virtual void UpdateAttack()
+    {
+        AttackBehavior();
+    }
+    protected virtual void UpdateSpecial()
+    {
+        // Wird im Kind überschrieben
+    }
+    protected virtual void UpdateGoingHome()
+    {
+        GoToRoom();
+    }
+    protected void ApproachPlayer()
+    {
+        agent.stoppingDistance = stats.stopDistance;
+        agent.speed = stats.moveSpeed;
+        agent.SetDestination(player.transform.position);
+    }
 
     protected virtual void AttackBehavior()
     {
@@ -59,14 +96,7 @@ public abstract class EnemyBase : MonoBehaviour
         dir.y = stats.knockbackUpwardForce;
         player.ApplyKnockback(dir, stats.knockbackForce, stats.knockbackUpwardForce);
     }
-    protected virtual void ApproachPlayer()
-    {
-        if (player == null) return;
 
-        agent.stoppingDistance = stats.stopDistance;
-        agent.speed = stats.moveSpeed;
-        agent.SetDestination(player.transform.position);
-    }
 
     protected IEnumerator Stun()
     {

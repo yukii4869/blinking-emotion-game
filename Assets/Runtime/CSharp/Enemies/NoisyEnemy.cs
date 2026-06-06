@@ -7,7 +7,7 @@ public class NoiseGuest : EnemyBase
 
     private float lastHeardTime = -999f;
 
-    public override void UpdateBehavior()
+    protected override void UpdateSpecial()
     {
         if (stunned) return;
 
