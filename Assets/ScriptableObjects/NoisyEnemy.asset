@@ -12,12 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a8f2a6f400938f48a5e9aa01b8a149b, type: 3}
   m_Name: NoisyEnemy
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
-  attackRange: 5
+  attackRange: 2
   damage: 10
-  knockbackForce: 50
-  knockbackUpwardForce: 5
   attackCooldown: 1
   moveSpeed: 3
-  health: 50
   stopDistance: 1.5
+  knockbackForce: 50
+  knockbackUpwardForce: 5
   stunDuration: 2

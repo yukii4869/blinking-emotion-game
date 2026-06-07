@@ -74,7 +74,6 @@ public class PlantItem : PickupItem, ICondition
     {
         if (IsDead) return;
         isHappy = (e == Emotion.Happy);
-        Debug.Log("Emotion:" + isHappy);
     }
 
     private void Update()

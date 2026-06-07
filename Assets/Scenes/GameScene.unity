@@ -1033,7 +1033,7 @@ GameObject:
   - component: {fileID: 108808052}
   - component: {fileID: 108808051}
   - component: {fileID: 108808054}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -1237,7 +1237,7 @@ GameObject:
   m_Component:
   - component: {fileID: 124981746}
   - component: {fileID: 124981747}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ItemHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11782,56 +11782,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 0.43366718, z: 0.5937336}
   m_Center: {x: -6.644497e-17, y: -0.2831664, z: -0.026574343}
---- !u!1 &864680647
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 864680649}
-  - component: {fileID: 864680648}
-  m_Layer: 0
-  m_Name: MicInputManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &864680648
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 864680647}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55d2551bfc1452f4b891e4af5aca5873, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MicInputManagerGamePlay
-  sensitivity: 0.03
-  loudness: 0
-  smoothSpeed: 10
-  lastNoisePosition: {x: 0, y: 0, z: 0}
-  currentDeviceIndex: 0
-  currentDeviceName: 
---- !u!4 &864680649
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 864680647}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.23261, y: 1.20911, z: -9.69217}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &884408720
 GameObject:
   m_ObjectHideFlags: 0
@@ -29554,7 +29504,7 @@ GameObject:
   - component: {fileID: 1540899245}
   - component: {fileID: 1540899246}
   - component: {fileID: 1540899247}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -36925,6 +36875,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AlchemieRoom
       objectReference: {fileID: 0}
+    - target: {fileID: 9145324675414031993, guid: 3dc8c6ab8d7c97d4b8d2ff1d5e9b828f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -37340,6 +37294,10 @@ PrefabInstance:
     - target: {fileID: 503650616152642931, guid: bb21bc8c8a9663d448af11ae808c2fcf, type: 3}
       propertyPath: m_Name
       value: NoiseEnemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 503650616152642931, guid: bb21bc8c8a9663d448af11ae808c2fcf, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2725371992896590252, guid: bb21bc8c8a9663d448af11ae808c2fcf, type: 3}
       propertyPath: stats
@@ -38083,6 +38041,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 765484266}
     m_Modifications:
+    - target: {fileID: 792867775990721982, guid: 98b82346102507d4ba60dcf2f6fba6a5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2032599703076156961, guid: 98b82346102507d4ba60dcf2f6fba6a5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -25.857145
@@ -38141,7 +38103,6 @@ SceneRoots:
   - {fileID: 1211926430}
   - {fileID: 383869884}
   - {fileID: 605094794}
-  - {fileID: 864680649}
   - {fileID: 237716884}
   - {fileID: 1496949626}
   - {fileID: 1540899240}

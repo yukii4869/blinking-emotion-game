@@ -43,9 +43,9 @@ public class MicInputManager : MonoBehaviour
         float raw = GetLoudness();
         float normalized = Mathf.Clamp01(raw / sensitivity);
 
-        smoothedLoudness = Mathf.Lerp(smoothedLoudness, normalized, Time.deltaTime * smoothSpeed);
+        smoothedLoudness = Mathf.Lerp(smoothedLoudness, normalized, Time.unscaledDeltaTime * smoothSpeed);
 
-        // Geräusch ins NoiseSystem schicken
+        // Geräusch ins NoiseSystem schicken von Spieler Mikrofon
         if (smoothedLoudness > 0.1f)
         {
             NoiseManager.EmitNoise(Camera.main.transform.position, smoothedLoudness);

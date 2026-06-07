@@ -133,11 +133,9 @@ public abstract class EnemyBase : MonoBehaviour
         }
 
         float dist = Vector3.Distance(transform.position, assignedRoom.transform.position);
-        Debug.Log("Distanz zum Room: " + dist);
-
+        
         if (dist < 2f)
         {
-            Debug.Log("Enemy verschwindet!");
             Destroy(gameObject);
         }
     }
