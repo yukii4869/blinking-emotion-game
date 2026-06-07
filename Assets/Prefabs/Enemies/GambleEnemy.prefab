@@ -419,6 +419,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7243860460222852527}
+  - component: {fileID: 3204849799733647095}
   m_Layer: 0
   m_Name: Cards
   m_TagString: Untagged
@@ -449,6 +450,28 @@ Transform:
   - {fileID: 2218468165642469798}
   m_Father: {fileID: 1288771613091155644}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &3204849799733647095
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6681463389472407051}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d80d8f31dbb10c6439e3d68a065c9256, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7512156329644283270
 GameObject:
   m_ObjectHideFlags: 0
@@ -458,7 +481,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1288771613091155644}
-  - component: {fileID: 6816295905878424883}
   m_Layer: 0
   m_Name: Arme (1)
   m_TagString: Untagged
@@ -475,7 +497,7 @@ Transform:
   m_GameObject: {fileID: 7512156329644283270}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.005000035, y: 1.73425, z: 0.27000028}
+  m_LocalPosition: {x: -0.005000035, y: 1.73425, z: 0.249}
   m_LocalScale: {x: 1.7500001, y: 1.7500001, z: 1.7500001}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -484,28 +506,6 @@ Transform:
   - {fileID: 7243860460222852527}
   m_Father: {fileID: 3107037456407491591}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &6816295905878424883
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7512156329644283270}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 226e83c7d0d44b141999bb0189a42c23, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7542751038930940169
 GameObject:
   m_ObjectHideFlags: 0
@@ -601,9 +601,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GambleGuest
   stats: {fileID: 11400000, guid: 1017dae3705054541bd7ed04c067d8a4, type: 2}
   approachDistance: 2
-  anim: {fileID: 0}
-  uiPrefab: {fileID: 0}
-  ritualCirclePrefab: {fileID: 0}
+  anim: {fileID: 3204849799733647095}
+  uiPrefab: {fileID: 9034150233905082809, guid: 6b7c49ca3abc4a84fa9daf2ef7ed7048, type: 3}
+  ritualCirclePrefab: {fileID: 1561946284448649825, guid: 711fbae2201b44a4197bf04a1fffc2b6, type: 3}
 --- !u!1 &8673076202874450618
 GameObject:
   m_ObjectHideFlags: 0
@@ -746,16 +746,64 @@ PrefabInstance:
       propertyPath: m_Name
       value: Card_Diamond6 (2)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -6138500334583829200, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+    - {fileID: 8422581791012411211, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8656600534359927316, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4613854171441535151}
+    - targetCorrespondingSourceObject: {fileID: 8656600534359927316, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6385470353139089571}
   m_SourcePrefab: {fileID: 100100000, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
 --- !u!4 &6987267739250343918 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8316385989753483438, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
   m_PrefabInstance: {fileID: 1413705887660019520}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7763099999031813460 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8656600534359927316, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+  m_PrefabInstance: {fileID: 1413705887660019520}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &4613854171441535151
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7763099999031813460}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.13320126, y: 0.19488761, z: 0.00035491012}
+  m_Center: {x: 0.00000020861626, y: 0.00000023841858, z: 0}
+--- !u!114 &6385470353139089571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7763099999031813460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 393ce6dcd6a13db449cf91dda5de7454, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GambleCard
+  owner: {fileID: 5179191742953825189}
+  cardIndex: 0
 --- !u!1001 &2874529142760847423
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -774,11 +822,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4120217568309246361, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.0037
       objectReference: {fileID: 0}
     - target: {fileID: 4120217568309246361, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.003
       objectReference: {fileID: 0}
     - target: {fileID: 4120217568309246361, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
       propertyPath: m_LocalRotation.w
@@ -808,11 +856,59 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 40.024002
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -3884820943163930010, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
+    - {fileID: 4514662299505008252, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3631630423275414307, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5358596574123901420}
+    - targetCorrespondingSourceObject: {fileID: 3631630423275414307, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4679591285325786259}
   m_SourcePrefab: {fileID: 100100000, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
+--- !u!1 &1549877802983070492 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3631630423275414307, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
+  m_PrefabInstance: {fileID: 2874529142760847423}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &5358596574123901420
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1549877802983070492}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.1332014, y: 0.19488758, z: 0.00035492564}
+  m_Center: {x: 0.00000059604645, y: 7.1054274e-15, z: -3.5527137e-15}
+--- !u!114 &4679591285325786259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1549877802983070492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 393ce6dcd6a13db449cf91dda5de7454, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GambleCard
+  owner: {fileID: 5179191742953825189}
+  cardIndex: 0
 --- !u!4 &2218468165642469798 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4120217568309246361, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
@@ -870,16 +966,64 @@ PrefabInstance:
       propertyPath: m_Name
       value: Card_Diamond6 (3)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -6138500334583829200, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+    - {fileID: 8422581791012411211, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8656600534359927316, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2864712434492902399}
+    - targetCorrespondingSourceObject: {fileID: 8656600534359927316, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3804260373039025477}
   m_SourcePrefab: {fileID: 100100000, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
 --- !u!4 &1401405770509678184 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8316385989753483438, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
   m_PrefabInstance: {fileID: 6925260661591361222}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1745456786394655954 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8656600534359927316, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+  m_PrefabInstance: {fileID: 6925260661591361222}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &2864712434492902399
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1745456786394655954}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.13320126, y: 0.19488761, z: 0.00035491012}
+  m_Center: {x: 0.00000020861626, y: -0.00000023841858, z: 0}
+--- !u!114 &3804260373039025477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1745456786394655954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 393ce6dcd6a13db449cf91dda5de7454, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GambleCard
+  owner: {fileID: 5179191742953825189}
+  cardIndex: 0
 --- !u!1001 &6938669844258346203
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -894,11 +1038,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8316385989753483438, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.036499977
+      value: -0.0367
       objectReference: {fileID: 0}
     - target: {fileID: 8316385989753483438, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.030900002
+      value: 0.0307
       objectReference: {fileID: 0}
     - target: {fileID: 8316385989753483438, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
       propertyPath: m_LocalRotation.w
@@ -932,16 +1076,64 @@ PrefabInstance:
       propertyPath: m_Name
       value: Card_Diamond6
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -6138500334583829200, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+    - {fileID: 8422581791012411211, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8656600534359927316, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6806895185102147867}
+    - targetCorrespondingSourceObject: {fileID: 8656600534359927316, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6377379894608435312}
   m_SourcePrefab: {fileID: 100100000, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
 --- !u!4 &1378848652158657653 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8316385989753483438, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
   m_PrefabInstance: {fileID: 6938669844258346203}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1759068141876494031 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8656600534359927316, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+  m_PrefabInstance: {fileID: 6938669844258346203}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &6806895185102147867
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1759068141876494031}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.13320126, y: 0.1948875, z: 0.00035490413}
+  m_Center: {x: 0.00000020861626, y: -0.00000047683716, z: 0}
+--- !u!114 &6377379894608435312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1759068141876494031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 393ce6dcd6a13db449cf91dda5de7454, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GambleCard
+  owner: {fileID: 5179191742953825189}
+  cardIndex: 0
 --- !u!1001 &7118678095564673940
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -956,11 +1148,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8316385989753483438, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.055299997
+      value: -0.0575
       objectReference: {fileID: 0}
     - target: {fileID: 8316385989753483438, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.056900024
+      value: 0.0547
       objectReference: {fileID: 0}
     - target: {fileID: 8316385989753483438, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
       propertyPath: m_LocalRotation.w
@@ -994,16 +1186,64 @@ PrefabInstance:
       propertyPath: m_Name
       value: Card_Diamond6 (4)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -6138500334583829200, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+    - {fileID: 8422581791012411211, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8656600534359927316, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7168045395329428268}
+    - targetCorrespondingSourceObject: {fileID: 8656600534359927316, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5570173798248442695}
   m_SourcePrefab: {fileID: 100100000, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
 --- !u!4 &1270891389214139194 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8316385989753483438, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
   m_PrefabInstance: {fileID: 7118678095564673940}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1939024286514051456 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8656600534359927316, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+  m_PrefabInstance: {fileID: 7118678095564673940}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &7168045395329428268
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1939024286514051456}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.13320126, y: 0.19488762, z: 0.0003549179}
+  m_Center: {x: 0.00000044703484, y: 0.00000011920929, z: -0.00000047683716}
+--- !u!114 &5570173798248442695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1939024286514051456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 393ce6dcd6a13db449cf91dda5de7454, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GambleCard
+  owner: {fileID: 5179191742953825189}
+  cardIndex: 0
 --- !u!1001 &8112161933239937825
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1022,11 +1262,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4120217568309246361, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.031799912
+      value: -0.0349
       objectReference: {fileID: 0}
     - target: {fileID: 4120217568309246361, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.009299755
+      value: 0.0068
       objectReference: {fileID: 0}
     - target: {fileID: 4120217568309246361, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1056,11 +1296,59 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 24.813004
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -3884820943163930010, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
+    - {fileID: 4514662299505008252, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3631630423275414307, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 475805729576196222}
+    - targetCorrespondingSourceObject: {fileID: 3631630423275414307, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7046385281924335161}
   m_SourcePrefab: {fileID: 100100000, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
+--- !u!1 &4823941157428086786 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3631630423275414307, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
+  m_PrefabInstance: {fileID: 8112161933239937825}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &475805729576196222
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4823941157428086786}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.13320139, y: 0.19488755, z: 0.00035491784}
+  m_Center: {x: 0.00000059604645, y: 0.00000023841858, z: -0.00000047683716}
+--- !u!114 &7046385281924335161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4823941157428086786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 393ce6dcd6a13db449cf91dda5de7454, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GambleCard
+  owner: {fileID: 5179191742953825189}
+  cardIndex: 0
 --- !u!4 &5312493015612461752 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4120217568309246361, guid: 18c6a9a978394df4596d3f6ec9c6f6fb, type: 3}
@@ -1076,7 +1364,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8316385989753483438, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.25029993
+      value: 0.2502999
       objectReference: {fileID: 0}
     - target: {fileID: 8316385989753483438, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1118,16 +1406,64 @@ PrefabInstance:
       propertyPath: m_Name
       value: Card_Diamond6 (1)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -6138500334583829200, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+    - {fileID: 8422581791012411211, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8656600534359927316, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6814097826839584891}
+    - targetCorrespondingSourceObject: {fileID: 8656600534359927316, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5479826025393358619}
   m_SourcePrefab: {fileID: 100100000, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
 --- !u!4 &277835380458979379 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8316385989753483438, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
   m_PrefabInstance: {fileID: 8120743502591144093}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &617205779576609417 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8656600534359927316, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+  m_PrefabInstance: {fileID: 8120743502591144093}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &6814097826839584891
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 617205779576609417}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.13320126, y: 0.19488761, z: 0.00035491012}
+  m_Center: {x: 0.00000020861626, y: 0, z: -0.0000009536743}
+--- !u!114 &5479826025393358619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 617205779576609417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 393ce6dcd6a13db449cf91dda5de7454, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GambleCard
+  owner: {fileID: 5179191742953825189}
+  cardIndex: 0
 --- !u!1001 &9099589974292783299
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1138,7 +1474,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8316385989753483438, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.35450006
+      value: 0.3545001
       objectReference: {fileID: 0}
     - target: {fileID: 8316385989753483438, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1180,11 +1516,59 @@ PrefabInstance:
       propertyPath: m_Name
       value: Card_Diamond6 (5)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -6138500334583829200, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+    - {fileID: 8422581791012411211, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8656600534359927316, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5106317524155159858}
+    - targetCorrespondingSourceObject: {fileID: 8656600534359927316, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 704408658903338913}
   m_SourcePrefab: {fileID: 100100000, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+--- !u!1 &462270478138444503 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8656600534359927316, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}
+  m_PrefabInstance: {fileID: 9099589974292783299}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &5106317524155159858
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 462270478138444503}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.13320126, y: 0.1948875, z: 0.00035490413}
+  m_Center: {x: 0.00000020861626, y: -1.7763568e-15, z: -0.00000047683716}
+--- !u!114 &704408658903338913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 462270478138444503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 393ce6dcd6a13db449cf91dda5de7454, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GambleCard
+  owner: {fileID: 5179191742953825189}
+  cardIndex: 0
 --- !u!4 &946178273483149421 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8316385989753483438, guid: e36439ac5efe26e46ac2978ca26d063f, type: 3}

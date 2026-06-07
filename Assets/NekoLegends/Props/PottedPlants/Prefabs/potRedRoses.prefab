@@ -5068,8 +5068,8 @@ MonoBehaviour:
   itemName: Pflanze
   maxBloom: 10
   currentBloom: 5
-  bloomRate: 3
-  decayRate: 4
+  bloomRate: 2
+  decayRate: 2
   sweetSpotMin: 4
   sweetSpotMax: 7
   outOfRangeLimit: 2
