@@ -26,18 +26,14 @@ public class MicSettingsUI : MonoBehaviour
 
     private void Update()
     {
-        float loudness = MicInputManager.Instance.GetLoudness();
+        float loudness = MicInputManager.Instance.smoothedLoudness;
+
         smoothedLoudness = Mathf.Lerp(smoothedLoudness, loudness, Time.deltaTime * smoothSpeed);
-        // Live-Lautstärke anzeigen
 
-        // Pegel-Balken füllen (verstärkt, weil Werte klein sind)
-        volumeBar.fillAmount = Mathf.Clamp01(smoothedLoudness * 10f);
+        volumeBar.fillAmount = Mathf.Clamp01(smoothedLoudness);
 
-
-        // Farbe interpolieren
-        volumeBar.color = Color.Lerp(Color.green, Color.red, smoothedLoudness * 10f);
+        volumeBar.color = Color.Lerp(Color.green, Color.red, smoothedLoudness);
     }
-
     private void PopulateSourceDropDown()
     {
         var options = new List<TMP_Dropdown.OptionData>();

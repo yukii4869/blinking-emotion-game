@@ -3,9 +3,6 @@ using UnityEngine;
 public class RitualCircle : MonoBehaviour
 {
     public float radius = 2.5f;
-
-
-
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))

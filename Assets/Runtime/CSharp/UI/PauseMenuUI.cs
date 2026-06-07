@@ -1,9 +1,16 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PauseMenuUI : MonoBehaviour
 {
-    public GameObject pauseMenu;
+    [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private GameObject settingsUI;
+    public void OpenSettings()
+    {
+        pauseMenu.SetActive(false);
+        settingsUI.SetActive(true);
+    }
 
     public void ReturnToMainMenu()
     {

@@ -93,7 +93,6 @@ public class PlantItem : PickupItem, ICondition
     {
         if (isHappy)
         {
-            Debug.Log("HAPPY BLOOM");
             currentBloom += bloomRate * Time.deltaTime;
         }
 
