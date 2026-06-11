@@ -1,11 +1,3 @@
-/*public enum EnemyState
-{
-    Wander,
-    Alert,
-    Chase,
-    Attack,
-    Stunned
-}*/
 public enum EnemyState
 {
     Idle,            // Standardzustand

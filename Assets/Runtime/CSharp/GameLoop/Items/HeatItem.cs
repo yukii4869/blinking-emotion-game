@@ -49,7 +49,7 @@ public class HeatItem : PickupItem, ICondition
 
     private void Update()
     {
-        // UI nur anzeigen, wenn Item gehalten wird
+        // UI nur anzeigen wenn Item gehalten 
         if (heatUIInstance != null)
             heatUIInstance.gameObject.SetActive(IsHeld);
 
@@ -94,5 +94,23 @@ public class HeatItem : PickupItem, ICondition
     private void HandleEmotion(Emotion e)
     {
         isAngry = e == Emotion.Angry;
+    }
+    public void ResetFood()
+    {
+
+        currentHeat = 20f; 
+        IsBroken = false;
+        IsHeated = false;
+
+        isAngry = false;
+
+        if (heatUIInstance != null)
+            heatUIInstance.Initialize(this);
+
+        OnHeatCompleted = null;
+        OnHeatBroken = null;
+
+      
+
     }
 }

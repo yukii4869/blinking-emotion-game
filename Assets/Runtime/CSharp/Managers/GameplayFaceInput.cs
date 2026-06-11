@@ -18,11 +18,13 @@ public class GameplayFaceInput : MonoBehaviour
     public static event System.Action<Emotion> OnEmotionChanged;
     public static event System.Action OnBlink;
     public static event System.Action OnEyesClosed;
+    public static event System.Action OnEyesOpened;
+    public static event System.Action OnEyesClosedHold;
     private Emotion lastEmotion = Emotion.Neutral;
     public bool eyesClosed;
     private float eyesClosedTimer = 0f;
 
-   
+
     public float requiredClosedDuration = 2f;
 
 
@@ -68,7 +70,6 @@ public class GameplayFaceInput : MonoBehaviour
     private void ProcessBlinkDetection()
     {
         currentEAR = earCalc.ComputeBothEyes(MediaPipeProvider.Instance.Landmarks);
-
         blinkDetector.UpdateEAR(currentEAR);
 
         if (blinkDetector.BlinkStartedThisFrame)
@@ -77,26 +78,34 @@ public class GameplayFaceInput : MonoBehaviour
             OnBlink?.Invoke();
         }
 
-        isBlinking = blinkDetector.IsBlinking;
+        bool eyesArePhysicallyClosed = currentEAR < blinkThreshold;
 
-        // --- NEU: Augen wirklich geschlossen halten ---
-        if (currentEAR < blinkThreshold)
+        // --- Augen gehen zu ---
+        if (eyesArePhysicallyClosed && !eyesClosed)
+        {
+            eyesClosed = true;
+            eyesClosedTimer = 0f;
+            OnEyesClosed?.Invoke();   // ← nur EINMAL
+        }
+
+        // --- Augen bleiben zu ---
+        if (eyesArePhysicallyClosed)
         {
             eyesClosedTimer += Time.deltaTime;
 
-            if (!eyesClosed && eyesClosedTimer >= requiredClosedDuration)
-            {
-                eyesClosed = true;
-                OnEyesClosed?.Invoke(); // Event für GambleGuest
-            }
-        }
-        else
-        {
-            eyesClosedTimer = 0f;
-            eyesClosed = false;
+            if (eyesClosedTimer >= requiredClosedDuration)
+                OnEyesClosedHold?.Invoke();
         }
 
+        // --- Augen gehen wieder auf ---
+        if (!eyesArePhysicallyClosed && eyesClosed)
+        {
+            eyesClosed = false;
+            OnEyesOpened?.Invoke();   // ← jetzt wird es ausgelöst
+            eyesClosedTimer = 0f;
+        }
     }
+
     private void ProcessEmotionDetection()
     {
         var raw = MediaPipeProvider.Instance.Blendshapes;

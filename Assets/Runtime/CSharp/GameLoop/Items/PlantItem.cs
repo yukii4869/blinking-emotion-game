@@ -97,7 +97,7 @@ public class PlantItem : PickupItem, ICondition
 
         else
             currentBloom -= decayRate * Time.deltaTime;
-        
+
         currentBloom = Mathf.Clamp(currentBloom, 0, maxBloom);
         Debug.Log("CurrentBloom" + currentBloom);
     }
@@ -186,4 +186,33 @@ public class PlantItem : PickupItem, ICondition
         main.startColor = deadColor;
         particles.Stop();
     }
+    public void ResetPlant()
+    {
+        // Werte zurücksetzen
+        currentBloom = 5f; // oder dein Startwert
+        outOfRangeTimer = 0f;
+
+        // States zurücksetzen
+        IsPerfect = false;
+        IsWilted = false;
+        IsOvergrown = false;
+        IsDead = false;
+
+        // Emotion zurücksetzen
+        isHappy = false;
+
+        // Farben zurücksetzen
+        plantRenderer.material.color = Color.white;
+
+        // Partikel zurücksetzen
+        main.startColor = Color.white;
+        particles.Play();
+
+        // UI aktualisieren
+        if (plantUIInstance != null)
+            plantUIInstance.Initialize(this);
+
+        Debug.Log("Plant has been reset!");
+    }
+
 }

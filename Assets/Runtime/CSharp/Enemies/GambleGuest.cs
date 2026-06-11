@@ -38,12 +38,12 @@ public class GambleGuest : EnemyBase
 
     private void OnEnable()
     {
-        GameplayFaceInput.OnEyesClosed += HandleEyesClosed;
+        GameplayFaceInput.OnEyesClosedHold += HandleEyesClosed;
     }
 
     private void OnDisable()
     {
-        GameplayFaceInput.OnEyesClosed -= HandleEyesClosed;
+        GameplayFaceInput.OnEyesClosedHold -= HandleEyesClosed;
     }
 
     private void HandleEyesClosed()

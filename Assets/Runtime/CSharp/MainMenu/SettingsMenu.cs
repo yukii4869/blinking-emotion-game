@@ -8,9 +8,16 @@ public class SettingsUI : MonoBehaviour
     [SerializeField] private GameObject audioPanel;
     [SerializeField] private GameObject controlsPanel;
 
-    private void Start()
+    void OnEnable()
     {
-        
+        ShowSettingsMenu(); 
+    }
+    public void ShowSettingsMenu()
+    {
+        gameplayPanel.SetActive(false);
+        videoPanel.SetActive(false);
+        audioPanel.SetActive(false);
+        controlsPanel.SetActive(false);
     }
 
     public void ShowGameplay()
