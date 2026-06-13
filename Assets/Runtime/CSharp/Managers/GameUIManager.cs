@@ -10,7 +10,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject gameOverUI;
     [SerializeField] private GameObject healthUI;
+    public GameObject itemUI;
+    public static UIManager Instance;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
         GameStateManager.Instance.OnStateChanged += HandleStateChanged;

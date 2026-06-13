@@ -52,8 +52,8 @@ public class HeatUI : MonoBehaviour
         else
             fill.color = Color.Lerp(warmColor, hotColor, (t - 0.5f) * 2f);
 
-        // UI zur Kamera drehen
-        transform.forward = Camera.main.transform.forward;
+
+  
     }
 
     private void HandleHeatCompleted()

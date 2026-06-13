@@ -21,7 +21,7 @@ public class PlantUI : MonoBehaviour
         RectTransform rt = sweetSpotArea.rectTransform;
         rt.anchorMin = new Vector2(min, 0.5f);
         rt.anchorMax = new Vector2(max, 0.5f);
-        rt.sizeDelta = new Vector2(rt.sizeDelta.x, 22f); 
+        rt.sizeDelta = new Vector2(rt.sizeDelta.x, 70f); 
 
         // Danger Fill (Timer) auf 0 setzen
         if (dangerFill != null)
@@ -33,7 +33,7 @@ public class PlantUI : MonoBehaviour
         if (plant == null) return;
 
         // UI zur Kamera drehen
-        transform.forward = Camera.main.transform.forward;
+        //transform.forward = Camera.main.transform.forward;
 
         float t = plant.currentBloom / plant.maxBloom;
 
