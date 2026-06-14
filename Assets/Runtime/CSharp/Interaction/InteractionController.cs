@@ -31,7 +31,7 @@ public class InteractionController : MonoBehaviour
         if (itemHolder.HasItem && hit.collider.TryGetComponent(out DeliverySpot spot))
         {
             currentSpot = spot;
-            GameplayUIManager.Instance.ShowInteractionHint("Liefern (E)");
+            GameplayUIManager.Instance.ShowInteractionHint("Deliver (E)");
             return;
         }
 
@@ -39,7 +39,7 @@ public class InteractionController : MonoBehaviour
         if (!itemHolder.HasItem && hit.collider.TryGetComponent(out PickupItem pickup))
         {
             currentPickup = pickup;
-            GameplayUIManager.Instance.ShowInteractionHint("Aufheben (E)");
+            GameplayUIManager.Instance.ShowInteractionHint("Pick up (E)");
             return;
         }
 
@@ -47,13 +47,19 @@ public class InteractionController : MonoBehaviour
         if (hit.collider.TryGetComponent(out ButtonInteractable button))
         {
             currentInteractable = button;
-            GameplayUIManager.Instance.ShowInteractionHint("Benutzen (E)");
+            GameplayUIManager.Instance.ShowInteractionHint("Press (E)");
             return;
         }
          if (hit.collider.TryGetComponent(out GambleCard card))
         {
             currentInteractable = card;
-            GameplayUIManager.Instance.ShowInteractionHint("Karte ziehen (E)");
+            GameplayUIManager.Instance.ShowInteractionHint("Draw card (E)");
+            return;
+        }
+        if (hit.collider.TryGetComponent(out DoorInteractable door))
+        {
+            currentInteractable = door;
+            GameplayUIManager.Instance.ShowInteractionHint("Interact (E)");
             return;
         }
     }

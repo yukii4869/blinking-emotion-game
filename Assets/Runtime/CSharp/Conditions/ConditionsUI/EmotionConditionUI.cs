@@ -1,26 +1,27 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class EmotionConditionUI : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI promptText;
-    [SerializeField] private Slider progressBar;
+    [SerializeField] private GameObject root;
+    [SerializeField] private TMP_Text emotionText;
+    [SerializeField] private Image progressFill;
 
-    public void Show(string prompt)
+    public void Show(Emotion emotion)
     {
-        promptText.text = prompt;
-        progressBar.value = 0f;
-        gameObject.SetActive(true);
+        root.SetActive(true);
+        emotionText.text = "Zeige: " + emotion;
+        progressFill.fillAmount = 0f;
     }
 
-    public void UpdateProgress(float value)
+    public void UpdateProgress(float t)
     {
-        progressBar.value = value;
+        progressFill.fillAmount = t;
     }
 
     public void Hide()
     {
-        gameObject.SetActive(false);
+        root.SetActive(false);
     }
 }

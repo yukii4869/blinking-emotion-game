@@ -36,6 +36,23 @@ public class BlinkEnemy : EnemyBase
         blinkTimer = blinkDuration;
     }
 
+
+    private bool HasLineOfSight()
+    {
+        Vector3 eye = player.transform.position + Vector3.up * 1.6f;
+        Vector3 dir = (transform.position - eye).normalized;
+        float dist = Vector3.Distance(eye, transform.position);
+
+        if (Physics.Raycast(eye, dir, out RaycastHit hit, dist))
+        {
+            return hit.transform == transform;
+        }
+
+        return false;
+    }
+
+
+
     protected override void UpdateSpecial()
     {
         // Blink decay
@@ -51,7 +68,7 @@ public class BlinkEnemy : EnemyBase
         }
 
         float dist = Vector3.Distance(transform.position, player.transform.position);
-        bool looking = PlayerVision.Instance.IsInView(transform);
+        bool looking = PlayerVision.Instance.IsInView(transform) && HasLineOfSight();
 
         //  ATTACK-BEDINGUNG (final):
         // Wenn in AttackRange UND (nicht schauen ODER blinzeln)

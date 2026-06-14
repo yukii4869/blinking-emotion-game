@@ -254,7 +254,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BlinkEnemy
   stats: {fileID: 11400000, guid: 1a7bdfa5751fcba4da20b1fab93d5e35, type: 2}
   moveCooldown: 0.5
-  stepSize: 0.8
+  stepSize: 3
 --- !u!195 &7208316740887184974
 NavMeshAgent:
   m_ObjectHideFlags: 0
