@@ -24,4 +24,16 @@ public class EmotionConditionUI : MonoBehaviour
     {
         root.SetActive(false);
     }
+    public void ShowPreparing(float duration)
+    {
+        root.SetActive(true);
+        emotionText.text = "Bereit machen...";
+        progressFill.fillAmount = 0f;
+    }
+
+    public void UpdatePreparing(float t)
+    {
+        progressFill.fillAmount = 1f - t;
+    }
+
 }
