@@ -57,7 +57,9 @@ MonoBehaviour:
   maxHeight: 10
   fillSpeed: 1
   drainSpeed: 0.5
+  doorAnimation: {fileID: 4787537121023024768}
   elevatorUIPrefab: {fileID: 8437217902352588747, guid: 4e8c387a22c82f4428320a84ca024ccc, type: 3}
+  world: {fileID: 0}
 --- !u!54 &4669392722908290715
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -95,7 +97,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5001682907775280081}
   - component: {fileID: 4787537121023024768}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Doors
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -111,7 +113,7 @@ Transform:
   m_GameObject: {fileID: 2165627522796660720}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.314}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -191,7 +193,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
-    m_Type: 0
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -224,7 +226,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -334,6 +336,10 @@ PrefabInstance:
       value: Hall_Wall_Room_2x4 (2)
       objectReference: {fileID: 0}
     - target: {fileID: 1415022579781730, guid: f47d1100d6e729c42bd48a0aa114d5a0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1415022579781730, guid: f47d1100d6e729c42bd48a0aa114d5a0, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -408,6 +414,10 @@ PrefabInstance:
       value: Hall_Wall_Room_2x4 (1)
       objectReference: {fileID: 0}
     - target: {fileID: 1415022579781730, guid: f47d1100d6e729c42bd48a0aa114d5a0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1415022579781730, guid: f47d1100d6e729c42bd48a0aa114d5a0, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -479,7 +489,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1358730356953482, guid: f4dd0f93e8444d04b9c7f7dddeb49107, type: 3}
       propertyPath: m_Name
-      value: Point_Light
+      value: Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 1358730356953482, guid: f4dd0f93e8444d04b9c7f7dddeb49107, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4739131350640280, guid: f4dd0f93e8444d04b9c7f7dddeb49107, type: 3}
       propertyPath: m_LocalScale.y
@@ -495,11 +509,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4739131350640280, guid: f4dd0f93e8444d04b9c7f7dddeb49107, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.2930117
+      value: 0.654
       objectReference: {fileID: 0}
     - target: {fileID: 4739131350640280, guid: f4dd0f93e8444d04b9c7f7dddeb49107, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.0781585
+      value: -0.967
       objectReference: {fileID: 0}
     - target: {fileID: 4739131350640280, guid: f4dd0f93e8444d04b9c7f7dddeb49107, type: 3}
       propertyPath: m_LocalRotation.w
@@ -535,8 +549,53 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4739131350640280, guid: f4dd0f93e8444d04b9c7f7dddeb49107, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7539987398343839709}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1358730356953482, guid: f4dd0f93e8444d04b9c7f7dddeb49107, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2522772507829790874}
+    - targetCorrespondingSourceObject: {fileID: 1358730356953482, guid: f4dd0f93e8444d04b9c7f7dddeb49107, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3548464310495595551}
   m_SourcePrefab: {fileID: 100100000, guid: f4dd0f93e8444d04b9c7f7dddeb49107, type: 3}
+--- !u!1 &525372446543161301 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1358730356953482, guid: f4dd0f93e8444d04b9c7f7dddeb49107, type: 3}
+  m_PrefabInstance: {fileID: 526548108205504095}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2522772507829790874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525372446543161301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e8f9f6bc6af37142894e00d83c99052, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ElevatorButton
+  elevator: {fileID: 6427521139438290263}
+--- !u!65 &3548464310495595551
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525372446543161301}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.16000004, y: 0.09620632, z: 0.15756927}
+  m_Center: {x: -0.00000024325706, y: 0.04810317, z: 0.0000009536744}
 --- !u!4 &530996504606593223 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4739131350640280, guid: f4dd0f93e8444d04b9c7f7dddeb49107, type: 3}
@@ -553,6 +612,10 @@ PrefabInstance:
     - target: {fileID: 1415022579781730, guid: f47d1100d6e729c42bd48a0aa114d5a0, type: 3}
       propertyPath: m_Name
       value: Hall_Wall_Room_2x4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1415022579781730, guid: f47d1100d6e729c42bd48a0aa114d5a0, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 1415022579781730, guid: f47d1100d6e729c42bd48a0aa114d5a0, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -698,9 +761,41 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5001682907775280081}
     m_Modifications:
+    - target: {fileID: 1177222216359120, guid: 3c94f70e89ee85d4db042000491cc27f, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1177222216359120, guid: 3c94f70e89ee85d4db042000491cc27f, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1596523623529752, guid: 3c94f70e89ee85d4db042000491cc27f, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1596523623529752, guid: 3c94f70e89ee85d4db042000491cc27f, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1680889846117184, guid: 3c94f70e89ee85d4db042000491cc27f, type: 3}
       propertyPath: m_Name
       value: Hall_Room_Doorway_Sep
+      objectReference: {fileID: 0}
+    - target: {fileID: 1680889846117184, guid: 3c94f70e89ee85d4db042000491cc27f, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1680889846117184, guid: 3c94f70e89ee85d4db042000491cc27f, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1708457370886208, guid: 3c94f70e89ee85d4db042000491cc27f, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1708457370886208, guid: 3c94f70e89ee85d4db042000491cc27f, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4127327902279082, guid: 3c94f70e89ee85d4db042000491cc27f, type: 3}
       propertyPath: m_LocalScale.x
@@ -756,7 +851,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4771512446720224, guid: 3c94f70e89ee85d4db042000491cc27f, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.67559016
       objectReference: {fileID: 0}
     - target: {fileID: 4771512446720224, guid: 3c94f70e89ee85d4db042000491cc27f, type: 3}
       propertyPath: m_LocalRotation.x
@@ -764,7 +859,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4771512446720224, guid: 3c94f70e89ee85d4db042000491cc27f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.7372774
       objectReference: {fileID: 0}
     - target: {fileID: 4771512446720224, guid: 3c94f70e89ee85d4db042000491cc27f, type: 3}
       propertyPath: m_LocalRotation.z
@@ -772,7 +867,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4771512446720224, guid: 3c94f70e89ee85d4db042000491cc27f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: -95
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -795,6 +890,10 @@ PrefabInstance:
     - target: {fileID: 1415022579781730, guid: f47d1100d6e729c42bd48a0aa114d5a0, type: 3}
       propertyPath: m_Name
       value: Hall_Wall_Room_2x4 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1415022579781730, guid: f47d1100d6e729c42bd48a0aa114d5a0, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 1415022579781730, guid: f47d1100d6e729c42bd48a0aa114d5a0, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -870,9 +969,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: Garden_Gate_Flap_1Sided
       objectReference: {fileID: 0}
+    - target: {fileID: 1517946568467170, guid: b949cbb1c8b54dc438ef57dc69854b95, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1517946568467170, guid: b949cbb1c8b54dc438ef57dc69854b95, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1696210692206184, guid: b949cbb1c8b54dc438ef57dc69854b95, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1696210692206184, guid: b949cbb1c8b54dc438ef57dc69854b95, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4612731168115980, guid: b949cbb1c8b54dc438ef57dc69854b95, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.8437713
+      value: 0.049715
       objectReference: {fileID: 0}
     - target: {fileID: 4612731168115980, guid: b949cbb1c8b54dc438ef57dc69854b95, type: 3}
       propertyPath: m_LocalScale.z

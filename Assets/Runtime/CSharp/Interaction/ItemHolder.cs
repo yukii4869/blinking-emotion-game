@@ -21,7 +21,7 @@ public class ItemHolder : MonoBehaviour
         }
         if (item.TryGetComponent(out Collider col))
         {
-            col.enabled = false;
+            col.enabled = true;
         }
         if (item.TryGetComponent(out PickupItem pickup))
         {
