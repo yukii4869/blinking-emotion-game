@@ -1540,7 +1540,7 @@
     "m_ObjectId": "68f0385bf9b04a72bb4504a930df478e",
     "m_Version": 0,
     "m_fullscreenMode": 0,
-    "m_BlendMode": 1,
+    "m_BlendMode": 0,
     "m_SrcColorBlendMode": 0,
     "m_DstColorBlendMode": 1,
     "m_ColorBlendOperation": 0,

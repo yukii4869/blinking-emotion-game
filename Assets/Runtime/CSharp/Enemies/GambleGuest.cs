@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GambleGuest : EnemyBase
@@ -178,5 +179,9 @@ public class GambleGuest : EnemyBase
     {
         if (activeUI != null)
             Destroy(activeUI);
+    }
+    public bool CanInteract()
+    {
+        return !(gambleState == GambleState.WaitingForCard); 
     }
 }

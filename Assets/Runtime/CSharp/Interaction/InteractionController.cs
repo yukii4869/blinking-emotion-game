@@ -17,63 +17,71 @@ public class InteractionController : MonoBehaviour
         UpdateRaycast();
     }
 
-   private void UpdateRaycast()
-{
-    currentSpot = null;
-    currentPickup = null;
-    currentInteractable = null;
-
-    Ray ray = new(cam.transform.position, cam.transform.forward);
-
-    if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
+    private void UpdateRaycast()
     {
-        // 1) DeliverySpot (nur wenn Item in der Hand)
-        if (itemHolder.HasItem && hit.collider.TryGetComponent(out DeliverySpot spot))
+        currentSpot = null;
+        currentPickup = null;
+        currentInteractable = null;
+
+        Ray ray = new(cam.transform.position, cam.transform.forward);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
         {
-            currentSpot = spot;
-            GameplayUIManager.Instance.ShowInteractionHint("Deliver (E)");
+            if (hit.collider.TryGetComponent(out IInteractable interactable))
+            {
+                if (interactable.IsBusy())
+                {
+                    GameplayUIManager.Instance.HideInteractionHint();
+                    return;
+                }
+            }
+            // 1) DeliverySpot (nur wenn Item in der Hand)
+            if (itemHolder.HasItem && hit.collider.TryGetComponent(out DeliverySpot spot))
+            {
+                currentSpot = spot;
+                GameplayUIManager.Instance.ShowInteractionHint("Deliver (E)");
+                return;
+            }
+
+            // 2) PickupItem (nur wenn KEIN Item in der Hand)
+            if (!itemHolder.HasItem && hit.collider.TryGetComponent(out PickupItem pickup))
+            {
+                currentPickup = pickup;
+                GameplayUIManager.Instance.ShowInteractionHint("Pick up (E)");
+                return;
+            }
+
+            // 3) ButtonInteractable (IMMER möglich)
+            if (hit.collider.TryGetComponent(out ButtonInteractable button))
+            {
+                currentInteractable = button;
+                GameplayUIManager.Instance.ShowInteractionHint("Press (E)");
+                return;
+            }
+            if (hit.collider.TryGetComponent(out GambleCard card))
+            {
+                currentInteractable = card;
+                GameplayUIManager.Instance.ShowInteractionHint("Draw card (E)");
+                return;
+            }
+            if (hit.collider.TryGetComponent(out DoorInteractable door))
+            {
+                currentInteractable = door;
+                GameplayUIManager.Instance.ShowInteractionHint("Interact (E)");
+                return;
+            }
+        }
+
+        // 4) Droppen (wenn Item in der Hand, aber kein Spot/Knopf)
+        if (itemHolder.HasItem)
+        {
+            GameplayUIManager.Instance.ShowInteractionHint("Droppen (E)");
             return;
         }
 
-        // 2) PickupItem (nur wenn KEIN Item in der Hand)
-        if (!itemHolder.HasItem && hit.collider.TryGetComponent(out PickupItem pickup))
-        {
-            currentPickup = pickup;
-            GameplayUIManager.Instance.ShowInteractionHint("Pick up (E)");
-            return;
-        }
-
-        // 3) ButtonInteractable (IMMER möglich)
-        if (hit.collider.TryGetComponent(out ButtonInteractable button))
-        {
-            currentInteractable = button;
-            GameplayUIManager.Instance.ShowInteractionHint("Press (E)");
-            return;
-        }
-         if (hit.collider.TryGetComponent(out GambleCard card))
-        {
-            currentInteractable = card;
-            GameplayUIManager.Instance.ShowInteractionHint("Draw card (E)");
-            return;
-        }
-        if (hit.collider.TryGetComponent(out DoorInteractable door))
-        {
-            currentInteractable = door;
-            GameplayUIManager.Instance.ShowInteractionHint("Interact (E)");
-            return;
-        }
+        // 5) Nichts gefunden → Hint ausblenden
+        GameplayUIManager.Instance.HideInteractionHint();
     }
-
-    // 4) Droppen (wenn Item in der Hand, aber kein Spot/Knopf)
-    if (itemHolder.HasItem)
-    {
-        GameplayUIManager.Instance.ShowInteractionHint("Droppen (E)");
-        return;
-    }
-
-    // 5) Nichts gefunden → Hint ausblenden
-    GameplayUIManager.Instance.HideInteractionHint();
-}
 
 
     public void OnInteract(InputAction.CallbackContext context)

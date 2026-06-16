@@ -16,6 +16,8 @@ public class SadnessElevator : MonoBehaviour
     private bool playerInside = false;
     private bool doorsClosed = false;
     private bool doorsMoving = false;
+    private bool AtBottom => fillAmount <= 0.01f;
+    private bool AtTop => fillAmount >= 0.99f;
 
     private Vector3 startPos;
     private GameObject activeUI;
@@ -138,9 +140,6 @@ public class SadnessElevator : MonoBehaviour
 
     public void OnButtonPressed()
     {
-        bool AtBottom = fillAmount <= 0.01f;
-        bool AtTop = fillAmount >= 0.99f;
-
         // 1. Türen offen → schließen
         if (state == ElevatorState.Idle)
         {
@@ -174,4 +173,18 @@ public class SadnessElevator : MonoBehaviour
     {
         return fillAmount;
     }
+    public bool CanPressButton()
+    {
+        // Button darf gedrückt werden, wenn:
+        // - Idle (Türen offen)
+        // - Locked (oben/unten, Türen offen)
+        // - Closed (Türen zu, aber nicht in Bewegung)
+
+        return state == ElevatorState.Idle
+            || state == ElevatorState.Locked
+            || state == ElevatorState.Closed
+            || (state == ElevatorState.Closed || state == ElevatorState.Moving)
+            && (AtBottom || AtTop);
+    }
+
 }

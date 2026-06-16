@@ -9,4 +9,9 @@ public class GambleCard : MonoBehaviour, IInteractable
     {
         owner.OnCardChosen(cardIndex);
     }
+
+    public bool IsBusy()
+    {
+        return owner.CanInteract();
+    }
 }

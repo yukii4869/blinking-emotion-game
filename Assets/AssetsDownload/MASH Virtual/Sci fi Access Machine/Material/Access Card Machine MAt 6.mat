@@ -52,7 +52,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 2800000, guid: 11bf9f2abf168e94d809004d3e8c60f7, type: 3}
+        m_Texture: {fileID: 2800000, guid: e7896b7faba837f409b3c60448b45076, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:

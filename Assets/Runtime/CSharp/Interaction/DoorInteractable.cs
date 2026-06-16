@@ -10,6 +10,8 @@ public class DoorInteractable : MonoBehaviour, IInteractable
     public void Interact()
     {
         if (isOpen) return;
+        if (condition != null && condition.IsRunning)
+            return;
 
         if (condition != null)
         {
@@ -32,5 +34,10 @@ public class DoorInteractable : MonoBehaviour, IInteractable
     {
         Debug.Log("Emotion failed!");
         // später Sound
+    }
+
+    public bool IsBusy()
+    {
+        return (condition != null && condition.IsRunning) || isOpen;
     }
 }

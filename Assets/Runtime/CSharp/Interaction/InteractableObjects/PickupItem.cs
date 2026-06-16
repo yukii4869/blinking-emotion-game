@@ -18,4 +18,9 @@ public class PickupItem : MonoBehaviour, IInteractable
     {
         holder.PickUp(gameObject);
     }
+
+    public bool IsBusy()
+    {
+        return false;
+    }
 }
