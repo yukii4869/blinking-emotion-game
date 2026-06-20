@@ -7,10 +7,11 @@ public class CalibrationUIManger : MonoBehaviour
     [SerializeField] private GameObject pythonLoadingUI;
     [SerializeField] private GameObject earCalibrationUI;
     [SerializeField] private GameObject emotionCalibrationUI;
+    [SerializeField] private GameObject interactionHint;
     [SerializeField] private GameObject emotionTestUI;
     [SerializeField] private GameObject saveProfileUI;
     [SerializeField] private GameObject liveFaceUI;
-
+    
     private void Start()
     {
         CalibrationStateManager.Instance.OnStateChanged += HandleStateChanged;
@@ -27,6 +28,7 @@ public class CalibrationUIManger : MonoBehaviour
         emotionTestUI.SetActive(false);
         saveProfileUI.SetActive(false);
         liveFaceUI.SetActive(false);
+        interactionHint.SetActive(false);
 
         // Passende UI an
         switch (state)
@@ -38,24 +40,23 @@ public class CalibrationUIManger : MonoBehaviour
 
             case CalibrationState.EARCalibration:
                 earCalibrationUI.SetActive(true);
-                calibrationBackground.SetActive(true);
-                liveFaceUI.SetActive(true);
+                interactionHint.SetActive(true);
                 break;
 
             case CalibrationState.EmotionCalibration:
                 earCalibrationUI.SetActive(true);
                 emotionCalibrationUI.SetActive(true);
-                calibrationBackground.SetActive(true);
-                liveFaceUI.SetActive(true);
+                interactionHint.SetActive(true);
+               
+      
                 break;
 
             case CalibrationState.EmotionTest:
-                calibrationBackground.SetActive(true);
-                liveFaceUI.SetActive(true);
+               
                 emotionTestUI.SetActive(true);
                 break;
             case CalibrationState.ProfileSave:
-                calibrationBackground.SetActive(true);
+
                 saveProfileUI.SetActive(true);
                 break;
         }

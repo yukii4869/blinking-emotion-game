@@ -7,8 +7,8 @@ public class EARCalibrator : MonoBehaviour
     private readonly EARCalculator earCalculator = new();
     private bool isCalibrating;
     public bool finishedCalibration = false;
-    private int collectedFrames = 0;
-    private readonly int maxFrames = 50;
+    private float calibrationTimer;
+    private const float calibrationDuration = 2f;
     private readonly float lowerCutPercentage = 0.15f;
     private readonly float blinkFactor = 0.75f;
     private List<float> earSamples = new();
@@ -24,13 +24,13 @@ public class EARCalibrator : MonoBehaviour
         {
             return;
         }
-        if (collectedFrames < maxFrames)
-        {
-            float currentEAR = earCalculator.ComputeBothEyes(MediaPipeProvider.Instance.Landmarks);
-            earSamples.Add(currentEAR);
-            collectedFrames++;
-        }
-        else
+        float currentEAR = earCalculator.ComputeBothEyes(MediaPipeProvider.Instance.Landmarks);
+
+        earSamples.Add(currentEAR);
+
+        calibrationTimer += Time.deltaTime;
+
+        if (calibrationTimer >= calibrationDuration)
         {
             FinishCalibration();
         }
@@ -39,7 +39,7 @@ public class EARCalibrator : MonoBehaviour
     {
         startedCalibration = true;
         earSamples.Clear();
-        collectedFrames = 0;
+        calibrationTimer = 0f;
         isCalibrating = true;
         finishedCalibration = false;
     }
@@ -58,7 +58,6 @@ public class EARCalibrator : MonoBehaviour
         blinkThreshold = ComputeBlinkThreshold(neutralEAR);
         finishedCalibration = true;
         OnEARCalibrationFinished?.Invoke();
-        CalibrationStateManager.Instance.SetState(CalibrationState.EmotionCalibration);
     }
     private List<float> SortList(List<float> earValues)
     {

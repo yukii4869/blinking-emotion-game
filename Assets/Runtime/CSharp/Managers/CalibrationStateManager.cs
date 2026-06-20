@@ -19,7 +19,7 @@ public class CalibrationStateManager : MonoBehaviour
     
     public void SetState(CalibrationState newState)
     {
-        Debug.Log(CurrentState);
+        Debug.Log(newState);
         CurrentState = newState;
         OnStateChanged?.Invoke(newState);
 

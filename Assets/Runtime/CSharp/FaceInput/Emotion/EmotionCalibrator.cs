@@ -283,6 +283,7 @@ public enum EmotionCalibrationPhase
     AngryMax,
     SadMax,
     SurprisedMax,
-    WaitForValidate
+    WaitForValidate,
+    pendingPhase
 }
 

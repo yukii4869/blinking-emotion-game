@@ -1,0 +1,44 @@
+# Blender MTL File: 'books.blend'
+# Material Count: 3
+
+newmtl book
+Ns 323.999994
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump books_book_Normal.png
+map_Kd books_book_BaseColor.png
+map_Ns books_book_Roughness.png
+refl books_book_Metallic.png
+
+newmtl container_book
+Ns 323.999994
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump books_container book_Normal.png
+map_Kd books_container book_BaseColor.png
+map_Ns books_container book_Roughness.png
+refl books_container book_Metallic.png
+
+newmtl open_book
+Ns 323.999994
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump books_open book_Normal.png
+map_Kd books_open book_BaseColor.png
+map_Ns books_open book_Roughness.png
+refl books_open book_Metallic.png
