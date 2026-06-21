@@ -15,12 +15,17 @@ public class EmotionCalibrationUI : MonoBehaviour
     [SerializeField] private InputActionReference continueAction;
     [SerializeField] private InputActionReference retryAction;
     [SerializeField] private Typewriter typewriter;
+    [SerializeField] private TextMeshProUGUI interactionHintText;
+    private bool skipRequested = false;
+    private bool allowRetry = false;
+
+    private bool isTyping = false;
+
     private bool phaseRunning = false;
     private bool calibrationStarted = false;
     private bool emoteCalibrationFinished = false;
     private EmotionCalibrationPhase currentUIPhase = EmotionCalibrationPhase.None;
     private bool waitingToStartPhase = false;
-    private string pendingPrompt;
     private EmotionCalibrationPhase pendingPhase = EmotionCalibrationPhase.None;
 
     private void Update()
@@ -53,6 +58,13 @@ public class EmotionCalibrationUI : MonoBehaviour
     }
     private void OnContinue(InputAction.CallbackContext context)
     {
+        // Wenn Text gerade tippt → Skip statt Continue
+        if (isTyping)
+        {
+            skipRequested = true;
+            return;
+        }
+
         if (!calibrationStarted || emoteCalibrationFinished || phaseRunning)
             return;
 
@@ -65,9 +77,11 @@ public class EmotionCalibrationUI : MonoBehaviour
 
         PrepareNextPhase();
     }
+
     private void PrepareNextPhase()
     {
         commentText.text = "";
+        interactionHintText.text = "";
 
         if (!IsPhaseFinished(EmotionCalibrationPhase.Neutral))
             ShowPhasePrompt(EmotionCalibrationPhase.Neutral);
@@ -89,17 +103,20 @@ public class EmotionCalibrationUI : MonoBehaviour
     }
     private void ShowPhasePrompt(EmotionCalibrationPhase phase)
     {
+        allowRetry = false;
+
         pendingPhase = phase;
         currentUIPhase = phase;
         waitingToStartPhase = true;
 
         progressBar.gameObject.SetActive(false);
 
+        StartCoroutine(RunTypewriter(GetPrompt(phase)));
 
-        StopAllCoroutines();
-        StartCoroutine(typewriter.TypeText(promptText, GetPrompt(phase)));
-        commentText.text = "Bestätigung erforderlich";
+        // Buttons erst NACH dem Typewriter anzeigen
+        StartCoroutine(ShowConfirmAfterTyping());
     }
+
 
     private void OnRetry(InputAction.CallbackContext context)
     {
@@ -115,6 +132,8 @@ public class EmotionCalibrationUI : MonoBehaviour
 
     private IEnumerator RunPhase(EmotionCalibrationPhase phase)
     {
+        commentText.text = "";
+        interactionHintText.text = "";
         if (phaseRunning)
             yield break;
 
@@ -124,7 +143,7 @@ public class EmotionCalibrationUI : MonoBehaviour
         commentText.text = "";
         yield return new WaitForSeconds(1f);
 
-        yield return StartCoroutine(typewriter.TypeText(promptText, "Erfassung läuft..."));
+        yield return StartCoroutine(RunTypewriter("Erfassung läuft..."));
         commentText.text = "";
 
         switch (phase)
@@ -151,9 +170,10 @@ public class EmotionCalibrationUI : MonoBehaviour
         phaseRunning = false;
         yield return new WaitForSeconds(0.5f);
         progressBar.gameObject.SetActive(false);
-        yield return StartCoroutine(typewriter.TypeText(promptText, GetSavedText(phase)));
-        commentText.text = "Bestätigung erforderlich";
-        commentText.text = "Aufnahme abgeschlossen \n Bestätigung erforderlich";
+        yield return StartCoroutine(RunTypewriter(GetSavedText(phase)));
+
+        allowRetry = true;
+        StartCoroutine(ShowConfirmAfterTyping());
     }
     public void ResetUI()
     {
@@ -161,9 +181,19 @@ public class EmotionCalibrationUI : MonoBehaviour
         emoteCalibrationFinished = false;
         phaseRunning = false;
         currentUIPhase = EmotionCalibrationPhase.None;
+        pendingPhase = EmotionCalibrationPhase.Neutral;
+
+        waitingToStartPhase = false;
+        allowRetry = false;
+        skipRequested = false;
+        isTyping = false;
 
         progressBar.value = 0f;
-        promptText.text = "Bereit zur Kalibrierung";
+        progressBar.gameObject.SetActive(false);
+
+        promptText.text = "Ihre Entscheidung zur Wiederholung wurde bestätigt.";
+        commentText.text = "";
+        interactionHintText.text = "";
     }
 
     private IEnumerator ProgressCalibration(EmotionCalibrationPhase phase)
@@ -226,4 +256,44 @@ public class EmotionCalibrationUI : MonoBehaviour
             _ => "AUFNAHME GESPEICHERT"
         };
     }
+    private IEnumerator RunTypewriter(string text)
+    {
+        isTyping = true;
+        skipRequested = false;
+
+        promptText.text = "";
+        commentText.text = "";
+        interactionHintText.text = "";
+
+        float delay = 1f / typewriter.charsPerSecond;
+
+        foreach (char c in text)
+        {
+            if (skipRequested)
+            {
+                promptText.text = text;
+                break;
+            }
+
+            promptText.text += c;
+            yield return new WaitForSeconds(delay);
+        }
+
+        isTyping = false;
+    }
+
+    private IEnumerator ShowConfirmAfterTyping()
+    {
+        // Warten bis Typewriter fertig ist
+        yield return new WaitUntil(() => !isTyping);
+
+        commentText.text = "Bestätigung erforderlich";
+
+        if (allowRetry)
+            interactionHintText.text = "[E] Bestätigen   [R] Wiederholen";
+        else
+            interactionHintText.text = "[E] Bestätigen";
+    }
+
+
 }

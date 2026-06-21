@@ -12,11 +12,11 @@ public class EARCalibrationUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI interactionHintText;
     [SerializeField] private Slider progressBar;
     [SerializeField] private Typewriter typewriter;
-
     [SerializeField] private TextMeshProUGUI commentText;
+
     [SerializeField] private float visibleScanDuration = 2f;
-
-
+    private bool skipRequested = false;
+    private bool isTyping = false;
     private bool waitingForContinue = false;
     private bool calibrationRunning = false;
 
@@ -43,12 +43,21 @@ public class EARCalibrationUI : MonoBehaviour
 
         progressBar.value = 0f;
         progressBar.gameObject.SetActive(false);
-        interactionHintText.text = "[Space] Bestätigungsknopf [R] Wiederholungsknopf";
+
+        interactionHintText.text = "[E] Bestätigen";
         commentText.text = "Aufnahme bereit. Bitte bestätigen";
     }
 
     private void OnStartCalibration(InputAction.CallbackContext context)
     {
+        // BLOCKIEREN, wenn Typewriter noch schreibt
+        if (isTyping)
+            return;
+
+        commentText.text = "";
+        Debug.Log("StartCalibration");
+
+        // Weiter nach Abschluss
         if (waitingForContinue)
         {
             waitingForContinue = false;
@@ -59,6 +68,7 @@ public class EARCalibrationUI : MonoBehaviour
             return;
         }
 
+        // Blockieren, wenn schon läuft
         if (calibrationRunning || earCalibrator.finishedCalibration)
             return;
 
@@ -69,14 +79,17 @@ public class EARCalibrationUI : MonoBehaviour
     {
         calibrationRunning = true;
         interactionHintText.text = "";
+        Debug.Log("RUN");
 
         progressBar.value = 0f;
         progressBar.gameObject.SetActive(false);
 
-        statusText.text = "Bitte schauen Sie in die Kamera.";
-        yield return new WaitForSeconds(2f);
+        // TYPEWRITER: Erfassung läuft
+        yield return StartCoroutine(RunTypewriter("Bitte schauen Sie in die Kamera"));
 
-        statusText.text = "Augenprofil wird erstellt.\nBitte nicht wegsehen.";
+        yield return new WaitForSeconds(1f);
+
+        yield return StartCoroutine(RunTypewriter("Erfassung läuft..."));
 
         progressBar.gameObject.SetActive(true);
         progressBar.value = 0f;
@@ -95,24 +108,49 @@ public class EARCalibrationUI : MonoBehaviour
         progressBar.value = 1f;
 
         yield return new WaitUntil(() => earCalibrator.finishedCalibration);
+
         progressBar.gameObject.SetActive(false);
-        statusText.text = "Augenprofil gespeichert.\n Bitte bestätigen"; ;
+
+        // TYPEWRITER: gespeichert
+        yield return StartCoroutine(RunTypewriter("Augenprofil gespeichert."));
+
+        commentText.text = "Bitte bestätigen";
+        interactionHintText.text = "[E] Bestätigen";
         waitingForContinue = true;
         calibrationRunning = false;
     }
 
-    public void StartEARCalibration()
-    {
-        if (calibrationRunning || earCalibrator.finishedCalibration)
-            return;
-
-        StartCoroutine(RunEARCalibrationSequence());
-    }
-
     public void FinishedEARCalibration()
     {
-        // Nicht mehr direkt technischen Text anzeigen,
-        // sonst wirkt es wieder wie Debug-UI.
+        commentText.text = "";
         Debug.Log($"EAR gespeichert. Baseline: {earCalibrator.neutralEAR:F3}, Threshold: {earCalibrator.blinkThreshold:F3}");
+    }
+
+    private IEnumerator RunTypewriter(string text)
+    {
+        isTyping = true;
+        skipRequested = false;
+
+        // Wir starten den Typewriter, aber kontrollieren ihn selbst
+        string full = text;
+        statusText.text = "";
+
+        float delay = 1f / typewriter.charsPerSecond;
+
+        foreach (char c in full)
+        {
+            // Wenn Skip gedrückt → sofort Text fertig anzeigen
+            if (skipRequested)
+            {
+                statusText.text = full;
+                break;
+            }
+
+            statusText.text += c;
+            yield return new WaitForSeconds(delay);
+        }
+
+        isTyping = false;
+
     }
 }
