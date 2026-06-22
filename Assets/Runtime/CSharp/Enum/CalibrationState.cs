@@ -5,6 +5,7 @@ public enum CalibrationState
     EARCalibration,
     EmotionCalibration,
     EmotionTest,
-    ProfileSave
+    ProfileSave,
+    FinishedCalibration
 
 }

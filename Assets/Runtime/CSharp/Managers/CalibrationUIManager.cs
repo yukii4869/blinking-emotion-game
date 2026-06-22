@@ -11,6 +11,7 @@ public class CalibrationUIManger : MonoBehaviour
     [SerializeField] private GameObject saveProfileUI;
     [SerializeField] private GameObject liveFaceUI;
     [SerializeField] private GameObject interactionHintUI;
+    [SerializeField] private GameObject finishedCalibrationUI;
 
     private void Start()
     {
@@ -29,6 +30,7 @@ public class CalibrationUIManger : MonoBehaviour
         saveProfileUI.SetActive(false);
         liveFaceUI.SetActive(false);
         interactionHintUI.SetActive(true);
+        finishedCalibrationUI.SetActive(false);
 
 
         // Passende UI an
@@ -56,6 +58,9 @@ public class CalibrationUIManger : MonoBehaviour
             case CalibrationState.ProfileSave:
 
                 saveProfileUI.SetActive(true);
+                break;
+            case CalibrationState.FinishedCalibration:
+                finishedCalibrationUI.SetActive(true);
                 break;
         }
 

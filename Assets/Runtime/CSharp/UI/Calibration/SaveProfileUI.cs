@@ -1,71 +1,73 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class SaveProfileUI : MonoBehaviour
 {
     [SerializeField] private InputActionReference enterAction;
     [SerializeField] private CalibrationProfileSaver saver;
     [SerializeField] private TMP_InputField nameField;
+    [SerializeField] private TextMeshProUGUI statusTxt;
+    [SerializeField] private Typewriter typewriter;
+
+    private bool profileConfirmed = false;
+
     private void OnEnable()
     {
         enterAction.action.Enable();
         enterAction.action.performed += OnConfirm;
+        Show();
     }
+
     private void OnDisable()
     {
         enterAction.action.performed -= OnConfirm;
         enterAction.action.Disable();
     }
+
     private void OnConfirm(InputAction.CallbackContext context)
     {
-        if (!gameObject.activeSelf)
+        if (!gameObject.activeInHierarchy || profileConfirmed)
             return;
 
         ConfirmProfile();
     }
+
     private void ConfirmProfile()
     {
-        if (string.IsNullOrWhiteSpace(nameField.text))
+        string playerName = nameField.text.Trim();
+
+        if (string.IsNullOrWhiteSpace(playerName))
             return;
 
-        var profile = saver.SaveProfile(nameField.text);
+        profileConfirmed = true;
 
+        var profile = saver.SaveProfile(playerName);
         ActiveProfile.Instance.SetProfile(profile);
 
-        Hide();
+        nameField.gameObject.SetActive(false);
 
-        GameSceneManager.Instance.LoadGame();
+        CalibrationStateManager.Instance.SetState(CalibrationState.FinishedCalibration);
     }
+
     public void Show()
     {
+        profileConfirmed = false;
         nameField.text = "";
+        nameField.gameObject.SetActive(true);
+        statusTxt.text = "";
 
         gameObject.SetActive(true);
+        StartCoroutine(FocusNextFrame());
+    }
+
+    private IEnumerator FocusNextFrame()
+    {
+        yield return null;
+        yield return null;
 
         nameField.Select();
         nameField.ActivateInputField();
-    }
-
-    public void Hide()
-    {
-        gameObject.SetActive(false);
-    }
-
-    public void OnConfirmPressed()
-    {
-        if (string.IsNullOrWhiteSpace(nameField.text))
-            return;
-
-        var profile = saver.SaveProfile(nameField.text);
-        ActiveProfile.Instance.SetProfile(profile);
-        Hide();
-        GameSceneManager.Instance.LoadGame();
-    }
-
-    public void OnCancelPressed()
-    {
-        Hide();
     }
 }
