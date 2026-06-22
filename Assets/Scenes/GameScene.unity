@@ -18554,13 +18554,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4467c5ebd5063df4d930d11f7403106e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameplayFaceInput
-  currentEmotion: 0
   currentEAR: 0
+  blinkThreshold: 0
+  requiredClosedDuration: 2
+  currentEmotion: 0
   isBlinking: 0
   blinkCount: 0
-  blinkThreshold: 0
-  eyesClosed: 0
-  requiredClosedDuration: 2
 --- !u!4 &608238863 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3055308821979211541, guid: 77ea205b556182f44bc197d837968555, type: 3}
@@ -79063,15 +79062,15 @@ PrefabInstance:
       objectReference: {fileID: 1211926438}
     - target: {fileID: 6861537276538901612, guid: ca1148a631b6e0e468cf55a86103e002, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 15.38
+      value: 23.872
       objectReference: {fileID: 0}
     - target: {fileID: 6861537276538901612, guid: ca1148a631b6e0e468cf55a86103e002, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.388
+      value: 0.99
       objectReference: {fileID: 0}
     - target: {fileID: 6861537276538901612, guid: ca1148a631b6e0e468cf55a86103e002, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.701
+      value: 2.909
       objectReference: {fileID: 0}
     - target: {fileID: 6861537276538901612, guid: ca1148a631b6e0e468cf55a86103e002, type: 3}
       propertyPath: m_LocalRotation.w

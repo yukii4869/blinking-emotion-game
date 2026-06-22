@@ -1,22 +1,19 @@
 using UnityEngine;
 
-public class CalibrationFaceInput : MonoBehaviour
+public class CalibrationFaceInput : FaceInputBase
 {
+    public static CalibrationFaceInput Instance { get; private set; }
+
     public Emotion currentEmotion;
-    public float currentEAR;
     public bool isBlinking;
     public int blinkCount;
-    public float blinkThreshold;
 
     private EARCalibrator earCalibrator;
     private EmotionCalibrator emotionCalibrator;
 
-    private EARCalculator earCalc = new();
     private EmotionFeatureCalculator emotionFeatureCalc = new();
     private EmotionDetector emotionDetector = new();
     private BlendshapeNormalizer normalizer;
-    private BlinkDetector blinkDetector;
-    public static CalibrationFaceInput Instance { get; private set; }
 
     private void Awake()
     {
@@ -26,7 +23,6 @@ public class CalibrationFaceInput : MonoBehaviour
             return;
         }
         Instance = this;
-
     }
 
     private void Start()
@@ -41,7 +37,22 @@ public class CalibrationFaceInput : MonoBehaviour
             return;
 
         EnsureToolsInitialized();
-        ProcessBlinkDetection();
+
+        // EAR berechnen
+        currentEAR = earCalc.ComputeBothEyes(MediaPipeProvider.Instance.Landmarks);
+
+        // Augenlogik
+        ProcessEyeLogic();
+
+        // Blinkerkennung
+        blinkDetector.UpdateEAR(currentEAR);
+        if (blinkDetector.BlinkStartedThisFrame)
+        {
+            blinkCount++;
+            FireBlink();
+        }
+
+        // Emotionserkennung
         ProcessEmotionDetection();
     }
 
@@ -61,17 +72,8 @@ public class CalibrationFaceInput : MonoBehaviour
                 emotionCalibrator.GetNeutralBase(),
                 emotionCalibrator.GetGobalMax()
             );
+
         blinkThreshold = earCalibrator.blinkThreshold;
-    }
-
-    private void ProcessBlinkDetection()
-    {
-        currentEAR = earCalc.ComputeBothEyes(MediaPipeProvider.Instance.Landmarks);
-        blinkDetector.UpdateEAR(currentEAR);
-        if (blinkDetector.BlinkStartedThisFrame)
-            blinkCount++;
-
-        isBlinking = blinkDetector.IsBlinking;
     }
 
     private void ProcessEmotionDetection()
@@ -79,6 +81,9 @@ public class CalibrationFaceInput : MonoBehaviour
         var raw = MediaPipeProvider.Instance.Blendshapes;
         var norm = normalizer.NormalizeBlendshapes(raw);
         var scores = emotionFeatureCalc.CalculateEmotionFeatures(norm);
+
         currentEmotion = emotionDetector.ClassifyEmotion(scores);
+
+        FireEmotion(currentEmotion);
     }
 }

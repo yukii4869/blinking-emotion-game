@@ -9,6 +9,8 @@ public class CalibrationValidationUI : MonoBehaviour
     [SerializeField] private InputActionReference confirmAction;
     [SerializeField] private InputActionReference retryAction;
     [SerializeField] private TextMeshProUGUI interactionHintText;
+    [SerializeField] private TextMeshProUGUI statusText;
+    [SerializeField] private TextMeshProUGUI commentText;
 
     private void OnEnable()
     {
@@ -52,6 +54,7 @@ public class CalibrationValidationUI : MonoBehaviour
 
     public void OnAcceptPressed()
     {
+        commentText.text = "";
         CalibrationStateManager.Instance.SetState(CalibrationState.ProfileSave);
 
     }

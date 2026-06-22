@@ -109,8 +109,8 @@ public class EmotionCalibrationUI : MonoBehaviour
         else
         {
             emotionCalibrator.StartComputeGlobalMax();
-            promptText.text = "Identität bestätigt.";
-            commentText.text = "Mitarbeiterprofil gespeichert.";
+            promptText.text = "Die aufgezeichneten Muster entsprechen Ihrem Profil.\n\n Bitte bestätigen Sie, dass Sie sich darin erkennen\n Falls Sie das Gefühl haben, dass etwas nicht stimmt, empfehlen wir eine erneute Erfassung.";
+            commentText.text = "Bitte bestätigen";
             emoteCalibrationFinished = true;
         }
     }
@@ -153,7 +153,7 @@ public class EmotionCalibrationUI : MonoBehaviour
         commentText.text = "";
         interactionHintText.text = "";
 
-        promptText.text = "Bitte halten...";
+        promptText.text = "Bereit machen...";
         yield return new WaitForSeconds(1f);
 
         yield return StartCoroutine(RunTypewriter("Erfassung läuft..."));
@@ -277,19 +277,19 @@ public class EmotionCalibrationUI : MonoBehaviour
         return phase switch
         {
             EmotionCalibrationPhase.Neutral =>
-                "AUSGANGSZUSTAND WIRD ERFASST\n\nBitte entspannen Sie Ihr Gesicht.",
+                "Vorbereitung: Bitte entspannen Sie Ihr Gesicht.\n\n Die Erfassung beginnt erst nach Ihrer Bestätigung.",
 
             EmotionCalibrationPhase.SmileMax =>
-                "FREUNDLICHKEIT WIRD ERFASST\n\nBitte zeigen Sie ein freundliches Mitarbeiterlächeln.",
+                "Vorbereitung: Bitte bereiten Sie ein freundliches Mitarbeiterlächeln vor\n\n Die Erfassung beginnt erst nach Ihrer Bestätigung.",
 
             EmotionCalibrationPhase.AngryMax =>
-                "AGGRESSIONSMUSTER WIRD ERFASST\n\nBitte zeigen Sie einen deutlich verärgerten Ausdruck.",
+                "Vorbereitung: Bitte rufen Sie einen verärgerten Ausdruck hervor.\n\n Die Erfassung beginnt erst nach Ihrer Bestätigung.",
 
             EmotionCalibrationPhase.SadMax =>
-                "EMOTIONALE BELASTUNG WIRD ERFASST\n\nBitte zeigen Sie einen deutlich traurigen Ausdruck.",
+                "Vorbereitung: Bitte bereiten Sie einen traurigen Ausdruck vor.\n\n Die Erfassung beginnt erst nach Ihrer Bestätigung.“",
 
             EmotionCalibrationPhase.SurprisedMax =>
-                "SCHRECKREAKTION WIRD ERFASST\n\nBitte zeigen Sie einen deutlich überraschten Ausdruck.",
+                "Vorbereitung: Bitte bereiten Sie eine überraschte Reaktion vor.\n\n Die Erfassung beginnt erst nach Ihrer Bestätigung.",
 
             _ => ""
         };
@@ -299,12 +299,23 @@ public class EmotionCalibrationUI : MonoBehaviour
     {
         return phase switch
         {
-            EmotionCalibrationPhase.Neutral => "AUSGANGSZUSTAND GESPEICHERT",
-            EmotionCalibrationPhase.SmileMax => "FREUNDLICHKEITSPROFIL GESPEICHERT",
-            EmotionCalibrationPhase.AngryMax => "AGGRESSIONSMUSTER GESPEICHERT",
-            EmotionCalibrationPhase.SadMax => "EMOTIONALE BELASTUNG GESPEICHERT",
-            EmotionCalibrationPhase.SurprisedMax => "SCHRECKREAKTION GESPEICHERT",
-            _ => "AUFNAHME GESPEICHERT"
+            EmotionCalibrationPhase.Neutral =>
+                "Ihr natürlicher Zustand wurde festgehalten.\nEr entspricht den Erwartungen.",
+
+            EmotionCalibrationPhase.SmileMax =>
+                "Ihr Lächeln wurde erfasst.\nEs wirkt gestellt.",
+
+            EmotionCalibrationPhase.AngryMax =>
+                "Ihr Ärger wurde deutlich registriert.\nDie Intensität ist bemerkenswert.",
+
+            EmotionCalibrationPhase.SadMax =>
+                "Ihre Traurigkeit wurde aufgezeichnet.\nSie scheint...angemessen.",
+
+            EmotionCalibrationPhase.SurprisedMax =>
+                "Ihre Schreckreaktion wurde eingefangen.\nSie war in Ordnung.",
+
+            _ => "Die Reaktion wurde aufgezeichnet."
         };
     }
+
 }

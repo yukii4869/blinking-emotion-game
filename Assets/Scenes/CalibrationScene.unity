@@ -2791,6 +2791,7 @@ MonoBehaviour:
   nameField: {fileID: 1501068364}
   statusTxt: {fileID: 1616290671}
   typewriter: {fileID: 1521015218}
+  interactionHintText: {fileID: 1616290671}
 --- !u!1001 &331863641
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5132,7 +5133,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 625494236236430972, guid: 82161b6337bec804b9b62910a07dcd00, type: 3}
       propertyPath: m_Intensity
-      value: 0.2
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 2138171745443516448, guid: 82161b6337bec804b9b62910a07dcd00, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5922,7 +5923,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &809756681
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5959,6 +5960,8 @@ MonoBehaviour:
   confirmAction: {fileID: -219532138521829176, guid: 513b0c6653a51784fad66a75ee549acf, type: 3}
   retryAction: {fileID: 5485063142646033948, guid: 513b0c6653a51784fad66a75ee549acf, type: 3}
   interactionHintText: {fileID: 579284131}
+  statusText: {fileID: 1616290671}
+  commentText: {fileID: 1439055876}
 --- !u!114 &815179155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6799,7 +6802,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 625494236236430972, guid: 82161b6337bec804b9b62910a07dcd00, type: 3}
       propertyPath: m_Intensity
-      value: 0.2
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 2138171745443516448, guid: 82161b6337bec804b9b62910a07dcd00, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7885,13 +7888,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1235060678}
+  - component: {fileID: 1235060679}
   m_Layer: 5
   m_Name: FinishedCalibrationUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1235060678
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7911,6 +7915,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1235060679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1235060677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed109f7a1526f374baf08e16e572f1f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FinishCalibrationUI
+  fadeImage: {fileID: 1433821322}
+  statusTxt: {fileID: 1616290671}
+  typewriter: {fileID: 1521015218}
 --- !u!1001 &1240665742
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8340,6 +8359,7 @@ RectTransform:
   - {fileID: 330597036}
   - {fileID: 1613817892}
   - {fileID: 1235060678}
+  - {fileID: 1433821321}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -8420,7 +8440,7 @@ Light:
   serializedVersion: 12
   m_Type: 2
   m_Color: {r: 0.9372549, g: 0.8117647, b: 0.6156863, a: 1}
-  m_Intensity: 0.2
+  m_Intensity: 0.1
   m_Range: 2
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -8697,7 +8717,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1000010856463646, guid: 1ae62aa56d8ff044cb2539eb21bde17c, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4000014223026296, guid: 1ae62aa56d8ff044cb2539eb21bde17c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9320,6 +9340,81 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 513b0c6653a51784fad66a75ee549acf, type: 3}
   m_ActionId: c95b2375-e6d9-4b88-9c4c-c5e76515df4b
+--- !u!1 &1433821320
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1433821321}
+  - component: {fileID: 1433821323}
+  - component: {fileID: 1433821322}
+  m_Layer: 5
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1433821321
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1433821320}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1293271129}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -0.000030518}
+  m_SizeDelta: {x: 1920, y: 1080}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1433821322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1433821320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1433821323
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1433821320}
+  m_CullTransparentMesh: 1
 --- !u!1 &1439055874
 GameObject:
   m_ObjectHideFlags: 0
@@ -12414,8 +12509,9 @@ MonoBehaviour:
   earCalibrationUI: {fileID: 1878041145}
   emotionCalibrationUI: {fileID: 1132346118}
   emotionTestUI: {fileID: 809756680}
-  saveProfileUI: {fileID: 330597035}
   liveFaceUI: {fileID: 1016060742}
+  earGraph: {fileID: 1233070604}
+  saveProfileUI: {fileID: 330597035}
   interactionHintUI: {fileID: 428145587}
   finishedCalibrationUI: {fileID: 1235060677}
 --- !u!1001 &1860540243
@@ -14073,11 +14169,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 908948416d5ea15489b12594b1668b90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CalibrationFaceInput
-  currentEmotion: 0
   currentEAR: 0
+  blinkThreshold: 0
+  requiredClosedDuration: 2
+  currentEmotion: 0
   isBlinking: 0
   blinkCount: 0
-  blinkThreshold: 0
 --- !u!4 &2047198098 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4414080895957248, guid: 93f861ce27e9aea4b866b8263b479191, type: 3}

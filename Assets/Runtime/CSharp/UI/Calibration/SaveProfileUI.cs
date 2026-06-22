@@ -10,6 +10,7 @@ public class SaveProfileUI : MonoBehaviour
     [SerializeField] private TMP_InputField nameField;
     [SerializeField] private TextMeshProUGUI statusTxt;
     [SerializeField] private Typewriter typewriter;
+    [SerializeField] private TextMeshProUGUI interactionHintText;
 
     private bool profileConfirmed = false;
 
@@ -47,6 +48,7 @@ public class SaveProfileUI : MonoBehaviour
         ActiveProfile.Instance.SetProfile(profile);
 
         nameField.gameObject.SetActive(false);
+        interactionHintText.text = "";
 
         CalibrationStateManager.Instance.SetState(CalibrationState.FinishedCalibration);
     }
@@ -57,6 +59,7 @@ public class SaveProfileUI : MonoBehaviour
         nameField.text = "";
         nameField.gameObject.SetActive(true);
         statusTxt.text = "";
+        interactionHintText.text = "[ENTER] Bestätigen";
 
         gameObject.SetActive(true);
         StartCoroutine(FocusNextFrame());
