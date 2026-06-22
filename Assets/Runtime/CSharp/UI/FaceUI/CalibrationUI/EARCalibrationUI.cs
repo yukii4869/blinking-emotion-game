@@ -55,7 +55,6 @@ public class EARCalibrationUI : MonoBehaviour
             return;
 
         commentText.text = "";
-        Debug.Log("StartCalibration");
 
         // Weiter nach Abschluss
         if (waitingForContinue)
@@ -79,8 +78,6 @@ public class EARCalibrationUI : MonoBehaviour
     {
         calibrationRunning = true;
         interactionHintText.text = "";
-        Debug.Log("RUN");
-
         progressBar.value = 0f;
         progressBar.gameObject.SetActive(false);
 

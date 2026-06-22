@@ -9,7 +9,7 @@ public class CalibrationValidationUI : MonoBehaviour
     [SerializeField] private InputActionReference confirmAction;
     [SerializeField] private InputActionReference retryAction;
     [SerializeField] private TextMeshProUGUI interactionHintText;
-  
+
     private void OnEnable()
     {
         interactionHintText.text = "[E] Bestätigen [R] Wiederholen";
@@ -40,11 +40,15 @@ public class CalibrationValidationUI : MonoBehaviour
 
     public void OnRetryPressed()
     {
+        CalibrationStateManager.Instance.SetState(CalibrationState.EmotionCalibration);
+        // 1. Erst Calibrator resetten
         emotionCalibrator.ResetAllCalibration();
+
+        // 2. Dann UI resetten (UI MUSS aktiv sein!)
         emotionCalibrationUI.ResetUI();
 
-        CalibrationStateManager.Instance.SetState(CalibrationState.EmotionCalibration);
     }
+
 
     public void OnAcceptPressed()
     {

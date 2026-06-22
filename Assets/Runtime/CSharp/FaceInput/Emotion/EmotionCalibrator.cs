@@ -264,6 +264,7 @@ public class EmotionCalibrator : MonoBehaviour
 
         // Phase zurücksetzen
         currentPhase = EmotionCalibrationPhase.None;
+        isCalibrating = false;
     }
     public void LoadFromProfile(PlayerProfile profile)
     {

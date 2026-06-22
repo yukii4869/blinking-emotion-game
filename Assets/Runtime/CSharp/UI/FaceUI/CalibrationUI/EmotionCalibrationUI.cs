@@ -4,7 +4,6 @@ using TMPro;
 using System.Collections;
 using UnityEngine.InputSystem;
 
-
 public class EmotionCalibrationUI : MonoBehaviour
 {
     [SerializeField] private EmotionCalibrator emotionCalibrator;
@@ -16,17 +15,22 @@ public class EmotionCalibrationUI : MonoBehaviour
     [SerializeField] private InputActionReference retryAction;
     [SerializeField] private Typewriter typewriter;
     [SerializeField] private TextMeshProUGUI interactionHintText;
+
     private bool skipRequested = false;
     private bool allowRetry = false;
-
     private bool isTyping = false;
 
     private bool phaseRunning = false;
     private bool calibrationStarted = false;
     private bool emoteCalibrationFinished = false;
+
     private EmotionCalibrationPhase currentUIPhase = EmotionCalibrationPhase.None;
-    private bool waitingToStartPhase = false;
     private EmotionCalibrationPhase pendingPhase = EmotionCalibrationPhase.None;
+
+    private bool waitingToStartPhase = false;
+
+    // SPAM-SCHUTZ
+    private bool transitionLock = false;
 
     private void Update()
     {
@@ -39,6 +43,7 @@ public class EmotionCalibrationUI : MonoBehaviour
             progressBar.value = 0f;
         }
     }
+
     private void OnEnable()
     {
         continueAction.action.Enable();
@@ -56,25 +61,33 @@ public class EmotionCalibrationUI : MonoBehaviour
         continueAction.action.Disable();
         retryAction.action.Disable();
     }
+
     private void OnContinue(InputAction.CallbackContext context)
     {
-        // Wenn Text gerade tippt → Skip statt Continue
+        // Skip während Typewriter
         if (isTyping)
         {
             skipRequested = true;
             return;
         }
 
+        // Blockieren, wenn wir in einem Übergang sind
+        if (transitionLock)
+            return;
+
         if (!calibrationStarted || emoteCalibrationFinished || phaseRunning)
             return;
 
-        if (waitingToStartPhase)
+        // Phase starten
+        if (waitingToStartPhase && pendingPhase != EmotionCalibrationPhase.None)
         {
             waitingToStartPhase = false;
+            transitionLock = true;
             StartCoroutine(RunPhase(pendingPhase));
             return;
         }
 
+        // Nächste Phase vorbereiten
         PrepareNextPhase();
     }
 
@@ -101,6 +114,7 @@ public class EmotionCalibrationUI : MonoBehaviour
             emoteCalibrationFinished = true;
         }
     }
+
     private void ShowPhasePrompt(EmotionCalibrationPhase phase)
     {
         allowRetry = false;
@@ -111,15 +125,16 @@ public class EmotionCalibrationUI : MonoBehaviour
 
         progressBar.gameObject.SetActive(false);
 
+        // KEIN transitionLock hier → sonst blockiert Skip
         StartCoroutine(RunTypewriter(GetPrompt(phase)));
-
-        // Buttons erst NACH dem Typewriter anzeigen
         StartCoroutine(ShowConfirmAfterTyping());
     }
 
-
     private void OnRetry(InputAction.CallbackContext context)
     {
+        if (transitionLock)
+            return;
+
         if (!calibrationStarted || emoteCalibrationFinished || phaseRunning)
             return;
 
@@ -132,61 +147,53 @@ public class EmotionCalibrationUI : MonoBehaviour
 
     private IEnumerator RunPhase(EmotionCalibrationPhase phase)
     {
+        phaseRunning = true;
+        transitionLock = true;
+
         commentText.text = "";
         interactionHintText.text = "";
-        if (phaseRunning)
-            yield break;
 
-        phaseRunning = true;
-        currentUIPhase = phase;
         promptText.text = "Bitte halten...";
-        commentText.text = "";
         yield return new WaitForSeconds(1f);
 
         yield return StartCoroutine(RunTypewriter("Erfassung läuft..."));
-        commentText.text = "";
 
         switch (phase)
         {
-            case EmotionCalibrationPhase.Neutral:
-                emotionCalibrator.StartNeutralCalibration();
-                break;
-            case EmotionCalibrationPhase.SmileMax:
-                emotionCalibrator.StartSmileCalibration();
-                break;
-            case EmotionCalibrationPhase.AngryMax:
-                emotionCalibrator.StartAngryCalibration();
-                break;
-            case EmotionCalibrationPhase.SadMax:
-                emotionCalibrator.StartSadCalibration();
-                break;
-            case EmotionCalibrationPhase.SurprisedMax:
-                emotionCalibrator.StartSurprisedCalibration();
-                break;
+            case EmotionCalibrationPhase.Neutral: emotionCalibrator.StartNeutralCalibration(); break;
+            case EmotionCalibrationPhase.SmileMax: emotionCalibrator.StartSmileCalibration(); break;
+            case EmotionCalibrationPhase.AngryMax: emotionCalibrator.StartAngryCalibration(); break;
+            case EmotionCalibrationPhase.SadMax: emotionCalibrator.StartSadCalibration(); break;
+            case EmotionCalibrationPhase.SurprisedMax: emotionCalibrator.StartSurprisedCalibration(); break;
         }
 
         yield return StartCoroutine(ProgressCalibration(phase));
 
         phaseRunning = false;
         yield return new WaitForSeconds(0.5f);
+
         progressBar.gameObject.SetActive(false);
+
         yield return StartCoroutine(RunTypewriter(GetSavedText(phase)));
 
         allowRetry = true;
         StartCoroutine(ShowConfirmAfterTyping());
     }
+
     public void ResetUI()
     {
         calibrationStarted = false;
         emoteCalibrationFinished = false;
         phaseRunning = false;
+
         currentUIPhase = EmotionCalibrationPhase.None;
-        pendingPhase = EmotionCalibrationPhase.Neutral;
+        pendingPhase = EmotionCalibrationPhase.None;
 
         waitingToStartPhase = false;
         allowRetry = false;
         skipRequested = false;
         isTyping = false;
+        transitionLock = false;
 
         progressBar.value = 0f;
         progressBar.gameObject.SetActive(false);
@@ -200,6 +207,7 @@ public class EmotionCalibrationUI : MonoBehaviour
     {
         progressBar.gameObject.SetActive(true);
         progressBar.value = 0f;
+
         float minDuration = 1.2f;
         float timer = 0f;
 
@@ -210,6 +218,7 @@ public class EmotionCalibrationUI : MonoBehaviour
             yield return null;
         }
     }
+
     private bool IsPhaseFinished(EmotionCalibrationPhase phase)
     {
         return phase switch
@@ -222,40 +231,7 @@ public class EmotionCalibrationUI : MonoBehaviour
             _ => false
         };
     }
-    private string GetPrompt(EmotionCalibrationPhase phase)
-    {
-        return phase switch
-        {
-            EmotionCalibrationPhase.Neutral =>
-                "AUSGANGSZUSTAND WIRD ERFASST\n\nBitte entspannen Sie Ihr Gesicht.",
 
-            EmotionCalibrationPhase.SmileMax =>
-                "FREUNDLICHKEIT WIRD ERFASST\n\nBitte zeigen Sie ein freundliches Mitarbeiterlächeln.",
-
-            EmotionCalibrationPhase.AngryMax =>
-                "AGGRESSIONSMUSTER WIRD ERFASST\n\nBitte zeigen Sie einen deutlich verärgerten Ausdruck.",
-
-            EmotionCalibrationPhase.SadMax =>
-                "EMOTIONALE BELASTUNG WIRD ERFASST\n\nBitte zeigen Sie einen deutlich traurigen Ausdruck.",
-
-            EmotionCalibrationPhase.SurprisedMax =>
-                "SCHRECKREAKTION WIRD ERFASST\n\nBitte zeigen Sie einen deutlich überraschten Ausdruck.",
-
-            _ => ""
-        };
-    }
-    private string GetSavedText(EmotionCalibrationPhase phase)
-    {
-        return phase switch
-        {
-            EmotionCalibrationPhase.Neutral => "AUSGANGSZUSTAND GESPEICHERT",
-            EmotionCalibrationPhase.SmileMax => "FREUNDLICHKEITSPROFIL GESPEICHERT",
-            EmotionCalibrationPhase.AngryMax => "AGGRESSIONSMUSTER GESPEICHERT",
-            EmotionCalibrationPhase.SadMax => "EMOTIONALE BELASTUNG GESPEICHERT",
-            EmotionCalibrationPhase.SurprisedMax => "SCHRECKREAKTION GESPEICHERT",
-            _ => "AUFNAHME GESPEICHERT"
-        };
-    }
     private IEnumerator RunTypewriter(string text)
     {
         isTyping = true;
@@ -284,7 +260,6 @@ public class EmotionCalibrationUI : MonoBehaviour
 
     private IEnumerator ShowConfirmAfterTyping()
     {
-        // Warten bis Typewriter fertig ist
         yield return new WaitUntil(() => !isTyping);
 
         commentText.text = "Bestätigung erforderlich";
@@ -293,7 +268,43 @@ public class EmotionCalibrationUI : MonoBehaviour
             interactionHintText.text = "[E] Bestätigen   [R] Wiederholen";
         else
             interactionHintText.text = "[E] Bestätigen";
+
+        transitionLock = false;
     }
 
+    private string GetPrompt(EmotionCalibrationPhase phase)
+    {
+        return phase switch
+        {
+            EmotionCalibrationPhase.Neutral =>
+                "AUSGANGSZUSTAND WIRD ERFASST\n\nBitte entspannen Sie Ihr Gesicht.",
 
+            EmotionCalibrationPhase.SmileMax =>
+                "FREUNDLICHKEIT WIRD ERFASST\n\nBitte zeigen Sie ein freundliches Mitarbeiterlächeln.",
+
+            EmotionCalibrationPhase.AngryMax =>
+                "AGGRESSIONSMUSTER WIRD ERFASST\n\nBitte zeigen Sie einen deutlich verärgerten Ausdruck.",
+
+            EmotionCalibrationPhase.SadMax =>
+                "EMOTIONALE BELASTUNG WIRD ERFASST\n\nBitte zeigen Sie einen deutlich traurigen Ausdruck.",
+
+            EmotionCalibrationPhase.SurprisedMax =>
+                "SCHRECKREAKTION WIRD ERFASST\n\nBitte zeigen Sie einen deutlich überraschten Ausdruck.",
+
+            _ => ""
+        };
+    }
+
+    private string GetSavedText(EmotionCalibrationPhase phase)
+    {
+        return phase switch
+        {
+            EmotionCalibrationPhase.Neutral => "AUSGANGSZUSTAND GESPEICHERT",
+            EmotionCalibrationPhase.SmileMax => "FREUNDLICHKEITSPROFIL GESPEICHERT",
+            EmotionCalibrationPhase.AngryMax => "AGGRESSIONSMUSTER GESPEICHERT",
+            EmotionCalibrationPhase.SadMax => "EMOTIONALE BELASTUNG GESPEICHERT",
+            EmotionCalibrationPhase.SurprisedMax => "SCHRECKREAKTION GESPEICHERT",
+            _ => "AUFNAHME GESPEICHERT"
+        };
+    }
 }
