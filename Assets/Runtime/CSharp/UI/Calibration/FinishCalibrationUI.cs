@@ -12,26 +12,15 @@ public class FinishCalibrationUI : MonoBehaviour
     private bool waitingForEyes = false;
     private bool eyesConfirmed = false;
 
-    private void Awake()
-    {
-        gameObject.SetActive(false);
-    }
-
     private void OnEnable()
     {
         FaceInputBase.OnEyesClosedHold += HandleEyesClosedHold;
-        StartSequence(ActiveProfile.Instance.CurrentProfile.playerName);
+          StartCoroutine(RunSequence(ActiveProfile.Instance.CurrentProfile.playerName));
     }
 
     private void OnDisable()
     {
         FaceInputBase.OnEyesClosedHold -= HandleEyesClosedHold;
-    }
-
-    public void StartSequence(string playerName)
-    {
-        gameObject.SetActive(true);
-        StartCoroutine(RunSequence(playerName));
     }
 
     private IEnumerator RunSequence(string playerName)

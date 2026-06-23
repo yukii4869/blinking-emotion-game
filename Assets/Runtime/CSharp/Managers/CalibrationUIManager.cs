@@ -60,7 +60,7 @@ public class CalibrationUIManger : MonoBehaviour
                 saveProfileUI.SetActive(true);
                 break;
             case CalibrationState.FinishedCalibration:
-
+                Debug.Log("FinishedCalibrationStarted");
                 finishedCalibrationUI.SetActive(true);
                 break;
         }

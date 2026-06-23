@@ -199,8 +199,8 @@ public class EmotionCalibrationUI : MonoBehaviour
         progressBar.gameObject.SetActive(false);
 
         promptText.text = "Ihre Entscheidung zur Wiederholung wurde bestätigt.";
-        commentText.text = "";
-        interactionHintText.text = "";
+        commentText.text = "Bestätigung erforderlich";
+        interactionHintText.text = "[E] Bestätigen";
     }
 
     private IEnumerator ProgressCalibration(EmotionCalibrationPhase phase)
@@ -277,19 +277,19 @@ public class EmotionCalibrationUI : MonoBehaviour
         return phase switch
         {
             EmotionCalibrationPhase.Neutral =>
-                "Vorbereitung: Bitte entspannen Sie Ihr Gesicht.\n\n Die Erfassung beginnt erst nach Ihrer Bestätigung.",
+                "Vorbereitung: \nBitte entspannen Sie Ihr Gesicht.\n\n \nDie Erfassung beginnt erst nach Ihrer Bestätigung.",
 
             EmotionCalibrationPhase.SmileMax =>
-                "Vorbereitung: Bitte bereiten Sie ein freundliches Mitarbeiterlächeln vor\n\n Die Erfassung beginnt erst nach Ihrer Bestätigung.",
+                "Vorbereitung:\nBitte bereiten Sie ein freundliches Mitarbeiterlächeln vor.",
 
             EmotionCalibrationPhase.AngryMax =>
-                "Vorbereitung: Bitte rufen Sie einen verärgerten Ausdruck hervor.\n\n Die Erfassung beginnt erst nach Ihrer Bestätigung.",
+                "Vorbereitung: \nBitte rufen Sie einen verärgerten Ausdruck hervor.",
 
             EmotionCalibrationPhase.SadMax =>
-                "Vorbereitung: Bitte bereiten Sie einen traurigen Ausdruck vor.\n\n Die Erfassung beginnt erst nach Ihrer Bestätigung.“",
+                "Vorbereitung: \nBitte bereiten Sie einen traurigen Ausdruck vor.",
 
             EmotionCalibrationPhase.SurprisedMax =>
-                "Vorbereitung: Bitte bereiten Sie eine überraschte Reaktion vor.\n\n Die Erfassung beginnt erst nach Ihrer Bestätigung.",
+                "Vorbereitung: \nBitte bereiten Sie eine überraschte Reaktion vor.",
 
             _ => ""
         };
@@ -300,19 +300,19 @@ public class EmotionCalibrationUI : MonoBehaviour
         return phase switch
         {
             EmotionCalibrationPhase.Neutral =>
-                "Ihr natürlicher Zustand wurde festgehalten.\nEr entspricht den Erwartungen.",
+                "Ihr natürlicher Zustand wurde festgehalten.\n\n\nEr entspricht den Erwartungen.",
 
             EmotionCalibrationPhase.SmileMax =>
-                "Ihr Lächeln wurde erfasst.\nEs wirkt gestellt.",
+                "Ihr Lächeln wurde erfasst.\n\n\nEs wirkt gestellt.",
 
             EmotionCalibrationPhase.AngryMax =>
-                "Ihr Ärger wurde deutlich registriert.\nDie Intensität ist bemerkenswert.",
+                "Ihr Ärger wurde deutlich registriert.\n\n\nDie Intensität ist bemerkenswert.",
 
             EmotionCalibrationPhase.SadMax =>
-                "Ihre Traurigkeit wurde aufgezeichnet.\nSie scheint...angemessen.",
+                "Ihre Traurigkeit wurde aufgezeichnet.\n\n\nSie scheint...angemessen.",
 
             EmotionCalibrationPhase.SurprisedMax =>
-                "Ihre Schreckreaktion wurde eingefangen.\nSie war in Ordnung.",
+                "Ihre Schreckreaktion wurde eingefangen.\n\n\nSie war in Ordnung.",
 
             _ => "Die Reaktion wurde aufgezeichnet."
         };

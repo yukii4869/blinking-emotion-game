@@ -26,6 +26,20 @@ public class SaveProfileUI : MonoBehaviour
         enterAction.action.performed -= OnConfirm;
         enterAction.action.Disable();
     }
+    private void Update()
+    {
+        // ESC ignorieren, damit TMP nicht den Fokus verliert
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            return;
+    }
+    private void LateUpdate()
+    {
+        if (!profileConfirmed && !nameField.isFocused)
+        {
+            nameField.Select();
+            nameField.ActivateInputField();
+        }
+    }
 
     private void OnConfirm(InputAction.CallbackContext context)
     {
@@ -60,8 +74,6 @@ public class SaveProfileUI : MonoBehaviour
         nameField.gameObject.SetActive(true);
         statusTxt.text = "";
         interactionHintText.text = "[ENTER] Bestätigen";
-
-        gameObject.SetActive(true);
         StartCoroutine(FocusNextFrame());
     }
 
