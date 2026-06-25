@@ -2,6 +2,6 @@
 public class DeliveryTask
 {
     public string itemName;
-    public string roomNumber;
+    public Room room;       
     public DeliverySpot spot;
 }

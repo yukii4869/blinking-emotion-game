@@ -23,7 +23,7 @@ public class DeliveryManager : MonoBehaviour
     {
         var task = CurrentTask;
 
-        if (spot != task.spot)
+        if (spot.room != task.room)
         {
             GameplayUIManager.Instance.ShowWrongSpot();
             return;
