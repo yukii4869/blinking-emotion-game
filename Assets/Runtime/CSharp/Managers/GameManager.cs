@@ -5,7 +5,6 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         GameStateManager.Instance.SetState(GameState.Gameplay);
-        // oder GameState.Gameplay, wenn du direkt starten willst
     }
     public void OnPause()
     {

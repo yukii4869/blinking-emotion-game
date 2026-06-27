@@ -9,7 +9,6 @@ public class SadnessElevator : MonoBehaviour
     [SerializeField] private float drainSpeed = 0.2f;
     [SerializeField] private Animator doorAnimation;
     [SerializeField] private GameObject elevatorUIPrefab;
-    [SerializeField] private Transform world;
 
     private float fillAmount = 0f;          // 0 = ganz unten, 1 = ganz oben
     private bool isSad = false;
@@ -18,6 +17,7 @@ public class SadnessElevator : MonoBehaviour
     private bool doorsMoving = false;
     private bool AtBottom => fillAmount <= 0.01f;
     private bool AtTop => fillAmount >= 0.99f;
+    private ElevatorState state = ElevatorState.Idle;
 
     private Vector3 startPos;
     private GameObject activeUI;
@@ -33,7 +33,7 @@ public class SadnessElevator : MonoBehaviour
     }
 
 
-    private ElevatorState state = ElevatorState.Idle;
+
 
     private void Start()
     {

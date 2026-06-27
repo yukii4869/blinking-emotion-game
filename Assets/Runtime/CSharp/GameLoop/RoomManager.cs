@@ -24,12 +24,11 @@ public class RoomManager : MonoBehaviour
         instance = this;
     }
 
-    void Start()
+    public void InitializeRooms()
     {
         mainHall = new List<Room>(mainHallRoot.GetComponentsInChildren<Room>());
         leftWing = new List<Room>(leftWingRoot.GetComponentsInChildren<Room>());
         rightWing = new List<Room>(rightWingRoot.GetComponentsInChildren<Room>());
-
         AssignRoomNumbers();
         AssignDeliverySpots();
         UpdateRoomLabels();

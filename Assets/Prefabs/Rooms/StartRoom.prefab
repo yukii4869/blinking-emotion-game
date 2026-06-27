@@ -1,5 +1,38 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &68457631757077833
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5496239130882883936}
+  m_Layer: 0
+  m_Name: Floor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5496239130882883936
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 68457631757077833}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6127929559364963599}
+  - {fileID: 301237909317598298}
+  m_Father: {fileID: 7673884758460287914}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2208415848888674050
 GameObject:
   m_ObjectHideFlags: 0
@@ -30,13 +63,43 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2438149389049921799}
-  - {fileID: 4255384711049439719}
-  - {fileID: 4312400271457348883}
-  - {fileID: 5431086842551498845}
-  - {fileID: 3361311136652080083}
-  - {fileID: 9021699098949533829}
-  - {fileID: 636458485454329433}
-  - {fileID: 7984126171035438010}
+  - {fileID: 3226882240985945137}
+  - {fileID: 4600196321648233747}
+  - {fileID: 435205872179297320}
+  - {fileID: 4506644825519051847}
+  - {fileID: 5496239130882883936}
+  - {fileID: 742104359842965799}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5135268575692638724
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 435205872179297320}
+  m_Layer: 0
+  m_Name: Props
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &435205872179297320
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5135268575692638724}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
   - {fileID: 7885609683099117530}
   - {fileID: 9145549296793905324}
   - {fileID: 6670685047803060831}
@@ -51,10 +114,72 @@ Transform:
   - {fileID: 2174712111434712356}
   - {fileID: 6255224561898729574}
   - {fileID: 3098590788825703413}
+  m_Father: {fileID: 7673884758460287914}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6041238351445062570
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4600196321648233747}
+  m_Layer: 0
+  m_Name: Ceiling
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4600196321648233747
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6041238351445062570}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 9021699098949533829}
+  - {fileID: 636458485454329433}
+  - {fileID: 7984126171035438010}
+  m_Father: {fileID: 7673884758460287914}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7360542298908833377
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 742104359842965799}
+  m_Layer: 0
+  m_Name: Walls
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &742104359842965799
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7360542298908833377}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
   - {fileID: 7114824846396562363}
-  - {fileID: 4506644825519051847}
-  - {fileID: 6127929559364963599}
-  - {fileID: 301237909317598298}
   - {fileID: 5274870630708520884}
   - {fileID: 317426109368247583}
   - {fileID: 5192955478885013596}
@@ -70,7 +195,42 @@ Transform:
   - {fileID: 3899875434381031274}
   - {fileID: 4564600284301134869}
   - {fileID: 3663284682651402286}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 7673884758460287914}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8742653650359069770
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3226882240985945137}
+  m_Layer: 0
+  m_Name: Columns
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3226882240985945137
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8742653650359069770}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4255384711049439719}
+  - {fileID: 4312400271457348883}
+  - {fileID: 5431086842551498845}
+  - {fileID: 3361311136652080083}
+  m_Father: {fileID: 7673884758460287914}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8983002864433336031
 GameObject:
@@ -117,7 +277,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 435205872179297320}
     m_Modifications:
     - target: {fileID: 1248124254436808, guid: adb6feec4b474be49a4feaff21d4685b, type: 3}
       propertyPath: m_Name
@@ -179,7 +339,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 5496239130882883936}
     m_Modifications:
     - target: {fileID: 1767677051488162, guid: 2704bc39412a23f489139a0cbc0e07be, type: 3}
       propertyPath: m_Name
@@ -241,11 +401,15 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 742104359842965799}
     m_Modifications:
     - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_Name
       value: Hall_Wall_Panel_2x4 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -257,7 +421,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.1
+      value: -5.1000004
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalRotation.w
@@ -303,7 +467,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 435205872179297320}
     m_Modifications:
     - target: {fileID: 1600194854136080, guid: 9420586023b87974f90793da4a595d0c, type: 3}
       propertyPath: m_Name
@@ -447,7 +611,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 4600196321648233747}
     m_Modifications:
     - target: {fileID: 1976372211924414, guid: 9c0c9cf763203de4f884e6f367ec8953, type: 3}
       propertyPath: m_Name
@@ -513,11 +677,15 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 742104359842965799}
     m_Modifications:
     - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_Name
       value: Hall_Wall_Panel_2x4 (10)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -657,7 +825,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 435205872179297320}
     m_Modifications:
     - target: {fileID: 1906590754288836, guid: 126b34d2f96f9e14abed39ea7d3f9c5e, type: 3}
       propertyPath: m_Name
@@ -883,7 +1051,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 435205872179297320}
     m_Modifications:
     - target: {fileID: 1108008447759524, guid: d6946602bb08cb4439d599f3542c8d4a, type: 3}
       propertyPath: m_Name
@@ -945,7 +1113,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 3226882240985945137}
     m_Modifications:
     - target: {fileID: 1872935743343694, guid: 2f6f06198e026f74d90c9c01be3d72bd, type: 3}
       propertyPath: m_Name
@@ -1007,15 +1175,19 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 742104359842965799}
     m_Modifications:
     - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_Name
       value: Hall_Wall_Panel_2x4 (13)
       objectReference: {fileID: 0}
+    - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.157
+      value: 3.1569996
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1031,7 +1203,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalRotation.y
@@ -1039,7 +1211,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1069,11 +1241,15 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 742104359842965799}
     m_Modifications:
     - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_Name
       value: Hall_Wall_Panel_2x4 (11)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1131,7 +1307,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 3226882240985945137}
     m_Modifications:
     - target: {fileID: 1872935743343694, guid: 2f6f06198e026f74d90c9c01be3d72bd, type: 3}
       propertyPath: m_Name
@@ -1193,7 +1369,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 3226882240985945137}
     m_Modifications:
     - target: {fileID: 1872935743343694, guid: 2f6f06198e026f74d90c9c01be3d72bd, type: 3}
       propertyPath: m_Name
@@ -1255,15 +1431,19 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 742104359842965799}
     m_Modifications:
     - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_Name
       value: Hall_Wall_Panel_2x4 (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.157
+      value: 3.1569996
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1271,7 +1451,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.08
+      value: -1.0799999
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1279,7 +1459,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalRotation.y
@@ -1287,7 +1467,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1399,7 +1579,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 435205872179297320}
     m_Modifications:
     - target: {fileID: 1200038971653810, guid: 07673679033048c46aeefee6854b3634, type: 3}
       propertyPath: m_Name
@@ -1461,11 +1641,15 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 742104359842965799}
     m_Modifications:
     - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_Name
       value: Hall_Wall_Panel_2x4 (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1477,7 +1661,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.093
+      value: -0.09300041
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1523,11 +1707,15 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 742104359842965799}
     m_Modifications:
     - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_Name
       value: Hall_Wall_Panel_2x4 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1585,11 +1773,15 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 742104359842965799}
     m_Modifications:
     - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_Name
       value: Hall_Wall_Panel_2x4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1647,11 +1839,15 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 742104359842965799}
     m_Modifications:
     - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_Name
       value: Hall_Wall_Panel_2x4 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1709,11 +1905,15 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 742104359842965799}
     m_Modifications:
     - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_Name
       value: Hall_Wall_Panel_2x4 (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1771,7 +1971,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 3226882240985945137}
     m_Modifications:
     - target: {fileID: 1872935743343694, guid: 2f6f06198e026f74d90c9c01be3d72bd, type: 3}
       propertyPath: m_Name
@@ -1997,7 +2197,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 435205872179297320}
     m_Modifications:
     - target: {fileID: 1567968666250286, guid: cece2a17e45c786409d96bdf39bf36e7, type: 3}
       propertyPath: m_Name
@@ -2059,7 +2259,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 5496239130882883936}
     m_Modifications:
     - target: {fileID: 1767677051488162, guid: 2704bc39412a23f489139a0cbc0e07be, type: 3}
       propertyPath: m_Name
@@ -2121,7 +2321,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 435205872179297320}
     m_Modifications:
     - target: {fileID: 1611494824129522, guid: 94ddddb137382ff41ab321a0e9133aba, type: 3}
       propertyPath: m_Name
@@ -2183,7 +2383,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 435205872179297320}
     m_Modifications:
     - target: {fileID: 1095547561098054, guid: f2687b9e402d96f4c8ecbf4259f96de6, type: 3}
       propertyPath: m_Name
@@ -2245,7 +2445,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 435205872179297320}
     m_Modifications:
     - target: {fileID: 1129719213327694, guid: 21b147d7e627729489cdc751a71cb03f, type: 3}
       propertyPath: m_Name
@@ -2307,11 +2507,15 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 742104359842965799}
     m_Modifications:
     - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_Name
       value: Hall_Wall_Panel_2x4 (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2369,11 +2573,15 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 742104359842965799}
     m_Modifications:
     - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_Name
       value: Hall_Wall_Panel_2x4 (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2431,11 +2639,27 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 742104359842965799}
     m_Modifications:
+    - target: {fileID: 1417581900484652, guid: f75007b1e8fb25443a4f8f2c8045c82d, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1514441331686368, guid: f75007b1e8fb25443a4f8f2c8045c82d, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1610753419283726, guid: f75007b1e8fb25443a4f8f2c8045c82d, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 1628330593794786, guid: f75007b1e8fb25443a4f8f2c8045c82d, type: 3}
       propertyPath: m_Name
       value: Hall_Room_Doorway_2x4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1628330593794786, guid: f75007b1e8fb25443a4f8f2c8045c82d, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4063068330765002, guid: f75007b1e8fb25443a4f8f2c8045c82d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2467,7 +2691,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4658944719477166, guid: f75007b1e8fb25443a4f8f2c8045c82d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.027
+      value: 0.027000003
       objectReference: {fileID: 0}
     - target: {fileID: 4658944719477166, guid: f75007b1e8fb25443a4f8f2c8045c82d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2479,7 +2703,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4658944719477166, guid: f75007b1e8fb25443a4f8f2c8045c82d, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4658944719477166, guid: f75007b1e8fb25443a4f8f2c8045c82d, type: 3}
       propertyPath: m_LocalRotation.y
@@ -2487,7 +2711,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4658944719477166, guid: f75007b1e8fb25443a4f8f2c8045c82d, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4658944719477166, guid: f75007b1e8fb25443a4f8f2c8045c82d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2547,7 +2771,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 435205872179297320}
     m_Modifications:
     - target: {fileID: 1248124254436808, guid: adb6feec4b474be49a4feaff21d4685b, type: 3}
       propertyPath: m_Name
@@ -2692,7 +2916,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 435205872179297320}
     m_Modifications:
     - target: {fileID: 3776889769893904967, guid: e6b217589a5841346b23b086be1a1b0b, type: 3}
       propertyPath: m_Name
@@ -2762,11 +2986,15 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 742104359842965799}
     m_Modifications:
     - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_Name
       value: Hall_Wall_Panel_2x4 (14)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2824,11 +3052,15 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 742104359842965799}
     m_Modifications:
     - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_Name
       value: Hall_Wall_Panel_2x4 (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2840,7 +3072,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.093
+      value: -0.09300041
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2886,7 +3118,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 435205872179297320}
     m_Modifications:
     - target: {fileID: 1459594701395478, guid: 58891c818a47f8d4cb489d713f90aeb9, type: 3}
       propertyPath: m_Name
@@ -2948,7 +3180,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 4600196321648233747}
     m_Modifications:
     - target: {fileID: 1976372211924414, guid: 9c0c9cf763203de4f884e6f367ec8953, type: 3}
       propertyPath: m_Name
@@ -3166,7 +3398,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 435205872179297320}
     m_Modifications:
     - target: {fileID: 1600194854136080, guid: 9420586023b87974f90793da4a595d0c, type: 3}
       propertyPath: m_Name
@@ -3228,7 +3460,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 4600196321648233747}
     m_Modifications:
     - target: {fileID: 1166931273168738, guid: 89a7e505e1b2a2c49b2798c009eca72d, type: 3}
       propertyPath: m_Name
@@ -3294,7 +3526,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 435205872179297320}
     m_Modifications:
     - target: {fileID: 1262801454312482, guid: f40132c4d3254694a905fe1bd33f3958, type: 3}
       propertyPath: m_Name
@@ -3356,11 +3588,15 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7673884758460287914}
+    m_TransformParent: {fileID: 742104359842965799}
     m_Modifications:
     - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_Name
       value: Hall_Wall_Panel_2x4 (8)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039652649575066, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3372,7 +3608,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.093
+      value: -0.09300041
       objectReference: {fileID: 0}
     - target: {fileID: 4515249635682636, guid: a2591f1b2e67e804cb359e4560a300b4, type: 3}
       propertyPath: m_LocalRotation.w

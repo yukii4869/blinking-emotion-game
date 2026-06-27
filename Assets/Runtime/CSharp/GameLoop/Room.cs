@@ -11,7 +11,5 @@ public class Room : MonoBehaviour
     {
         if (roomLabel == null)
             roomLabel = GetComponentInChildren<TextMeshProUGUI>();
-
-        roomLabel.text = roomNumber.ToString();
     }
 }

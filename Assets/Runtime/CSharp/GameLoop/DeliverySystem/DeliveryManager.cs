@@ -14,7 +14,7 @@ public class DeliveryManager : MonoBehaviour
         Instance = this;
     }
 
-    private void Start()
+    public void InitializeDelivery()
     {
         GameplayUIManager.Instance.UpdateTaskUI(CurrentTask, currentTaskIndex, tasks.Length);
     }
