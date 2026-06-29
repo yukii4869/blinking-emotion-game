@@ -7,13 +7,11 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: alfombra_terciopelo Variant
+  m_Name: RosaMaterial Variant
   m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
-  m_Parent: {fileID: 6940520275138103800, guid: 26d7fa3cecc73d14dbc49110e13bff40, type: 3}
+  m_Parent: {fileID: 2100000, guid: 79641670dd7590b4b8b1497c84488db6, type: 2}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _PARALLAXMAP
-  - _SPECULAR_SETUP
+  m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -26,32 +24,15 @@ Material:
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs:
-    - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: bcb29cc7bf113114b9d4a58851e712b4, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: bcb29cc7bf113114b9d4a58851e712b4, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MetallicGlossMap:
-        m_Texture: {fileID: 2800000, guid: 1f86d6c222e8caa4bb7a09fe6b7296c4, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ParallaxMap:
-        m_Texture: {fileID: 2800000, guid: 12952173c668d3f4680f329abf639968, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+    m_TexEnvs: []
     m_Ints: []
-    m_Floats:
-    - _Smoothness: 0
-    - _WorkflowMode: 0
+    m_Floats: []
     m_Colors:
-    - _Color: {r: 0.9063317, g: 0.48452914, b: 0.694361, a: 1}
+    - _BaseColor: {r: 0, g: 0, b: 0, a: 0.7607843}
+    - _Color: {r: 0, g: 0, b: 0, a: 0.7607843}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &8306158764776827153
+--- !u!114 &1646250206272769055
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

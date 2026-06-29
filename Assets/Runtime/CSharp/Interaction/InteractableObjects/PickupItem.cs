@@ -3,7 +3,10 @@ public class PickupItem : MonoBehaviour, IInteractable
 {
     [SerializeField] private string itemName;
     public string ItemName => itemName;
+
     public bool IsHeld { get; private set; }
+    protected GameObject uiInstance;
+
     public void SetHeld(bool held)
     {
         IsHeld = held;
@@ -23,4 +26,15 @@ public class PickupItem : MonoBehaviour, IInteractable
     {
         return false;
     }
+
+
+    public void DestroyUI()
+    {
+        if (uiInstance != null)
+        {
+            Destroy(uiInstance);
+            uiInstance = null;
+        }
+    }
+
 }

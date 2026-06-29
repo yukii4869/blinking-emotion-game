@@ -24,6 +24,7 @@ public class GiftGuest : EmotionEnemyBase
     [SerializeField] private GameObject lookDisappointed;
     [SerializeField] private Animator armAnimator;
     [SerializeField] private GameObject handGiftObject;
+    [SerializeField] private Animator ghostAnimation;
 
     private GiftState giftState;
     private float emotionTimer;
@@ -44,15 +45,15 @@ public class GiftGuest : EmotionEnemyBase
     {
         switch (giftState)
         {
-            case GiftState.Approach:         UpdateApproachGift(); break;
-            case GiftState.OfferGift:        UpdateOfferGift(); break;
-            case GiftState.ExpectSurprise:   UpdateExpectSurprise(); break;
-            case GiftState.ExpectJoy:        UpdateExpectJoy(); break;
-            case GiftState.GiveGift:         UpdateGiveGift(); break;
-            case GiftState.Disappointed:     UpdateDisappointed(); break;
-            case GiftState.Angry:            UpdateAngry(); break;
-            case GiftState.Attack:           UpdateAttackGift(); break;
-            case GiftState.Leave:            UpdateLeave(); break;
+            case GiftState.Approach: UpdateApproachGift(); break;
+            case GiftState.OfferGift: UpdateOfferGift(); break;
+            case GiftState.ExpectSurprise: UpdateExpectSurprise(); break;
+            case GiftState.ExpectJoy: UpdateExpectJoy(); break;
+            case GiftState.GiveGift: UpdateGiveGift(); break;
+            case GiftState.Disappointed: UpdateDisappointed(); break;
+            case GiftState.Angry: UpdateAngry(); break;
+            case GiftState.Attack: UpdateAttackGift(); break;
+            case GiftState.Leave: UpdateLeave(); break;
         }
     }
 
@@ -78,6 +79,11 @@ public class GiftGuest : EmotionEnemyBase
 
     private void UpdateOfferGift()
     {
+        if (ghostAnimation != null)
+        {
+            ghostAnimation.Play("GhostIdle", 0, 0f);
+            ghostAnimation.enabled = false;
+        }
         LookAtPlayer();
         SetFace(FaceType.Surprised);
 
@@ -133,6 +139,12 @@ public class GiftGuest : EmotionEnemyBase
 
     private void UpdateLeave()
     {
+        lookAngry.SetActive(false);
+        lookExpectSmile.SetActive(false);
+        lookSurprised.SetActive(false);
+        lookDisappointed.SetActive(false);
+        if (ghostAnimation != null)
+            ghostAnimation.enabled = true;
         GoToRoom(); // EnemyBase Heimweg
     }
 
@@ -179,6 +191,7 @@ public class GiftGuest : EmotionEnemyBase
         LookAtPlayer();
         AttackBehavior(); // EnemyBase Attack
         SetGiftState(GiftState.Leave);
+
     }
 
     // ---------------------------------------------------------
@@ -202,10 +215,10 @@ public class GiftGuest : EmotionEnemyBase
 
         switch (face)
         {
-            case FaceType.Surprised:     lookSurprised.SetActive(true); break;
-            case FaceType.Disappointed:  lookDisappointed.SetActive(true); break;
-            case FaceType.ExpectSmile:   lookExpectSmile.SetActive(true); break;
-            case FaceType.Angry:         lookAngry.SetActive(true); break;
+            case FaceType.Surprised: lookSurprised.SetActive(true); break;
+            case FaceType.Disappointed: lookDisappointed.SetActive(true); break;
+            case FaceType.ExpectSmile: lookExpectSmile.SetActive(true); break;
+            case FaceType.Angry: lookAngry.SetActive(true); break;
         }
     }
 

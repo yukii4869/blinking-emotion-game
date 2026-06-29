@@ -46,6 +46,8 @@ public class DeliveryManager : MonoBehaviour
 
         holder.ClearItem();
         Destroy(item.gameObject);
+        item.DestroyUI();
+
 
         currentTaskIndex++;
 

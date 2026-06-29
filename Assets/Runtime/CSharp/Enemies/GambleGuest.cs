@@ -22,7 +22,9 @@ public class GambleGuest : EnemyBase
     private Transform uiRoot;
 
     [Header("Ritual")]
-    public GameObject ritualCirclePrefab;
+    [SerializeField] private GameObject ritualCirclePrefab;
+    
+    [SerializeField] private GameObject giftItemPrefab;
     private GameObject ritualCircleInstance;
 
     private GambleState gambleState = GambleState.Approach;
@@ -134,11 +136,29 @@ public class GambleGuest : EnemyBase
         Debug.Log(good ? "GOOD OUTCOME" : "BAD OUTCOME");
 
         StartCoroutine(PlayRevealSound());
+        if (good)
+        {
+            DoGoodOutcome();
+        }
+        else
+        {
+            DoBadOutCome();
+        }
         Cleanup();
 
         chosenCard = -1;
 
         SetState(EnemyState.GoingHome); // EnemyBase übernimmt Heimweg
+    }
+    private void DoBadOutCome()
+    {
+        AttackBehavior();
+        Debug.Log("Attacke");
+        PlayerHealth.Instance.TakeDamage(stats.damage);
+    }
+    private void DoGoodOutcome()
+    {
+        Instantiate(giftItemPrefab, transform.position + transform.forward, Quaternion.identity);
     }
 
     // ---------------------------------------------------------
@@ -182,6 +202,6 @@ public class GambleGuest : EnemyBase
     }
     public bool CanInteract()
     {
-        return !(gambleState == GambleState.WaitingForCard); 
+        return !(gambleState == GambleState.WaitingForCard);
     }
 }

@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     [Header("Camera Settings")]
     public Transform cameraTransform;
     public float mouseSensitivity = 1.5f;
-    public float maxLookAngle = 80f;
+    public float maxLookAngle = 60;
 
     private Vector3 knockbackVelocity;
     public float knockbackDecay = 10f;

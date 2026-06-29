@@ -3,43 +3,65 @@ using System;
 
 public class EmotionCondition : MonoBehaviour
 {
-    [SerializeField] private Transform scannerTarget;
+    public enum ConditionType
+    {
+        Emotion,
+        NoBlink
+    }
+
+    [Header("Condition Type")]
+    [SerializeField] private ConditionType conditionType = ConditionType.Emotion;
+
+    [Header("Emotion Settings")]
     [SerializeField] private Emotion requiredEmotion;
+
+    [Header("Timing")]
     [SerializeField] private float scanDuration = 3.2f;
-    [SerializeField] private float preDelay = 1.5f; // <<< Vorlaufzeit
+    [SerializeField] private float preDelay = 1.5f;
     [SerializeField] private float resultDisplayTime = 2f;
 
-    [SerializeField] private Renderer displayRenderer;
+    [Header("Scanner")]
+    [SerializeField] private Transform scannerTarget;
+    [SerializeField] private GameObject scanCube;
 
-    // Materialien pro Emotion
+    [Header("Display")]
+    [SerializeField] private Renderer displayRenderer;
+    [SerializeField] private Material defaultMaterial;
+    [SerializeField] private Material successMaterial;
+    [SerializeField] private Material failMaterial;
+
+    [Header("Emotion Materials")]
     [SerializeField] private Material happyMaterial;
     [SerializeField] private Material sadMaterial;
     [SerializeField] private Material angryMaterial;
     [SerializeField] private Material surprisedMaterial;
 
-    // Ergebnis-Materialien
-    [SerializeField] private Material defaultMaterial;
-    [SerializeField] private Material successMaterial;
-    [SerializeField] private Material failMaterial;
+    [Header("No Blink Material")]
+    [SerializeField] private Material noBlinkMaterial;
+
+    [Header("Door Light")]
     [SerializeField] private Light doorLight;
-
-    // Scanner
-    [SerializeField] private GameObject scanCube;
-    private bool inScan = false;
-    private float scanTimer;
-    private bool emotionWasCorrect = false;
-
-    private bool showingResult = false;
-    private float resultTimer;
-
-
-    private float delayTimer;
-    private Action onSuccess;
-    private Action onFail;
 
     private bool running = false;
     private bool inDelay = false;
+    private bool inScan = false;
+    private bool showingResult = false;
+
+    private float delayTimer;
+    private float scanTimer;
+    private float resultTimer;
+
+    private Action onSuccess;
+    private Action onFail;
+
+    private bool emotionFailed = false;
+    private bool blinkFailed = false;
+
     public bool IsRunning => running || inDelay || inScan || showingResult;
+
+    // ---------------------------------------------------------
+    // MATERIAL SELECTION
+    // ---------------------------------------------------------
 
     private Material GetEmotionMaterial(Emotion emotion)
     {
@@ -50,36 +72,87 @@ public class EmotionCondition : MonoBehaviour
             case Emotion.Angry: return angryMaterial;
             case Emotion.Surprised: return surprisedMaterial;
         }
-
         return null;
     }
+
+    // ---------------------------------------------------------
+    // START CONDITION
+    // ---------------------------------------------------------
 
     public void StartCondition(Action success, Action fail)
     {
         running = false;
         inDelay = false;
+        emotionFailed = false;
+        blinkFailed = false;
 
         onSuccess = success;
         onFail = fail;
 
-        // Display zeigt die geforderte Emotion
-        Material emotionMat = GetEmotionMaterial(requiredEmotion);
-        if (emotionMat != null)
-            displayRenderer.material = emotionMat;
+        // Display zeigt die geforderte Emotion oder NoBlink
+        Material mat = null;
 
-        // Scanner ausblenden
+        if (conditionType == ConditionType.Emotion)
+            mat = GetEmotionMaterial(requiredEmotion);
+
+        if (conditionType == ConditionType.NoBlink)
+            mat = noBlinkMaterial;
+
+        displayRenderer.material = mat;
+
         scanCube.SetActive(false);
 
-        // Vorlaufzeit starten
         delayTimer = preDelay;
         inDelay = true;
         running = true;
 
+        // EVENTS ABONNIEREN
+        FaceInputBase.OnBlink += HandleBlink;
+        FaceInputBase.OnEmotionChanged += HandleEmotionChanged;
     }
+
+    // ---------------------------------------------------------
+    // EVENT HANDLERS
+    // ---------------------------------------------------------
+
+    private void HandleBlink()
+    {
+        if (!inScan) return;
+
+        if (conditionType == ConditionType.NoBlink)
+        {
+            blinkFailed = true;
+            FailNow();
+        }
+    }
+
+    private void HandleEmotionChanged(Emotion e)
+    {
+        if (!inScan) return;
+
+        if (conditionType == ConditionType.Emotion)
+        {
+            if (e != requiredEmotion)
+            {
+                emotionFailed = true;
+                FailNow();
+            }
+        }
+    }
+
+    private void CleanupEvents()
+    {
+        FaceInputBase.OnBlink -= HandleBlink;
+        FaceInputBase.OnEmotionChanged -= HandleEmotionChanged;
+    }
+
+    // ---------------------------------------------------------
+    // LOOK CHECK
+    // ---------------------------------------------------------
+
     private bool IsLookingAtScanner()
     {
         Camera cam = Camera.main;
-
         Ray ray = new Ray(cam.transform.position, cam.transform.forward);
 
         if (Physics.Raycast(ray, out RaycastHit hit, 3))
@@ -87,7 +160,6 @@ public class EmotionCondition : MonoBehaviour
             if (hit.transform == scannerTarget)
                 return true;
 
-            // trifft ein Kind des Scanners?
             if (hit.transform.IsChildOf(scannerTarget))
                 return true;
         }
@@ -95,11 +167,13 @@ public class EmotionCondition : MonoBehaviour
         return false;
     }
 
-
-
+    // ---------------------------------------------------------
+    // UPDATE LOOP
+    // ---------------------------------------------------------
 
     private void Update()
     {
+        // Ergebnis anzeigen
         if (showingResult)
         {
             resultTimer -= Time.deltaTime;
@@ -108,9 +182,8 @@ public class EmotionCondition : MonoBehaviour
             {
                 showingResult = false;
                 displayRenderer.material = defaultMaterial;
-                doorLight.color = Color.orange;
+                doorLight.color = Color.yellow;
             }
-
             return;
         }
 
@@ -126,34 +199,19 @@ public class EmotionCondition : MonoBehaviour
             if (delayTimer <= 0f)
             {
                 inDelay = false;
-
-                // Scan starten
                 inScan = true;
                 scanTimer = scanDuration;
-                emotionWasCorrect = true;
-
                 scanCube.SetActive(true);
             }
-
             return;
         }
 
         // -------------------------
         // PHASE 2: Scan läuft
         // -------------------------
-        // -------------------------
-        // PHASE 2: Scan läuft
-        // -------------------------
         if (inScan)
         {
             scanTimer -= Time.deltaTime;
-
-            // Emotion MUSS durchgehend korrekt sein
-            if (GameplayFaceInput.Instance.currentEmotion != requiredEmotion)
-            {
-                FailNow();
-                return;
-            }
 
             // Spieler MUSS den Scanner anschauen
             if (!IsLookingAtScanner())
@@ -167,12 +225,17 @@ public class EmotionCondition : MonoBehaviour
             {
                 SuccessNow();
             }
-
-            return;
         }
     }
+
+    // ---------------------------------------------------------
+    // FAIL / SUCCESS
+    // ---------------------------------------------------------
+
     private void FailNow()
     {
+        CleanupEvents();
+
         inScan = false;
         running = false;
 
@@ -188,6 +251,8 @@ public class EmotionCondition : MonoBehaviour
 
     private void SuccessNow()
     {
+        CleanupEvents();
+
         inScan = false;
         running = false;
 
@@ -201,8 +266,3 @@ public class EmotionCondition : MonoBehaviour
         onSuccess?.Invoke();
     }
 }
-
-
-
-
-

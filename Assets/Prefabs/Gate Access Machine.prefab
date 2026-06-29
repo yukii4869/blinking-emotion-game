@@ -269,21 +269,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 323f07b3a2854324d9d9d12d85589594, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorCondition
-  scannerTarget: {fileID: 6142884040778879086}
+  conditionType: 0
   requiredEmotion: 0
   scanDuration: 3.2
   preDelay: 1.5
   resultDisplayTime: 2
+  scannerTarget: {fileID: 6142884040778879086}
+  scanCube: {fileID: 5411939299613778858}
   displayRenderer: {fileID: 8436653910341673764}
+  defaultMaterial: {fileID: 2100000, guid: e8fab895fb2f4b042b2ee8a121dd659b, type: 2}
+  successMaterial: {fileID: 2100000, guid: d37b88d6f4adcf846b250251140059ce, type: 2}
+  failMaterial: {fileID: 2100000, guid: c211d39cd76da8847ac65d4d9b0508cb, type: 2}
   happyMaterial: {fileID: 2100000, guid: 733de99ebf9472c4a87104953291a4a7, type: 2}
   sadMaterial: {fileID: 2100000, guid: e48b173127a8f27428f7f6282b167366, type: 2}
   angryMaterial: {fileID: 2100000, guid: 0cd6ce9f0c6aca84693a16b22999cda7, type: 2}
   surprisedMaterial: {fileID: 2100000, guid: c2ab27576246a7d4b950ab6d04df9e50, type: 2}
-  defaultMaterial: {fileID: 2100000, guid: e8fab895fb2f4b042b2ee8a121dd659b, type: 2}
-  successMaterial: {fileID: 2100000, guid: d37b88d6f4adcf846b250251140059ce, type: 2}
-  failMaterial: {fileID: 2100000, guid: c211d39cd76da8847ac65d4d9b0508cb, type: 2}
+  noBlinkMaterial: {fileID: 0}
   doorLight: {fileID: 5493045697627593368}
-  scanCube: {fileID: 5411939299613778858}
 --- !u!1 &5411939299613778858
 GameObject:
   m_ObjectHideFlags: 0

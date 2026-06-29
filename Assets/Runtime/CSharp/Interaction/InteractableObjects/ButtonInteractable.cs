@@ -5,7 +5,7 @@ public class ButtonInteractable : MonoBehaviour, IInteractable
     [SerializeField] private SadnessElevator elevator;
     public virtual void Interact()
     {
-        Debug.Log("Button pressed!");
+        elevator.OnButtonPressed();
     }
 
     public bool IsBusy()

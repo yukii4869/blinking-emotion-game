@@ -6,8 +6,17 @@ public class LoadProfileUI : MonoBehaviour
 {
     [SerializeField] private List<ProfileSlot> slots;
 
+    [Header("Pagination")]
+    [SerializeField] private int slotsPerPage = 6;
+    [SerializeField] private GameObject nextPageButton;
+    [SerializeField] private GameObject previousPageButton;
+
+    private int currentPage = 0;
+    private int totalPages = 0;
+
     private void OnEnable()
     {
+        currentPage = 0;
         RefreshSlots();
     }
 
@@ -15,11 +24,23 @@ public class LoadProfileUI : MonoBehaviour
     {
         var profiles = ProfileManager.GetAllProfiles();
 
+        // Anzahl Seiten berechnen
+        totalPages = Mathf.CeilToInt((float)profiles.Length / slotsPerPage);
+
+        // Page clamping
+        currentPage = Mathf.Clamp(currentPage, 0, Mathf.Max(0, totalPages - 1));
+
+        // Startindex der aktuellen Seite
+        int startIndex = currentPage * slotsPerPage;
+
+        // Slots füllen
         for (int i = 0; i < slots.Count; i++)
         {
-            if (i < profiles.Length)
+            int profileIndex = startIndex + i;
+
+            if (profileIndex < profiles.Length)
             {
-                string name = profiles[i];
+                string name = profiles[profileIndex];
                 slots[i].SetupFilled(
                     name,
                     onLoad: () => LoadProfile(name),
@@ -33,6 +54,27 @@ public class LoadProfileUI : MonoBehaviour
                 );
             }
         }
+
+        UpdatePageButtons();
+    }
+
+    private void UpdatePageButtons()
+    {
+        // Buttons aktivieren/deaktivieren
+        previousPageButton.SetActive(currentPage > 0);
+        nextPageButton.SetActive(currentPage < totalPages - 1);
+    }
+
+    public void NextPage()
+    {
+        currentPage++;
+        RefreshSlots();
+    }
+
+    public void PreviousPage()
+    {
+        currentPage--;
+        RefreshSlots();
     }
 
     private void LoadProfile(string name)

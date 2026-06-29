@@ -309,7 +309,7 @@ public class EmotionCalibrationUI : MonoBehaviour
                 "Ihr Ärger wurde deutlich registriert.\n\n\nDie Intensität ist bemerkenswert.",
 
             EmotionCalibrationPhase.SadMax =>
-                "Ihre Traurigkeit wurde aufgezeichnet.\n\n\nSie scheint...angemessen.",
+                "Ihre Traurigkeit wurde aufgezeichnet.\n\n\nSie scheint...\nangemessen.",
 
             EmotionCalibrationPhase.SurprisedMax =>
                 "Ihre Schreckreaktion wurde eingefangen.\n\n\nSie war in Ordnung.",

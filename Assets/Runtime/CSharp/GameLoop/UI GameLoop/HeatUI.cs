@@ -51,9 +51,6 @@ public class HeatUI : MonoBehaviour
             fill.color = Color.Lerp(coldColor, warmColor, t * 2f);
         else
             fill.color = Color.Lerp(warmColor, hotColor, (t - 0.5f) * 2f);
-
-
-  
     }
 
     private void HandleHeatCompleted()

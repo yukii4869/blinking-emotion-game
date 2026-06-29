@@ -56,11 +56,11 @@ public class PlantItem : PickupItem, ICondition
         var prefab = Resources.Load<GameObject>("UI/PlantUI");
         if (prefab != null)
         {
-            GameObject ui = Instantiate(prefab, UIManager.Instance.itemUI.transform);
-            ui.transform.localPosition = new Vector3(0, 0.15f, 0);
-            ui.transform.localRotation = Quaternion.identity;
+            uiInstance = Instantiate(prefab, UIManager.Instance.itemUI.transform);
+            uiInstance.transform.localPosition = new Vector3(0, 0.15f, 0);
+            uiInstance.transform.localRotation = Quaternion.identity;
 
-            plantUIInstance = ui.GetComponent<PlantUI>();
+            plantUIInstance = uiInstance.GetComponent<PlantUI>();
             plantUIInstance.Initialize(this);
         }
     }

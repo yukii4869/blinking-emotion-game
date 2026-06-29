@@ -39,7 +39,7 @@ public class InteractionController : MonoBehaviour
             if (itemHolder.HasItem && hit.collider.TryGetComponent(out DeliverySpot spot))
             {
                 currentSpot = spot;
-                GameplayUIManager.Instance.ShowInteractionHint("Deliver (E)");
+                GameplayUIManager.Instance.ShowInteractionHint("Liefern (E)");
                 return;
             }
 
@@ -47,7 +47,7 @@ public class InteractionController : MonoBehaviour
             if (!itemHolder.HasItem && hit.collider.TryGetComponent(out PickupItem pickup))
             {
                 currentPickup = pickup;
-                GameplayUIManager.Instance.ShowInteractionHint("Pick up (E)");
+                GameplayUIManager.Instance.ShowInteractionHint("Aufheben (E)");
                 return;
             }
 
@@ -55,19 +55,19 @@ public class InteractionController : MonoBehaviour
             if (hit.collider.TryGetComponent(out ButtonInteractable button))
             {
                 currentInteractable = button;
-                GameplayUIManager.Instance.ShowInteractionHint("Press (E)");
+                GameplayUIManager.Instance.ShowInteractionHint("Betätigen (E)");
                 return;
             }
             if (hit.collider.TryGetComponent(out GambleCard card))
             {
                 currentInteractable = card;
-                GameplayUIManager.Instance.ShowInteractionHint("Draw card (E)");
+                GameplayUIManager.Instance.ShowInteractionHint("Karte ziehen (E)");
                 return;
             }
             if (hit.collider.TryGetComponent(out DoorInteractable door))
             {
                 currentInteractable = door;
-                GameplayUIManager.Instance.ShowInteractionHint("Interact (E)");
+                GameplayUIManager.Instance.ShowInteractionHint("Interagieren (E)");
                 return;
             }
         }
@@ -75,7 +75,7 @@ public class InteractionController : MonoBehaviour
         // 4) Droppen (wenn Item in der Hand, aber kein Spot/Knopf)
         if (itemHolder.HasItem)
         {
-            GameplayUIManager.Instance.ShowInteractionHint("Droppen (E)");
+            GameplayUIManager.Instance.ShowInteractionHint("Fallen lassen (E)");
             return;
         }
 
