@@ -43,16 +43,16 @@ public class MediaPipeProvider : MonoBehaviour
         PythonReady = receiver.PythonReady;
         if (PythonReady && !activated)
         {
-            if(CalibrationStateManager.Instance!= null)
+            if (CalibrationStateManager.Instance != null)
             {
                 CalibrationStateManager.Instance.SetState(CalibrationState.EARCalibration);
             }
-            if(GameStateManager.Instance != null)
+            if (GameStateManager.Instance != null)
             {
-                
-                GameStateManager.Instance.SetState(GameState.Gameplay);
+
+                GameStateManager.Instance.SetState(GameState.Initialze);
             }
-            
+
             activated = true;
         }
     }

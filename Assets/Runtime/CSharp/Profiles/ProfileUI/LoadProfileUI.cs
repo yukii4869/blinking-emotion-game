@@ -63,6 +63,7 @@ public class LoadProfileUI : MonoBehaviour
         // Buttons aktivieren/deaktivieren
         previousPageButton.SetActive(currentPage > 0);
         nextPageButton.SetActive(currentPage < totalPages - 1);
+        
     }
 
     public void NextPage()

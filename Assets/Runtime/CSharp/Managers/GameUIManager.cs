@@ -48,6 +48,10 @@ public class UIManager : MonoBehaviour
                 pythonLoadingUI.SetActive(true);
                 calibrationBackground.SetActive(true);
                 break;
+            case GameState.Initialze:
+                pythonLoadingUI.SetActive(true);
+                calibrationBackground.SetActive(true);
+                break;
 
             case GameState.Gameplay:
                 gameplayHUD.SetActive(true);
