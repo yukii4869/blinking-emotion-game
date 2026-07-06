@@ -2,20 +2,20 @@ using System.Collections.Generic;
 
 public class EmotionFeatureCalculator
 {
-    public Dictionary<string, float> CalculateEmotionFeatures(Dictionary<string, float> normalizedBs)
+    public Dictionary<string, float> CalculateEmotionFeatures(Dictionary<string, float> rawBs)
     {
         // ---------------- AUs ---------------------
-        float AU1 = normalizedBs["browInnerUp"];
-        float AU2 = (normalizedBs["browOuterUpLeft"] + normalizedBs["browOuterUpRight"]) * 0.5f;
-        float AU4 = (normalizedBs["browDownLeft"] + normalizedBs["browDownRight"]) * 0.5f;
-        float AU5 = (normalizedBs["eyeWideLeft"] + normalizedBs["eyeWideRight"]) * 0.5f;
-        float AU6 = (normalizedBs["cheekSquintLeft"] + normalizedBs["cheekSquintRight"]) * 0.5f;
-        float AU7 = (normalizedBs["eyeSquintLeft"] + normalizedBs["eyeSquintRight"]) * 0.5f;
-        float AU12 = (normalizedBs["mouthSmileLeft"] + normalizedBs["mouthSmileRight"]) * 0.5f;
-        float AU15 = (normalizedBs["mouthFrownLeft"] + normalizedBs["mouthFrownRight"]) * 0.5f;
-        float AU17 = normalizedBs["mouthShrugLower"];
-        float AU23 = (normalizedBs["mouthPressLeft"] + normalizedBs["mouthPressRight"]) * 0.5f;
-        float AU26 = normalizedBs["jawOpen"];
+        float AU1 = rawBs["browInnerUp"];
+        float AU2 = (rawBs["browOuterUpLeft"] + rawBs["browOuterUpRight"]) * 0.5f;
+        float AU4 = (rawBs["browDownLeft"] + rawBs["browDownRight"]) * 0.5f;
+        float AU5 = (rawBs["eyeWideLeft"] + rawBs["eyeWideRight"]) * 0.5f;
+        float AU6 = (rawBs["cheekSquintLeft"] + rawBs["cheekSquintRight"]) * 0.5f;
+        float AU7 = (rawBs["eyeSquintLeft"] + rawBs["eyeSquintRight"]) * 0.5f;
+        float AU12 = (rawBs["mouthSmileLeft"] + rawBs["mouthSmileRight"]) * 0.5f;
+        float AU15 = (rawBs["mouthFrownLeft"] + rawBs["mouthFrownRight"]) * 0.5f;
+        float AU17 = rawBs["mouthShrugLower"];
+        float AU23 = (rawBs["mouthPressLeft"] + rawBs["mouthPressRight"]) * 0.5f;
+        float AU26 = rawBs["jawOpen"];
 
         var emotionScores = new Dictionary<string, float>();
         float smile = AU12 * 0.7f + AU6 * 0.3f;

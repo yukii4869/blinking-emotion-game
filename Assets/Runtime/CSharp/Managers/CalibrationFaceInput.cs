@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CalibrationFaceInput : FaceInputBase
@@ -12,8 +13,7 @@ public class CalibrationFaceInput : FaceInputBase
     private EmotionCalibrator emotionCalibrator;
 
     private EmotionFeatureCalculator emotionFeatureCalc = new();
-    private EmotionDetector emotionDetector = new();
-    private BlendshapeNormalizer normalizer;
+    private EmotionDetector emotionDetector;   // <-- jetzt ohne Default-Konstruktor
 
     private void Awake()
     {
@@ -67,11 +67,17 @@ public class CalibrationFaceInput : FaceInputBase
         if (blinkDetector == null)
             blinkDetector = new BlinkDetector(earCalibrator.blinkThreshold);
 
-        if (normalizer == null)
-            normalizer = new BlendshapeNormalizer(
-                emotionCalibrator.GetNeutralBase(),
-                emotionCalibrator.GetGobalMax()
-            );
+        // EmotionDetector korrekt initialisieren
+        if (emotionDetector == null)
+        {
+            emotionDetector = new EmotionDetector(
+    emotionCalibrator.GetNeutralScores(),
+    emotionCalibrator.GetSmileScores(),
+    emotionCalibrator.GetAngryScores(),
+    emotionCalibrator.GetSadScores(),
+    emotionCalibrator.GetSurprisedScores()
+);
+        }
 
         blinkThreshold = earCalibrator.blinkThreshold;
     }
@@ -79,8 +85,9 @@ public class CalibrationFaceInput : FaceInputBase
     private void ProcessEmotionDetection()
     {
         var raw = MediaPipeProvider.Instance.Blendshapes;
-        var norm = normalizer.NormalizeBlendshapes(raw);
-        var scores = emotionFeatureCalc.CalculateEmotionFeatures(norm);
+
+        // FeatureCalculator arbeitet jetzt direkt mit raw Blendshapes
+        var scores = emotionFeatureCalc.CalculateEmotionFeatures(raw);
 
         currentEmotion = emotionDetector.ClassifyEmotion(scores);
 

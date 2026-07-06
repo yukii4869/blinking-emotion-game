@@ -1,39 +1,81 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+
+/// <summary>
+/// EmotionCalibrator
+/// ------------------
+/// Diese Klasse kalibriert eine einzelne Person für Gesichtsemotionen.
+/// 
+/// Ablauf:
+/// 1) Neutral-Kalibrierung:
+///    - Für jeden relevanten Blendshape wird der Durchschnitt über alle Frames berechnet.
+///    - Ergebnis: neutralBase[blendshape] = Ruhewert des Gesichts.
+///
+/// 2) Emotion-Kalibrierung (Smile, Angry, Sad, Surprised):
+///    - Für jeden relevanten Blendshape wird der höchste Wert (Peak) gespeichert.
+///    - Ergebnis: emotionPeak[blendshape] = maximaler Ausdruck dieser Emotion.
+///
+/// 3) Optional: globalMax
+///    - Für jeden Blendshape wird der höchste Peak über alle Emotionen gespeichert.
+///    - Ergebnis: globalMax[blendshape] = maximale Fähigkeit der Person.
+///
+/// Diese Werte bilden die Grundlage für spätere Aktivierungs- und Threshold-Berechnungen.
+/// </summary>
 public class EmotionCalibrator : MonoBehaviour
 {
     public event Action OnEmotionCalibrationFinished;
-    //Dictionaries
-    private Dictionary<string, float> accumulator = new();
-    private Dictionary<string, float> neutralBase = new();
-    private Dictionary<string, float> smileBase = new();
-    private Dictionary<string, float> angryBase = new();
-    private Dictionary<string, float> sadBase = new();
-    private Dictionary<string, float> surprisedBase = new();
-    private Dictionary<string, float> globalMax = new();
+
+    // --- Dictionaries für Kalibrierung ---
+    private Dictionary<string, float> neutralBase = new();     // Durchschnittswerte (Neutral)
+    private Dictionary<string, float> sumNeutral = new();       // Akkumulator für Neutral-Durchschnitt
+
+    private Dictionary<string, float> maxCompare = new();       // Peak-Werte
+    private Dictionary<string, float> smilePeak = new();
+    private Dictionary<string, float> angryPeak = new();
+    private Dictionary<string, float> sadPeak = new();
+    private Dictionary<string, float> surprisedPeak = new();
+
+    private Dictionary<string, float> neutralScores;
+    private Dictionary<string, float> smileScores;
+    private Dictionary<string, float> angryScores;
+    private Dictionary<string, float> sadScores;
+    private Dictionary<string, float> surprisedScores;
+
+
+    private Dictionary<string, float> globalMax = new();        // Höchster Peak über alle Emotionen
+
+    // --- Status ---
     private bool isCalibrating;
     private EmotionCalibrationPhase currentPhase;
     private List<Dictionary<string, float>> finishedBaseLines = new();
 
+    public Dictionary<string, float> GetNeutralScores() => neutralScores;
+    public Dictionary<string, float> GetSmileScores() => smileScores;
+    public Dictionary<string, float> GetAngryScores() => angryScores;
+    public Dictionary<string, float> GetSadScores() => sadScores;
+    public Dictionary<string, float> GetSurprisedScores() => surprisedScores;
+
+
+    // --- Blendshapes, die getracked werden ---
     private static readonly string[] relevantBlendshapes =
     {
-    "browDownLeft", "browDownRight",
-    "browInnerUp",
-    "browOuterUpLeft", "browOuterUpRight",
-    "cheekSquintLeft", "cheekSquintRight",
-    "eyeSquintLeft", "eyeSquintRight",
-    "eyeWideLeft", "eyeWideRight",
-    "jawOpen",
-    "mouthSmileLeft", "mouthSmileRight",
-    "mouthFrownLeft", "mouthFrownRight",
-    "mouthPressLeft", "mouthPressRight",
-    "mouthShrugLower",
-    "mouthUpperUpLeft", "mouthUpperUpRight",
-    "noseSneerLeft", "noseSneerRight"
+        "browDownLeft", "browDownRight",
+        "browInnerUp",
+        "browOuterUpLeft", "browOuterUpRight",
+        "cheekSquintLeft", "cheekSquintRight",
+        "eyeSquintLeft", "eyeSquintRight",
+        "eyeWideLeft", "eyeWideRight",
+        "jawOpen",
+        "mouthSmileLeft", "mouthSmileRight",
+        "mouthFrownLeft", "mouthFrownRight",
+        "mouthPressLeft", "mouthPressRight",
+        "mouthShrugLower",
+        "mouthUpperUpLeft", "mouthUpperUpRight",
+        "noseSneerLeft", "noseSneerRight"
     };
 
-    //Finished Flags
+    // --- Flags ---
     public bool finishedNeutral = false;
     public bool finishedSmile = false;
     public bool finishedAngry = false;
@@ -41,23 +83,24 @@ public class EmotionCalibrator : MonoBehaviour
     public bool finishedSurprised = false;
     public bool finishedCalibration = false;
 
+    // --- Frame Tracking ---
     public int collectedFrames = 0;
     public readonly int maxFrames = 180;
 
+    // ---------------------------------------------------------
+    // Unity Lifecycle
+    // ---------------------------------------------------------
     void Start()
     {
+        // globalMax initialisieren
         foreach (string relBs in relevantBlendshapes)
-        {
             globalMax[relBs] = 0f;
-        }
-
     }
+
     private void Update()
     {
         if (!MediaPipeProvider.Instance.PythonReady || !isCalibrating)
-        {
             return;
-        }
 
         var blendshapes = MediaPipeProvider.Instance.Blendshapes;
         if (blendshapes == null || blendshapes.Count == 0)
@@ -65,105 +108,135 @@ public class EmotionCalibrator : MonoBehaviour
 
         ProcessCalibration(blendshapes);
     }
+
+    // ---------------------------------------------------------
+    // Kalibrierung starten
+    // ---------------------------------------------------------
     private void StartCalibration(EmotionCalibrationPhase calibrationPhase)
     {
         collectedFrames = 0;
-        accumulator.Clear();
         isCalibrating = true;
         currentPhase = calibrationPhase;
 
-        //Akkumulator initial mit allen relevanten Blendshapes befüllen
+        maxCompare.Clear();
+        sumNeutral.Clear();
+
         foreach (string relBs in relevantBlendshapes)
         {
-            accumulator[relBs] = 0f;
+            maxCompare[relBs] = 0f;
+            sumNeutral[relBs] = 0f;
         }
     }
+
+    // ---------------------------------------------------------
+    // Frameweise Kalibrierung
+    // ---------------------------------------------------------
     private void ProcessCalibration(Dictionary<string, float> blendshapes)
     {
-        // for jeden blendhape aus provider.blendshape vergleiche ob in relevantBlendshape (oder andersherum) und schreibe wert auf wenn er noch nicht da ist, wenn er da ist dann addiere auf
         foreach (string relBs in relevantBlendshapes)
         {
             float currentValue = blendshapes.GetValueOrDefault(relBs, 0f);
-            accumulator[relBs] += currentValue;
+
+            if (currentPhase == EmotionCalibrationPhase.Neutral)
+            {
+                // Neutral = Durchschnitt sammeln
+                sumNeutral[relBs] += currentValue;
+            }
+            else
+            {
+                // Emotionen = Peak sammeln
+                maxCompare[relBs] = Mathf.Max(maxCompare[relBs], currentValue);
+            }
         }
+
         collectedFrames++;
+
         if (collectedFrames >= maxFrames)
         {
             isCalibrating = false;
             FinishCalibration(GetDictionary(currentPhase));
         }
     }
+
+    // ---------------------------------------------------------
+    // Kalibrierung abschließen
+    // ---------------------------------------------------------
     private void FinishCalibration(Dictionary<string, float> currentCalibrationbase)
     {
-        foreach (var blendshape in accumulator) //für jeden Eintrag in accumulator (<leftMouth, 0.8>, <rightMouth, 0.9>...) durch Frame Anzahl teilen
+        if (currentCalibrationbase == neutralBase)
         {
-            currentCalibrationbase[blendshape.Key] = accumulator[blendshape.Key] / collectedFrames;//schreibe in das normalBase Dictionary die durchschnittlichen Werte von dem gezählten Frames
+            // Neutral = Durchschnitt
+            foreach (var kvp in sumNeutral)
+                neutralBase[kvp.Key] = kvp.Value / collectedFrames;
         }
-        SetCalibrationFlag(currentPhase);
-        currentPhase = EmotionCalibrationPhase.None;
-        if (currentCalibrationbase != neutralBase)
+        else
         {
-            finishedBaseLines.Add(currentCalibrationbase);//Alle außer Neutral sollen geadded werden damit später global Max ausgerechent werden kann
+            // Emotionen = Peak
+            foreach (var kvp in maxCompare)
+                currentCalibrationbase[kvp.Key] = kvp.Value;
+
+            finishedBaseLines.Add(currentCalibrationbase);
         }
 
+        SetCalibrationFlag(currentPhase);
+        currentPhase = EmotionCalibrationPhase.None;
     }
-    private void ComputeGlobalMax(List<Dictionary<string, float>> baseLines)
+
+    // ---------------------------------------------------------
+    // GlobalMax berechnen (optional)
+    // ---------------------------------------------------------
+    private void ComputeScores(List<Dictionary<string, float>> baseLines)
     {
         foreach (Dictionary<string, float> baseDict in baseLines)
         {
             foreach (var currBlendshape in baseDict)
-            {
                 globalMax[currBlendshape.Key] = Mathf.Max(currBlendshape.Value, globalMax[currBlendshape.Key]);
-            }
         }
+
         if (finishedNeutral &&
-              finishedSmile &&
-              finishedAngry &&
-              finishedSad &&
-              finishedSurprised)
+            finishedSmile &&
+            finishedAngry &&
+            finishedSad &&
+            finishedSurprised)
         {
+            EmotionFeatureCalculator calc = new EmotionFeatureCalculator();
+
+            neutralScores = calc.CalculateEmotionFeatures(neutralBase);
+            smileScores = calc.CalculateEmotionFeatures(smilePeak);
+            angryScores = calc.CalculateEmotionFeatures(angryPeak);
+            sadScores = calc.CalculateEmotionFeatures(sadPeak);
+            surprisedScores = calc.CalculateEmotionFeatures(surprisedPeak);
             finishedCalibration = true;
             OnEmotionCalibrationFinished?.Invoke();
             CalibrationStateManager.Instance.SetState(CalibrationState.EmotionTest);
         }
     }
 
-
+    // ---------------------------------------------------------
+    // Hilfsfunktionen
+    // ---------------------------------------------------------
     private Dictionary<string, float> GetDictionary(EmotionCalibrationPhase currentPhase)
     {
         return currentPhase switch
         {
             EmotionCalibrationPhase.Neutral => neutralBase,
-            EmotionCalibrationPhase.SmileMax => smileBase,
-            EmotionCalibrationPhase.AngryMax => angryBase,
-            EmotionCalibrationPhase.SadMax => sadBase,
-            EmotionCalibrationPhase.SurprisedMax => surprisedBase,
+            EmotionCalibrationPhase.SmileMax => smilePeak,
+            EmotionCalibrationPhase.AngryMax => angryPeak,
+            EmotionCalibrationPhase.SadMax => sadPeak,
+            EmotionCalibrationPhase.SurprisedMax => surprisedPeak,
             _ => null,
         };
     }
+
     private void SetCalibrationFlag(EmotionCalibrationPhase calibrationPhase)
     {
-        if (calibrationPhase == EmotionCalibrationPhase.Neutral)
-        {
-            finishedNeutral = true;
-        }
-        else if (calibrationPhase == EmotionCalibrationPhase.SmileMax)
-        {
-            finishedSmile = true;
-        }
-        else if (calibrationPhase == EmotionCalibrationPhase.AngryMax)
-        {
-            finishedAngry = true;
-        }
-        else if (calibrationPhase == EmotionCalibrationPhase.SadMax)
-        {
-            finishedSad = true;
-        }
-        else if (calibrationPhase == EmotionCalibrationPhase.SurprisedMax)
-        {
-            finishedSurprised = true;
-        }
+        if (calibrationPhase == EmotionCalibrationPhase.Neutral) finishedNeutral = true;
+        else if (calibrationPhase == EmotionCalibrationPhase.SmileMax) finishedSmile = true;
+        else if (calibrationPhase == EmotionCalibrationPhase.AngryMax) finishedAngry = true;
+        else if (calibrationPhase == EmotionCalibrationPhase.SadMax) finishedSad = true;
+        else if (calibrationPhase == EmotionCalibrationPhase.SurprisedMax) finishedSurprised = true;
     }
+
     private void ResetFlag(EmotionCalibrationPhase calibrationPhase)
     {
         switch (calibrationPhase)
@@ -175,107 +248,102 @@ public class EmotionCalibrator : MonoBehaviour
             case EmotionCalibrationPhase.SurprisedMax: finishedSurprised = false; break;
         }
     }
+
     private void RecalibrateEmotion(EmotionCalibrationPhase calibrationPhase)
     {
         if (calibrationPhase == EmotionCalibrationPhase.None)
-        {
             return;
-        }
-        // 1. Reset der Daten für diese Emotion
+
         GetDictionary(calibrationPhase).Clear();
         ResetFlag(calibrationPhase);
     }
 
-    //Methoden für die Buttons oder für die UI die man einzeln triggern kann
-    public void StartNeutralCalibration()
-    {
-        StartCalibration(EmotionCalibrationPhase.Neutral);
-    }
-    public void StartSmileCalibration()
-    {
-        StartCalibration(EmotionCalibrationPhase.SmileMax);
-    }
-    public void StartAngryCalibration()
-    {
-        StartCalibration(EmotionCalibrationPhase.AngryMax);
-    }
-    public void StartSadCalibration()
-    {
-        StartCalibration(EmotionCalibrationPhase.SadMax);
-    }
-    public void StartSurprisedCalibration()
-    {
-        StartCalibration(EmotionCalibrationPhase.SurprisedMax);
-    }
-    public void StartComputeGlobalMax()
-    {
-        ComputeGlobalMax(finishedBaseLines);
-    }
-    public void StartReCalibrateEmotion(EmotionCalibrationPhase calibrationPhase)
-    {
-        RecalibrateEmotion(calibrationPhase);
-    }
-    public IReadOnlyDictionary<string, float> GetGobalMax() //Damit Werte nicht verfälscht werden können
-    {
-        return globalMax;
-    }
-    public IReadOnlyDictionary<string, float> GetNeutralBase()
-    {
-        return neutralBase;
-    }
+    // ---------------------------------------------------------
+    // Public API
+    // ---------------------------------------------------------
+    public void StartNeutralCalibration() => StartCalibration(EmotionCalibrationPhase.Neutral);
+    public void StartSmileCalibration() => StartCalibration(EmotionCalibrationPhase.SmileMax);
+    public void StartAngryCalibration() => StartCalibration(EmotionCalibrationPhase.AngryMax);
+    public void StartSadCalibration() => StartCalibration(EmotionCalibrationPhase.SadMax);
+    public void StartSurprisedCalibration() => StartCalibration(EmotionCalibrationPhase.SurprisedMax);
+
+    public void StartComputeGlobalMax() => ComputeScores(finishedBaseLines);
+    public void StartReCalibrateEmotion(EmotionCalibrationPhase calibrationPhase) => RecalibrateEmotion(calibrationPhase);
+
     public void WriteEmotionToProfile(PlayerProfile profile)
     {
         profile.neutralBase = new SerializableDictionary<string, float>();
+        profile.smilePeak = new SerializableDictionary<string, float>();
+        profile.angryPeak = new SerializableDictionary<string, float>();
+        profile.sadPeak = new SerializableDictionary<string, float>();
+        profile.surprisedPeak = new SerializableDictionary<string, float>();
         profile.globalMax = new SerializableDictionary<string, float>();
 
+        profile.neutralScores = new SerializableDictionary<string, float>();
+        profile.smileScores = new SerializableDictionary<string, float>();
+        profile.angryScores = new SerializableDictionary<string, float>();
+        profile.sadScores = new SerializableDictionary<string, float>();
+        profile.surprisedScores = new SerializableDictionary<string, float>();
+
+        // Baselines
         foreach (var kvp in neutralBase)
             profile.neutralBase[kvp.Key] = kvp.Value;
 
+        foreach (var kvp in smilePeak)
+            profile.smilePeak[kvp.Key] = kvp.Value;
+
+        foreach (var kvp in angryPeak)
+            profile.angryPeak[kvp.Key] = kvp.Value;
+
+        foreach (var kvp in sadPeak)
+            profile.sadPeak[kvp.Key] = kvp.Value;
+
+        foreach (var kvp in surprisedPeak)
+            profile.surprisedPeak[kvp.Key] = kvp.Value;
+
         foreach (var kvp in globalMax)
             profile.globalMax[kvp.Key] = kvp.Value;
+
+        // Scores (Felder, die du in ComputeGlobalMax gesetzt hast)
+        foreach (var kvp in neutralScores)
+            profile.neutralScores[kvp.Key] = kvp.Value;
+
+        foreach (var kvp in smileScores)
+            profile.smileScores[kvp.Key] = kvp.Value;
+
+        foreach (var kvp in angryScores)
+            profile.angryScores[kvp.Key] = kvp.Value;
+
+        foreach (var kvp in sadScores)
+            profile.sadScores[kvp.Key] = kvp.Value;
+
+        foreach (var kvp in surprisedScores)
+            profile.surprisedScores[kvp.Key] = kvp.Value;
     }
+
     public void ResetAllCalibration()
     {
-        // Flags zurücksetzen
-        finishedNeutral = false;
-        finishedSmile = false;
-        finishedAngry = false;
-        finishedSad = false;
-        finishedSurprised = false;
+        finishedNeutral = finishedSmile = finishedAngry = finishedSad = finishedSurprised = false;
         finishedCalibration = false;
 
-        // Dictionaries leeren
         neutralBase.Clear();
-        smileBase.Clear();
-        angryBase.Clear();
-        sadBase.Clear();
-        surprisedBase.Clear();
+        smilePeak.Clear();
+        angryPeak.Clear();
+        sadPeak.Clear();
+        surprisedPeak.Clear();
         globalMax.Clear();
 
-        // globalMax wieder initialisieren
         foreach (string relBs in relevantBlendshapes)
             globalMax[relBs] = 0f;
 
-        // Baselines-Liste leeren
         finishedBaseLines.Clear();
-
-        // Frames zurücksetzen
         collectedFrames = 0;
 
-        // Phase zurücksetzen
         currentPhase = EmotionCalibrationPhase.None;
         isCalibrating = false;
     }
-    public void LoadFromProfile(PlayerProfile profile)
-    {
-        neutralBase = new(profile.neutralBase);
-        globalMax = new(profile.globalMax);
-
-        finishedCalibration = true;
-    }
-
-
 }
+
 public enum EmotionCalibrationPhase
 {
     None,
@@ -284,6 +352,4 @@ public enum EmotionCalibrationPhase
     AngryMax,
     SadMax,
     SurprisedMax,
-    WaitForValidate,
 }
-
