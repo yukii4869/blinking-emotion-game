@@ -42,8 +42,8 @@ public class EmotionDetector
         // 2) Threshold berechnen
         // -----------------------------
         float smileThreshold = (smilePeakScores["Smile"] - neutralScores["Smile"]) * 0.5f;
-        float angryThreshold = (angryPeakScores["Angry"] - neutralScores["Angry"]) * 0.5f;
-        float sadThreshold = (sadPeakScores["Sad"] - neutralScores["Sad"]) * 0.5f;
+        float angryThreshold = (angryPeakScores["Angry"] - neutralScores["Angry"]) * 0.4f;
+        float sadThreshold = (sadPeakScores["Sad"] - neutralScores["Sad"]) * 0.3f;
         float surprisedThreshold = (surprisedPeakScores["Surprised"] - neutralScores["Surprised"]) * 0.5f;
 
         // -----------------------------

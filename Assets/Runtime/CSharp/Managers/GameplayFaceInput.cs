@@ -17,7 +17,7 @@ public class GameplayFaceInput : FaceInputBase
     private BlendshapeNormalizer normalizer;
     private Dictionary<string, float> scores;
     private Dictionary<string, float> raw;
-    
+
 
     private bool ready = false;
 
@@ -58,21 +58,24 @@ public class GameplayFaceInput : FaceInputBase
 
         // Emotionserkennung
         ProcessEmotionDetection();
-emotionDebugUI.UpdateDebug(
-    raw,
-    scores,
-    profile.neutralScores,
-    new Dictionary<string, float>
-    {
+        emotionDebugUI.UpdateDebug(
+            scores,
+            profile.neutralScores,
+            new Dictionary<string, float>
+            {
         { "Smile", profile.smileScores["Smile"] },
         { "Angry", profile.angryScores["Angry"] },
         { "Sad", profile.sadScores["Sad"] },
         { "Surprised", profile.surprisedScores["Surprised"] }
-    },
-    currentEmotion
-);
-
-
+            },
+            new Dictionary<string, float>
+            {
+        { "Smile", 0.5f },
+        { "Angry", 0.4f },
+        { "Sad", 0.3f },
+        { "Surprised", 0.5f }
+            }
+        );
     }
 
     private void InitializeTools()
