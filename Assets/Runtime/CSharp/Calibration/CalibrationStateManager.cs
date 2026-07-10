@@ -13,7 +13,6 @@ public class CalibrationStateManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         Instance = this;
     }
     
@@ -22,6 +21,5 @@ public class CalibrationStateManager : MonoBehaviour
         Debug.Log(newState);
         CurrentState = newState;
         OnStateChanged?.Invoke(newState);
-
     }
 }

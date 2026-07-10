@@ -16,7 +16,6 @@ public class RoomManager : MonoBehaviour
     {
         instance = this;
     }
-
     public void InitializeRooms()
     {
 
@@ -38,37 +37,23 @@ public class RoomManager : MonoBehaviour
 
             // Rooms laden
             g.rooms = new List<Room>(g.root.GetComponentsInChildren<Room>());
-
+            // Globale Liste füllen
+            rooms.AddRange(g.rooms);
             // Nummern vergeben
             AssignRoomNumbers(g);
-
-            // Delivery Spots setzen
-            AssignDeliverySpots(g);
 
             // Labels updaten
             UpdateRoomLabels(g);
 
-            // Globale Liste füllen
-            rooms.AddRange(g.rooms);
+
         }
     }
-
     private void AssignRoomNumbers(RoomGroup g)
     {
         int number = g.startNumber;
 
         foreach (var r in g.rooms)
             r.roomNumber = number++;
-    }
-
-    private void AssignDeliverySpots(RoomGroup g)
-    {
-        foreach (var room in g.rooms)
-        {
-            DeliverySpot spot = room.GetComponentInChildren<DeliverySpot>();
-            if (spot != null)
-                spot.room = room;
-        }
     }
 
     private void UpdateRoomLabels(RoomGroup g)

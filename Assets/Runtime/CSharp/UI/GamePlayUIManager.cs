@@ -59,7 +59,7 @@ public class GameplayUIManager : MonoBehaviour
             return;
         }
 
-        taskDescriptionText.text = $"Bringe {task.itemName} zu Zimmer {task.room.roomNumber}";
+        taskDescriptionText.text = $"Bringe {task.itemName} zu Zimmer {task.roomNumber}";
     }
 
     public void ShowWrongSpot() => ShowDeliveryFeedback("Falscher Ort!");
