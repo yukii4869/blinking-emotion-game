@@ -13,7 +13,6 @@ public class GameplayFaceInput : FaceInputBase
     private PlayerProfile profile;
     private EmotionFeatureCalculator emotionFeatureCalc = new();
     private EmotionDetector emotionDetector;
-    private BlendshapeNormalizer normalizer;
     private Dictionary<string, float> scores;
     private Dictionary<string, float> raw;
 

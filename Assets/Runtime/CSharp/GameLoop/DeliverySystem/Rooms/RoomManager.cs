@@ -8,7 +8,7 @@ public class RoomManager : MonoBehaviour
     public static RoomManager instance;
 
     [Header("Room Groups")]
-    public List<RoomGroup> groups = new List<RoomGroup>();
+    private List<RoomGroup> groups = new List<RoomGroup>();
 
     public List<Room> rooms = new List<Room>();
 
@@ -18,6 +18,10 @@ public class RoomManager : MonoBehaviour
     }
     public void InitializeRooms()
     {
+        if (groups.Count == 0)
+        {
+            groups = new List<RoomGroup>(FindObjectsOfType<RoomGroup>());
+        }
 
         StartCoroutine(DelayedInit());
     }

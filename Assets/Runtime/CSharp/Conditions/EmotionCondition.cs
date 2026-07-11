@@ -111,6 +111,7 @@ public class EmotionCondition : MonoBehaviour
         FaceInputBase.OnEmotionChanged += HandleEmotionChanged;
     }
 
+
     // ---------------------------------------------------------
     // EVENT HANDLERS
     // ---------------------------------------------------------
@@ -202,6 +203,16 @@ public class EmotionCondition : MonoBehaviour
                 inScan = true;
                 scanTimer = scanDuration;
                 scanCube.SetActive(true);
+                Emotion current = GameplayFaceInput.Instance.currentEmotion;
+
+                if (conditionType == ConditionType.Emotion)
+                {
+                    if (current != requiredEmotion)
+                    {
+                        FailNow();
+                        return;
+                    }
+                }
             }
             return;
         }

@@ -42,8 +42,6 @@ public class ClosingEyesController : MonoBehaviour
 
         eyesMaterial.SetFloat(eyesClosedPropertyId, currentValue);
         eyesMaterial.SetFloat(smoothnessPropertyId, smoothnessValue);
-
-        Debug.Log("Instant Close");
     }
 
     private void HandleEyesOpened()
@@ -52,8 +50,6 @@ public class ClosingEyesController : MonoBehaviour
         isOpening = true;
         targetValue = eyesOpen;
         smoothnessValue = defaultSmoothness;
-
-        Debug.Log("Animated Open");
     }
 
     private void Update()
