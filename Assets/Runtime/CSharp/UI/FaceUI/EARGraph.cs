@@ -21,23 +21,6 @@ public class EARGraph : MonoBehaviour
 
     private InputAction toggleAction;
 
-    void Awake()
-    {
-        // Taste G als InputAction registrieren
-        toggleAction = new InputAction(type: InputActionType.Button, binding: "<Keyboard>/g");
-    }
-
-    void OnEnable()
-    {
-        toggleAction.Enable();
-        toggleAction.performed += ctx => ToggleGraph();
-    }
-
-    void OnDisable()
-    {
-        toggleAction.Disable();
-    }
-
     void Start()
     {
         texture = new Texture2D(400, 200);
@@ -72,7 +55,7 @@ public class EARGraph : MonoBehaviour
         DrawGraph();
     }
 
-    void ToggleGraph()
+    public void ToggleGraph()
     {
         visible = !visible;
         graphImage.gameObject.SetActive(visible);
@@ -113,8 +96,6 @@ public class EARGraph : MonoBehaviour
 
         texture.Apply();
     }
-
-
     private void UpdateYAxisLabels(float minEAR, float maxEAR)
     {
         for (int i = 0; i < yAxisLabels.Length; i++)

@@ -11,8 +11,6 @@ public abstract class EnemyBase : MonoBehaviour
     protected float lastAttackTime = 0f;
     private Room assignedRoom;
     private bool goingHome = false;
-
-
     public EnemyState CurrentState { get; private set; }
 
     public virtual void Start()
@@ -129,7 +127,7 @@ public abstract class EnemyBase : MonoBehaviour
         {
             goingHome = true;
             agent.SetDestination(assignedRoom.transform.position);
-            Debug.Log("Gehe zu Room: " + assignedRoom.name);
+            Debug.Log("Gehe zu Room: " + assignedRoom.roomNumber);
         }
 
         float dist = Vector3.Distance(transform.position, assignedRoom.transform.position);

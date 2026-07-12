@@ -8,7 +8,7 @@ public class InteractionController : MonoBehaviour
     [SerializeField] private float interactDistance = 3f;
     [SerializeField] private ItemHolder itemHolder;
 
-    private DeliverySpot currentSpot;
+    private Room currentRoom;
     private PickupItem currentPickup;
     private IInteractable currentInteractable;
 
@@ -19,7 +19,7 @@ public class InteractionController : MonoBehaviour
 
     private void UpdateRaycast()
     {
-        currentSpot = null;
+        currentRoom = null;
         currentPickup = null;
         currentInteractable = null;
 
@@ -36,9 +36,9 @@ public class InteractionController : MonoBehaviour
                 }
             }
             // 1) DeliverySpot (nur wenn Item in der Hand)
-            if (itemHolder.HasItem && hit.collider.TryGetComponent(out DeliverySpot spot))
+            if (itemHolder.HasItem && hit.collider.TryGetComponent(out Room room))
             {
-                currentSpot = spot;
+                currentRoom = room;
                 GameplayUIManager.Instance.ShowInteractionHint("Liefern (E)");
                 return;
             }
@@ -89,10 +89,10 @@ public class InteractionController : MonoBehaviour
         if (!context.performed)
             return;
 
-        if (currentSpot != null && itemHolder.HasItem)
+        if (currentRoom != null && itemHolder.HasItem)
         {
             var item = itemHolder.CurrentItem.GetComponent<PickupItem>();
-            currentSpot.TryDeliver(item, itemHolder);
+            currentRoom.TryDeliver(item, itemHolder);
             itemHolder.DropCurrentItem();
             return;
         }

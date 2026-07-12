@@ -10,6 +10,23 @@ public class PlayerController : MonoBehaviour
     public float gravity = -9.81f;
     public float jumpHeight = 1.5f;
 
+    [Header("Stamina Settings")]
+    public float sprintMultiplier = 2.2f;
+    public float maxStamina = 2f;
+    public float staminaDrain = 1f;      // pro Sekunde
+    public float staminaRegen = 0.8f;    // pro Sekunde
+    public float stamina;                // aktueller Wert
+    public StaminaUI staminaUI;
+
+    private bool isSprinting;
+
+    [Header("Crouch Settings")]
+    public float crouchHeight = 1.0f;
+    public float standingHeight = 2.0f;
+    public float crouchSpeedMultiplier = 0.5f;
+
+    private bool isCrouching;
+
     [Header("Camera Settings")]
     public Transform cameraTransform;
     public float mouseSensitivity = 1.5f;
@@ -36,6 +53,8 @@ public class PlayerController : MonoBehaviour
 
         // Initialer Zustand
         HandleStateChanged(GameStateManager.Instance.CurrentState);
+        stamina = maxStamina;
+        staminaUI.SetStamina(stamina, maxStamina);
     }
 
     private void Update()
@@ -81,6 +100,22 @@ public class PlayerController : MonoBehaviour
             verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
     }
+    public void OnSprint(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+            isSprinting = true;
+
+        if (ctx.canceled)
+            isSprinting = false;
+    }
+    public void OnCrouch(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+            StartCrouch();
+
+        if (ctx.canceled)
+            StopCrouch();
+    }
 
     // -----------------------------
     // Movement
@@ -88,31 +123,93 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMovement()
     {
+        bool wantsToSprint = isSprinting && !isCrouching;
+
+        // Spieler KANN sprinten, wenn er will UND genug Stamina hat
+        bool canSprint = wantsToSprint && stamina > 0f;
+
+        // Wenn Stamina leer → Sprint sofort stoppen
+        if (!canSprint && isSprinting)
+        {
+            isSprinting = false;
+        }
+
+        float speed = moveSpeed;
+
+        // Sprint-Speed
+        if (canSprint)
+        {
+            speed *= sprintMultiplier;
+        }
+
+        // Crouch-Speed
+        if (isCrouching)
+        {
+            speed *= crouchSpeedMultiplier;
+        }
+
+        // -----------------------------
+        // Stamina-Logik
+        // -----------------------------
+
+        if (canSprint)
+        {
+            // Sprint verbraucht Stamina
+            stamina -= staminaDrain * Time.deltaTime;
+            stamina = Mathf.Clamp(stamina, 0f, maxStamina);
+        }
+        else
+        {
+            // WICHTIG:
+            // Nur regenerieren, wenn der Spieler NICHT sprinten will
+            if (!wantsToSprint)
+            {
+                stamina += staminaRegen * Time.deltaTime;
+                stamina = Mathf.Clamp(stamina, 0f, maxStamina);
+            }
+        }
+
+        // UI Update
+        staminaUI.SetStamina(stamina, maxStamina);
+
+
+
+        // Movement
         Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
-        move *= moveSpeed;
+        move *= speed;
 
         // Gravity
-
         if (!IsOnMovingPlatform)
         {
             if (controller.isGrounded && verticalVelocity < 0)
                 verticalVelocity = -2f;
         }
 
-
         verticalVelocity += gravity * Time.deltaTime;
         move.y = verticalVelocity;
 
-        //  Knockback hinzufügen
+        // Knockback
         if (knockbackVelocity.magnitude > 0.1f)
         {
             move += knockbackVelocity;
             knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, knockbackDecay * Time.deltaTime);
         }
 
-        // Finaler Move
         controller.Move(move * Time.deltaTime);
     }
+
+    private void StartCrouch()
+    {
+        isCrouching = true;
+        controller.height = crouchHeight;
+    }
+
+    private void StopCrouch()
+    {
+        isCrouching = false;
+        controller.height = standingHeight;
+    }
+
 
 
     // -----------------------------

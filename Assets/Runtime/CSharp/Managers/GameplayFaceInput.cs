@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameplayFaceInput : FaceInputBase
 {
     public static GameplayFaceInput Instance { get; private set; }
+    public EmotionDebugUI emotionDebugUI;
 
     public Emotion currentEmotion;
     public bool isBlinking;
@@ -10,8 +12,10 @@ public class GameplayFaceInput : FaceInputBase
 
     private PlayerProfile profile;
     private EmotionFeatureCalculator emotionFeatureCalc = new();
-    private EmotionDetector emotionDetector = new();
-    private BlendshapeNormalizer normalizer;
+    private EmotionDetector emotionDetector;
+    private Dictionary<string, float> scores;
+    private Dictionary<string, float> raw;
+
 
     private bool ready = false;
 
@@ -52,6 +56,24 @@ public class GameplayFaceInput : FaceInputBase
 
         // Emotionserkennung
         ProcessEmotionDetection();
+        emotionDebugUI.UpdateDebug(
+            scores,
+            profile.neutralScores,
+            new Dictionary<string, float>
+            {
+        { "Smile", profile.smileScores["Smile"] },
+        { "Angry", profile.angryScores["Angry"] },
+        { "Sad", profile.sadScores["Sad"] },
+        { "Surprised", profile.surprisedScores["Surprised"] }
+            },
+            new Dictionary<string, float>
+            {
+        { "Smile", 0.5f },
+        { "Angry", 0.4f },
+        { "Sad", 0.3f },
+        { "Surprised", 0.5f }
+            }
+        );
     }
 
     private void InitializeTools()
@@ -59,19 +81,26 @@ public class GameplayFaceInput : FaceInputBase
         profile = ActiveProfile.Instance.CurrentProfile;
 
         blinkDetector = new BlinkDetector(profile.blinkThreshold);
-        normalizer = new BlendshapeNormalizer(
-            profile.neutralBase,
-            profile.globalMax
+
+        // EmotionDetector korrekt initialisieren
+        emotionDetector = new EmotionDetector(
+            profile.neutralScores,
+            profile.smileScores,
+            profile.angryScores,
+            profile.sadScores,
+            profile.surprisedScores
         );
+
 
         blinkThreshold = profile.blinkThreshold;
     }
 
+
     private void ProcessEmotionDetection()
     {
-        var raw = MediaPipeProvider.Instance.Blendshapes;
-        var norm = normalizer.NormalizeBlendshapes(raw);
-        var scores = emotionFeatureCalc.CalculateEmotionFeatures(norm);
+        raw = MediaPipeProvider.Instance.Blendshapes;
+
+        scores = emotionFeatureCalc.CalculateEmotionFeatures(raw);
 
         currentEmotion = emotionDetector.ClassifyEmotion(scores);
 

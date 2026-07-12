@@ -8,25 +8,29 @@ public class EARCalibrator : MonoBehaviour
     private bool isCalibrating;
     public bool finishedCalibration = false;
     private float calibrationTimer;
-    private const float calibrationDuration = 2f;
-    private readonly float lowerCutPercentage = 0.15f;
-    private readonly float blinkFactor = 0.75f;
+    private const float calibrationDuration = 4f;
+    private readonly float lowerCutPercentage = 0.05f;
+    private readonly float blinkFactor = 0.65f;
     private List<float> earSamples = new();
     public float neutralEAR;
     private bool startedCalibration;
     public float blinkThreshold;
     public bool StartedCalibration => startedCalibration;
     public event Action OnEARCalibrationFinished;
+    private float smoothedEAR = 0f;
 
     private void Update()
     {
         if (!MediaPipeProvider.Instance.PythonReady || !isCalibrating)
-        {
             return;
-        }
+
         float currentEAR = earCalculator.ComputeBothEyes(MediaPipeProvider.Instance.Landmarks);
 
-        earSamples.Add(currentEAR);
+        // EAR glätten
+        smoothedEAR = Mathf.Lerp(smoothedEAR, currentEAR, 0.5f);
+
+        // Glatten Wert speichern
+        earSamples.Add(smoothedEAR);
 
         calibrationTimer += Time.deltaTime;
 
@@ -79,8 +83,8 @@ public class EARCalibrator : MonoBehaviour
         {
             accumulatedEAR += ear;
         }
-        float meanEAR = accumulatedEAR / lengthcleanedList;
-        return meanEAR;
+        int mid = removedSamples.Count / 2;
+        return removedSamples[mid];
     }
     private float ComputeBlinkThreshold(float meanEAR)
     {

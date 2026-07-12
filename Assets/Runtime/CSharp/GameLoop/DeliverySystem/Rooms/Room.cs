@@ -12,4 +12,8 @@ public class Room : MonoBehaviour
         if (roomLabel == null)
             roomLabel = GetComponentInChildren<TextMeshProUGUI>();
     }
+    public void TryDeliver(PickupItem item, ItemHolder holder)
+    {
+        DeliveryManager.Instance.OnItemDelivered(item, roomNumber, holder);
+    }
 }

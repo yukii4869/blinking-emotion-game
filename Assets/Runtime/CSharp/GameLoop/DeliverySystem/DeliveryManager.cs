@@ -19,35 +19,37 @@ public class DeliveryManager : MonoBehaviour
         GameplayUIManager.Instance.UpdateTaskUI(CurrentTask, currentTaskIndex, tasks.Length);
     }
 
-    public void OnItemDelivered(PickupItem item, DeliverySpot spot, ItemHolder holder)
+    public void OnItemDelivered(PickupItem item, int deliveredRoomNumber, ItemHolder holder)
     {
         var task = CurrentTask;
 
-        if (spot.room != task.room)
+        // ROOM CHECK
+        if (deliveredRoomNumber != task.roomNumber)
         {
             GameplayUIManager.Instance.ShowWrongSpot();
             return;
         }
 
+        // ITEM CHECK
         if (item.ItemName != task.itemName)
         {
             GameplayUIManager.Instance.ShowWrongItem();
             return;
         }
-        var cond = item as ICondition;
 
-        if (cond != null && !cond.IsMet)
+        // CONDITION CHECK
+        if (item is ICondition cond && !cond.IsMet)
         {
             GameplayUIManager.Instance.ShowConditionFailed();
             return;
         }
 
+        // SUCCESS
         GameplayUIManager.Instance.ShowDeliverySuccess();
 
         holder.ClearItem();
         Destroy(item.gameObject);
         item.DestroyUI();
-
 
         currentTaskIndex++;
 
@@ -57,9 +59,8 @@ public class DeliveryManager : MonoBehaviour
         }
         else
         {
-            GameplayUIManager.Instance.ShowDeliverySuccess();
             GameplayUIManager.Instance.UpdateTaskUI(null, tasks.Length, tasks.Length);
         }
-
     }
+
 }

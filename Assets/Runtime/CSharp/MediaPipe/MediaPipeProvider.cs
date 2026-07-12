@@ -7,7 +7,11 @@ public class MediaPipeProvider : MonoBehaviour
 
     [Header("Python Settings")]
     [SerializeField] private string pythonExe = "python";
-    [SerializeField] private string scriptPath = @"C:/Unity Projekte/blinking-emotion-game/Assets/Runtime/Python/Mediapipe_sender.py";
+
+    [SerializeField] private string scriptRelativePath = "Runtime/Python/Mediapipe_sender.py";
+
+    private string ScriptFullPath =>
+        System.IO.Path.Combine(Application.dataPath, scriptRelativePath);
 
     private PythonProcessService python;
     private bool activated;
@@ -50,7 +54,7 @@ public class MediaPipeProvider : MonoBehaviour
             if (GameStateManager.Instance != null)
             {
 
-                GameStateManager.Instance.SetState(GameState.Initialze);
+                GameStateManager.Instance.SetState(GameState.Gameplay);
             }
 
             activated = true;
@@ -61,7 +65,7 @@ public class MediaPipeProvider : MonoBehaviour
         if (python == null)
             python = new PythonProcessService();
 
-        python.StartPython(pythonExe, scriptPath);
+        python.StartPython(pythonExe, ScriptFullPath);
 
         if (receiver == null)
             receiver = new UdpReceiverService();
