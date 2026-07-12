@@ -20,6 +20,7 @@ public class CuteFluffyEnemy : EmotionEnemyBase
     private Vector3 fleeTarget;
     private bool hasFleeTarget = false;
     private FluffyState currentState = FluffyState.Approach;
+    private float lifeTimer = 0f;
 
     public override void Start()
     {
@@ -83,11 +84,17 @@ public class CuteFluffyEnemy : EmotionEnemyBase
     // -------------------------
     protected override void UpdateSpecial()
     {
+        // DESPAWN: Timer
+        lifeTimer += Time.deltaTime;
+        if (lifeTimer > 20f)
+        {
+            SetState(EnemyState.GoingHome);
+            return;
+        }
 
         switch (currentState)
         {
             case FluffyState.Wander:
-                //WanderBehavior();
                 break;
 
             case FluffyState.Approach:
@@ -99,6 +106,7 @@ public class CuteFluffyEnemy : EmotionEnemyBase
                 break;
         }
     }
+
 
     // -------------------------
     // APPROACH PLAYER
