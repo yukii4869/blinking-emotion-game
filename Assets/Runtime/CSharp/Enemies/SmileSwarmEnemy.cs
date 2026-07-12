@@ -37,6 +37,13 @@ public class SmileSwarmEnemy : EmotionEnemyBase
     {
         float dist = Vector3.Distance(transform.position, player.transform.position);
 
+        // DESPAWN: Wenn weit genug weg
+        if (dist > 50f)
+        {
+            SetState(EnemyState.GoingHome);
+            return;
+        }
+
         if (swarmState == SwarmState.Chase && dist <= stats.attackRange)
             swarmState = SwarmState.Attack;
 
@@ -55,6 +62,7 @@ public class SmileSwarmEnemy : EmotionEnemyBase
                 break;
         }
     }
+
 
     private void DoFormationWander()
     {

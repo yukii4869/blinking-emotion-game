@@ -6,6 +6,7 @@ public class BlinkEnemy : EnemyBase
     [Header("Blink Movement")]
     [SerializeField] private float moveCooldown = 0.4f;
     [SerializeField] private float stepSize = 0.8f;
+    private float lifeTimer = 0f;
 
     private float lastMoveTime = 0f;
     private bool blinked = false;
@@ -55,6 +56,14 @@ public class BlinkEnemy : EnemyBase
 
     protected override void UpdateSpecial()
     {
+
+        // DESPAWN: Timer
+        lifeTimer += Time.deltaTime;
+        if (lifeTimer > 10f)
+        {
+            Destroy(gameObject);
+            return;
+        }
         // Blink decay
         if (blinkTimer > 0f)
             blinkTimer -= Time.deltaTime;
