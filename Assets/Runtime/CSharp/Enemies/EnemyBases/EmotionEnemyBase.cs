@@ -4,12 +4,12 @@ public abstract class EmotionEnemyBase : EnemyBase
 
     protected virtual void OnEnable()
     {
-        GameplayFaceInput.OnEmotionChanged += HandleEmotion;
+        InputSelector.Instance.ActiveInput.OnEmotionChanged += HandleEmotion;
     }
 
     protected virtual void OnDisable()
     {
-        GameplayFaceInput.OnEmotionChanged -= HandleEmotion;
+        InputSelector.Instance.ActiveInput.OnEmotionChanged -= HandleEmotion;
     }
 
     protected virtual void HandleEmotion(Emotion emotion)

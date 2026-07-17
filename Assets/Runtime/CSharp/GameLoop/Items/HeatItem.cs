@@ -21,19 +21,14 @@ public class HeatItem : PickupItem, ICondition
 
     public event System.Action OnHeatCompleted;
     public event System.Action OnHeatBroken;
-
-    private void OnEnable()
+    private void OnDestroy()
     {
-        GameplayFaceInput.OnEmotionChanged += HandleEmotion;
-    }
-
-    private void OnDisable()
-    {
-        GameplayFaceInput.OnEmotionChanged -= HandleEmotion;
+        InputSelector.Instance.ActiveInput.OnEmotionChanged -= HandleEmotion;
     }
 
     private void Start()
     {
+        InputSelector.Instance.ActiveInput.OnEmotionChanged += HandleEmotion;
         var prefab = Resources.Load<GameObject>("UI/HeatUI");
 
         if (prefab != null)
@@ -98,7 +93,7 @@ public class HeatItem : PickupItem, ICondition
     public void ResetFood()
     {
 
-        currentHeat = 20f; 
+        currentHeat = 20f;
         IsBroken = false;
         IsHeated = false;
 
@@ -110,7 +105,7 @@ public class HeatItem : PickupItem, ICondition
         OnHeatCompleted = null;
         OnHeatBroken = null;
 
-      
+
 
     }
 }

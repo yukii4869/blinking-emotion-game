@@ -11069,12 +11069,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 908948416d5ea15489b12594b1668b90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CalibrationFaceInput
-  currentEAR: 0
-  blinkThreshold: 0
-  requiredClosedDuration: 2
   currentEmotion: 0
   isBlinking: 0
   blinkCount: 0
+  currentEAR: 0
+  blinkThreshold: 0
+  requiredClosedDuration: 2
 --- !u!4 &2047198098 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4414080895957248, guid: 93f861ce27e9aea4b866b8263b479191, type: 3}

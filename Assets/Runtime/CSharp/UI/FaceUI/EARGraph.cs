@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
@@ -9,17 +8,16 @@ public class EARGraph : MonoBehaviour
     [SerializeField] private RawImage graphImage;
     [SerializeField] private int maxSamples = 300;
     [SerializeField] private TextMeshProUGUI[] yAxisLabels;
+
     private float smoothedEAR = 0f;
-    [SerializeField] private float smoothing = 0.2f; // 0 = kein smoothing, 1 = sehr stark
+    [SerializeField] private float smoothing = 0.2f;
 
     private List<float> samples = new List<float>();
-
     private Texture2D texture;
+
     private bool visible = false;
     private float ear;
     private float threshold;
-
-    private InputAction toggleAction;
 
     void Start()
     {
@@ -31,16 +29,24 @@ public class EARGraph : MonoBehaviour
     void Update()
     {
         if (!visible) return;
-        // Abfrage in welcher Szene wir uns quasi befinden
-        if(CalibrationFaceInput.Instance != null)
+
+        // -------------------------
+        // EAR nur lesen, wenn FaceInput aktiv ist
+        // -------------------------
+        var active = InputSelector.Instance.ActiveInput;
+
+        if (active is FaceInputBase face)
         {
-            ear = CalibrationFaceInput.Instance.currentEAR;
+            ear = face.currentEAR;
+            threshold = face.blinkThreshold;
         }
-        if(GameplayFaceInput.Instance != null)
+        else
         {
-            ear = GameplayFaceInput.Instance.currentEAR;
+            // KeyboardInput → kein EAR → Graph nicht zeichnen
+            return;
         }
 
+        // Smoothing
         smoothedEAR = Mathf.Lerp(smoothedEAR, ear, smoothing);
         ear = smoothedEAR;
 
@@ -67,19 +73,15 @@ public class EARGraph : MonoBehaviour
 
         float scale = 400f;
 
-        // 1. Threshold-Linie zeichnen
-        if(CalibrationFaceInput.Instance != null)
-        {
-            threshold = CalibrationFaceInput.Instance.blinkThreshold;
-        }
-        if(GameplayFaceInput.Instance != null)
-        {
-            threshold = GameplayFaceInput.Instance.blinkThreshold;
-        }
+        // -------------------------
+        // Threshold-Linie zeichnen
+        // -------------------------
         int ty = Mathf.Clamp((int)(threshold * scale), 0, texture.height - 1);
         texture.DrawLine(0, ty, texture.width - 1, ty, Color.red);
 
-        // 2. EAR-Kurve zeichnen
+        // -------------------------
+        // EAR-Kurve zeichnen
+        // -------------------------
         for (int i = 1; i < samples.Count; i++)
         {
             float v0 = Mathf.Clamp(samples[i - 1], 0f, 1f);
@@ -96,6 +98,7 @@ public class EARGraph : MonoBehaviour
 
         texture.Apply();
     }
+
     private void UpdateYAxisLabels(float minEAR, float maxEAR)
     {
         for (int i = 0; i < yAxisLabels.Length; i++)
@@ -105,5 +108,4 @@ public class EARGraph : MonoBehaviour
             yAxisLabels[i].text = value.ToString("F2");
         }
     }
-
 }

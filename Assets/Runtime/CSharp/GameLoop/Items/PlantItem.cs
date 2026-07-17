@@ -50,7 +50,7 @@ public class PlantItem : PickupItem, ICondition
         main = particles.main;
         particles.Play();
 
-        GameplayFaceInput.OnEmotionChanged += HandleEmotion;
+        InputSelector.Instance.ActiveInput.OnEmotionChanged += HandleEmotion;
 
         // UI instanziieren
         var prefab = Resources.Load<GameObject>("UI/PlantUI");
@@ -67,7 +67,7 @@ public class PlantItem : PickupItem, ICondition
 
     private void OnDestroy()
     {
-        GameplayFaceInput.OnEmotionChanged -= HandleEmotion;
+        InputSelector.Instance.ActiveInput.OnEmotionChanged -= HandleEmotion;
     }
 
     private void HandleEmotion(Emotion e)
@@ -99,7 +99,6 @@ public class PlantItem : PickupItem, ICondition
             currentBloom -= decayRate * Time.deltaTime;
 
         currentBloom = Mathf.Clamp(currentBloom, 0, maxBloom);
-        Debug.Log("CurrentBloom" + currentBloom);
     }
 
     private void UpdateSweetSpotTimer()

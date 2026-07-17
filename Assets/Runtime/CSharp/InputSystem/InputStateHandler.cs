@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -33,8 +32,18 @@ public class InputStateHandler : MonoBehaviour
 
     private void SwitchToGameplayMap()
     {
-        playerInput.SwitchCurrentActionMap("Gameplay");
+        if (InputSelector.Instance.mode == InputMode.Keyboard)
+        {
+            playerInput.SwitchCurrentActionMap("Gameplay Keyboard");
+            Debug.Log("SetKeyboardMode");
+        }
+        else
+        {
+            Debug.Log("SetFaceMode");
+            playerInput.SwitchCurrentActionMap("Gameplay");
+        }
     }
+
     private void SwitchToUIMap()
     {
         playerInput.SwitchCurrentActionMap("UI");

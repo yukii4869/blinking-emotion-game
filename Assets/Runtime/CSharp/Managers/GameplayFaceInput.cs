@@ -3,12 +3,7 @@ using UnityEngine;
 
 public class GameplayFaceInput : FaceInputBase
 {
-    public static GameplayFaceInput Instance { get; private set; }
     public EmotionDebugUI emotionDebugUI;
-
-    public Emotion currentEmotion;
-    public bool isBlinking;
-    public int blinkCount;
 
     private PlayerProfile profile;
     private EmotionFeatureCalculator emotionFeatureCalc = new();
@@ -18,16 +13,6 @@ public class GameplayFaceInput : FaceInputBase
 
 
     private bool ready = false;
-
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-    }
 
     private void Update()
     {

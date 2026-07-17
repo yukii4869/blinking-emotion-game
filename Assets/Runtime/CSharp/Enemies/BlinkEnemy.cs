@@ -23,12 +23,12 @@ public class BlinkEnemy : EnemyBase
 
     private void OnEnable()
     {
-        GameplayFaceInput.OnBlink += OnBlink;
+        InputSelector.Instance.ActiveInput.OnBlink += OnBlink;
     }
 
     private void OnDisable()
     {
-        GameplayFaceInput.OnBlink -= OnBlink;
+        InputSelector.Instance.ActiveInput.OnBlink -= OnBlink;
     }
 
     private void OnBlink()

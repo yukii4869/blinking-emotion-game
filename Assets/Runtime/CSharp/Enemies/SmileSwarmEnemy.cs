@@ -17,8 +17,8 @@ public class SmileSwarmEnemy : EmotionEnemyBase
     public override void Start()
     {
         base.Start();
-        HandleEmotion(GameplayFaceInput.Instance.currentEmotion);
-        SetState(EnemyState.Special); // läuft komplett über Special
+        HandleEmotion(InputSelector.Instance.ActiveInput.currentEmotion);
+        SetState(EnemyState.Special); 
     }
 
     protected override void HandleEmotion(Emotion e)

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class FaceInputBase : MonoBehaviour
+public abstract class FaceInputBase : InputBase
 {
     public float currentEAR;
     public float blinkThreshold;
@@ -11,14 +11,6 @@ public abstract class FaceInputBase : MonoBehaviour
 
     protected EARCalculator earCalc = new();
     protected BlinkDetector blinkDetector;
-    public static event System.Action OnBlink;
-    public static event System.Action<Emotion> OnEmotionChanged;
-    public static event System.Action OnEyesClosed;
-    public static event System.Action OnEyesOpened;
-    public static event System.Action OnEyesClosedHold;
-
-    protected Emotion lastEmotion = Emotion.Neutral;
-
     protected void ProcessEyeLogic()
     {
         bool eyesArePhysicallyClosed = currentEAR < blinkThreshold;
@@ -28,7 +20,7 @@ public abstract class FaceInputBase : MonoBehaviour
         {
             eyesClosed = true;
             eyesClosedTimer = 0f;
-            OnEyesClosed?.Invoke();
+            FireEyesClosed();
         }
 
         // Augen bleiben zu
@@ -37,7 +29,7 @@ public abstract class FaceInputBase : MonoBehaviour
             eyesClosedTimer += Time.deltaTime;
 
             if (eyesClosedTimer >= requiredClosedDuration)
-                OnEyesClosedHold?.Invoke();
+                FireEyesClosedHold();
         }
 
         // Augen gehen wieder auf
@@ -45,21 +37,8 @@ public abstract class FaceInputBase : MonoBehaviour
         {
             eyesClosed = false;
             eyesClosedTimer = 0f;
-            OnEyesOpened?.Invoke();
+            FireEyesOpened();
         }
     }
 
-    protected void FireBlink()
-    {
-        OnBlink?.Invoke();
-    }
-
-    protected void FireEmotion(Emotion e)
-    {
-        if (e != lastEmotion)
-        {
-            lastEmotion = e;
-            OnEmotionChanged?.Invoke(e);
-        }
-    }
 }

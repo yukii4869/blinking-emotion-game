@@ -21,14 +21,14 @@ public class ClosingEyesController : MonoBehaviour
 
     private void OnEnable()
     {
-        GameplayFaceInput.OnEyesClosed += HandleEyesClosed;
-        GameplayFaceInput.OnEyesOpened += HandleEyesOpened;
+        InputSelector.Instance.ActiveInput.OnEyesClosed += HandleEyesClosed;
+        InputSelector.Instance.ActiveInput.OnEyesOpened += HandleEyesOpened;
     }
 
     private void OnDisable()
     {
-        GameplayFaceInput.OnEyesClosed -= HandleEyesClosed;
-        GameplayFaceInput.OnEyesOpened -= HandleEyesOpened;
+        InputSelector.Instance.ActiveInput.OnEyesClosed -= HandleEyesClosed;
+        InputSelector.Instance.ActiveInput.OnEyesOpened -= HandleEyesOpened;
     }
 
     private void HandleEyesClosed()

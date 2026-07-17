@@ -11,14 +11,14 @@ public class CandleItem : PickupItem, ICondition
     public bool IsMet => !extinguished;
     public string Description => "Nicht blinzeln!";
 
-    private void OnEnable()
+    private void Start()
     {
-        GameplayFaceInput.OnBlink += HandleBlink;
+        InputSelector.Instance.ActiveInput.OnBlink += HandleBlink;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        GameplayFaceInput.OnBlink -= HandleBlink;
+        InputSelector.Instance.ActiveInput.OnBlink -= HandleBlink;
     }
 
     private void HandleBlink()

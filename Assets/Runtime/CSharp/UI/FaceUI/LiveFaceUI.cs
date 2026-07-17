@@ -10,16 +10,22 @@ public class LiveFaceUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI blinkCounterText;
     [SerializeField] private List<Texture> textures;
 
+    private InputBase activeInput;
+
     private void OnEnable()
     {
-        GameplayFaceInput.OnEmotionChanged += HandleEmotion;
-        GameplayFaceInput.OnBlink += HandleBlink;   // optional, siehe unten
+        activeInput = InputSelector.Instance.ActiveInput;
+
+        activeInput.OnEmotionChanged += HandleEmotion;
+        activeInput.OnBlink += HandleBlink;
     }
 
     private void OnDisable()
     {
-        GameplayFaceInput.OnEmotionChanged -= HandleEmotion;
-        GameplayFaceInput.OnBlink -= HandleBlink;
+        if (activeInput == null) return;
+
+        activeInput.OnEmotionChanged -= HandleEmotion;
+        activeInput.OnBlink -= HandleBlink;
     }
 
     private void HandleEmotion(Emotion e)
@@ -38,6 +44,6 @@ public class LiveFaceUI : MonoBehaviour
 
     private void HandleBlink()
     {
-        blinkCounterText.text = "Blinks: " + GameplayFaceInput.Instance.blinkCount;
+        blinkCounterText.text = "Blinks: " + activeInput.blinkCount;
     }
 }

@@ -5,10 +5,6 @@ public class CalibrationFaceInput : FaceInputBase
 {
     public static CalibrationFaceInput Instance { get; private set; }
 
-    public Emotion currentEmotion;
-    public bool isBlinking;
-    public int blinkCount;
-
     private EARCalibrator earCalibrator;
     private EmotionCalibrator emotionCalibrator;
 

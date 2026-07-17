@@ -42,12 +42,12 @@ public class SadnessElevator : MonoBehaviour
 
     private void OnEnable()
     {
-        GameplayFaceInput.OnEmotionChanged += HandleEmotion;
+        InputSelector.Instance.ActiveInput.OnEmotionChanged += HandleEmotion;
     }
 
     private void OnDisable()
     {
-        GameplayFaceInput.OnEmotionChanged -= HandleEmotion;
+        InputSelector.Instance.ActiveInput.OnEmotionChanged -= HandleEmotion;
     }
 
     private void HandleEmotion(Emotion e)

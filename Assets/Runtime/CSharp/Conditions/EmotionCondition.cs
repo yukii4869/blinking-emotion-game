@@ -57,6 +57,8 @@ public class EmotionCondition : MonoBehaviour
     private bool emotionFailed = false;
     private bool blinkFailed = false;
 
+    private InputBase activeInput;   // NEU
+
     public bool IsRunning => running || inDelay || inScan || showingResult;
 
     // ---------------------------------------------------------
@@ -89,6 +91,8 @@ public class EmotionCondition : MonoBehaviour
         onSuccess = success;
         onFail = fail;
 
+        activeInput = InputSelector.Instance.ActiveInput;   // NEU
+
         // Display zeigt die geforderte Emotion oder NoBlink
         Material mat = null;
 
@@ -106,9 +110,9 @@ public class EmotionCondition : MonoBehaviour
         inDelay = true;
         running = true;
 
-        // EVENTS ABONNIEREN
-        FaceInputBase.OnBlink += HandleBlink;
-        FaceInputBase.OnEmotionChanged += HandleEmotionChanged;
+        // EVENTS ABONNIEREN (NEU)
+        activeInput.OnBlink += HandleBlink;
+        activeInput.OnEmotionChanged += HandleEmotionChanged;
     }
 
 
@@ -143,8 +147,10 @@ public class EmotionCondition : MonoBehaviour
 
     private void CleanupEvents()
     {
-        FaceInputBase.OnBlink -= HandleBlink;
-        FaceInputBase.OnEmotionChanged -= HandleEmotionChanged;
+        if (activeInput == null) return;
+
+        activeInput.OnBlink -= HandleBlink;
+        activeInput.OnEmotionChanged -= HandleEmotionChanged;
     }
 
     // ---------------------------------------------------------
@@ -203,7 +209,8 @@ public class EmotionCondition : MonoBehaviour
                 inScan = true;
                 scanTimer = scanDuration;
                 scanCube.SetActive(true);
-                Emotion current = GameplayFaceInput.Instance.currentEmotion;
+
+                Emotion current = activeInput.currentEmotion;
 
                 if (conditionType == ConditionType.Emotion)
                 {

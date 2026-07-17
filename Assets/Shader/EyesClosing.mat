@@ -87,7 +87,7 @@ Material:
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
-    - _BlinkAmount: 4.550938e-22
+    - _BlinkAmount: 4e-45
     - _Blur: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
