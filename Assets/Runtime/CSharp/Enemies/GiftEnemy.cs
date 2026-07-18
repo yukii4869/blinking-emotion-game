@@ -8,10 +8,12 @@ public class GiftGuest : EmotionEnemyBase
         OfferGift,
         ExpectSurprise,
         ExpectJoy,
+        PrepareGift,
         GiveGift,
         Disappointed,
         Angry,
         Attack,
+        PauseBeforeLeave,
         Leave
     }
 
@@ -25,6 +27,10 @@ public class GiftGuest : EmotionEnemyBase
     [SerializeField] private Animator armAnimator;
     [SerializeField] private GameObject handGiftObject;
     [SerializeField] private Animator ghostAnimation;
+    [SerializeField] private float pauseDuration = 1.5f;
+    [SerializeField] private float giftDelay = 1.5f;
+    private float giftDelayTimer;
+    private float pauseTimer;
 
     private GiftState giftState;
     private float emotionTimer;
@@ -49,10 +55,12 @@ public class GiftGuest : EmotionEnemyBase
             case GiftState.OfferGift: UpdateOfferGift(); break;
             case GiftState.ExpectSurprise: UpdateExpectSurprise(); break;
             case GiftState.ExpectJoy: UpdateExpectJoy(); break;
+            case GiftState.PrepareGift: UpdatePrepareGift(); break;   // NEU
             case GiftState.GiveGift: UpdateGiveGift(); break;
             case GiftState.Disappointed: UpdateDisappointed(); break;
             case GiftState.Angry: UpdateAngry(); break;
             case GiftState.Attack: UpdateAttackGift(); break;
+            case GiftState.PauseBeforeLeave: UpdatePauseBeforeLeave(); break;
             case GiftState.Leave: UpdateLeave(); break;
         }
     }
@@ -123,7 +131,9 @@ public class GiftGuest : EmotionEnemyBase
 
         if (currentEmotion == Emotion.Happy)
         {
-            SetGiftState(GiftState.GiveGift);
+            // NICHT direkt Geschenk geben → erst vorbereiten
+            giftDelayTimer = giftDelay;
+            SetGiftState(GiftState.PrepareGift);
             return;
         }
 
@@ -131,10 +141,22 @@ public class GiftGuest : EmotionEnemyBase
             SetGiftState(GiftState.Disappointed);
     }
 
+    private void UpdatePrepareGift()
+    {
+        LookAtPlayer();
+        SetFace(FaceType.ExpectSmile);   // hält das „zufriedene“ Gesicht
+
+        giftDelayTimer -= Time.deltaTime;
+
+        if (giftDelayTimer <= 0f)
+            SetGiftState(GiftState.GiveGift);
+    }
+
     private void UpdateGiveGift()
     {
         GiveGiftToPlayer();
-        SetGiftState(GiftState.Leave);
+        pauseTimer = pauseDuration;
+        SetGiftState(GiftState.PauseBeforeLeave);
     }
 
     private void UpdateLeave()
@@ -143,8 +165,6 @@ public class GiftGuest : EmotionEnemyBase
         lookExpectSmile.SetActive(false);
         lookSurprised.SetActive(false);
         lookDisappointed.SetActive(false);
-        if (ghostAnimation != null)
-            ghostAnimation.enabled = true;
         GoToRoom(); // EnemyBase Heimweg
     }
 
@@ -189,9 +209,19 @@ public class GiftGuest : EmotionEnemyBase
     private void UpdateAttackGift()
     {
         LookAtPlayer();
-        AttackBehavior(); // EnemyBase Attack
-        SetGiftState(GiftState.Leave);
+        AttackBehavior();
+        pauseTimer = pauseDuration;
+        SetGiftState(GiftState.PauseBeforeLeave);
+    }
+    private void UpdatePauseBeforeLeave()
+    {
+        LookAtPlayer(); // hält Blickkontakt
+        if (ghostAnimation != null)
+            ghostAnimation.enabled = true;
+        pauseTimer -= Time.deltaTime;
 
+        if (pauseTimer <= 0f)
+            SetGiftState(GiftState.Leave);
     }
 
     // ---------------------------------------------------------

@@ -132,7 +132,7 @@ public abstract class EnemyBase : MonoBehaviour
 
         float dist = Vector3.Distance(transform.position, assignedRoom.transform.position);
         
-        if (dist < 2f)
+        if (dist < 2.5f)
         {
             Destroy(gameObject);
         }
