@@ -52,57 +52,59 @@ public class BlinkEnemy : EnemyBase
         return false;
     }
     protected override void UpdateSpecial()
+{
+    // DESPAWN
+    lifeTimer += Time.deltaTime;
+    if (lifeTimer > 180f)
     {
-        // DESPAWN: Timer
-        lifeTimer += Time.deltaTime;
-        if (lifeTimer > 180f)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        // Blink decay
-        if (blinkTimer > 0f)
-            blinkTimer -= Time.deltaTime;
-        else
-            blinked = false;
-
-        if (stunned)
-        {
-            agent.ResetPath();
-            return;
-        }
-
-        float dist = Vector3.Distance(transform.position, player.transform.position);
-        bool looking = PlayerVision.Instance.IsInView(transform) && HasLineOfSight();
-
-        //  ATTACK-BEDINGUNG (final):
-        // Wenn in AttackRange UND (nicht schauen ODER blinzeln)
-        if (dist <= stats.attackRange && (!looking || blinked))
-        {
-            AttackBehavior();
-            StartCoroutine(Stun());
-            return;
-        }
-
-        //  STATUE: Spieler schaut hin & blinzelt NICHT
-        if (looking && !blinked)
-        {
-            agent.ResetPath();
-            LookAtPlayer();
-            return;
-        }
-
-        //  STOPDISTANCE: Nur Anti-Clipping, NICHT Attack-Blocker
-        if (dist < stats.stopDistance && dist > stats.attackRange)
-        {
-            agent.ResetPath();
-            LookAtPlayer();
-            return;
-        }
-
-        // CHASE: Spieler schaut weg ODER blinzelt
-        ApproachStepByStep();
+        Destroy(gameObject);
+        return;
     }
+
+    // Blink decay
+    if (blinkTimer > 0f)
+        blinkTimer -= Time.deltaTime;
+    else
+        blinked = false;
+
+    if (stunned)
+    {
+        agent.ResetPath();
+        return;
+    }
+
+    float dist = Vector3.Distance(transform.position, player.transform.position);
+
+    // NUR Blickrichtung, keine Line-of-Sight
+    bool looking = PlayerVision.Instance.IsInView(transform);
+
+    // ATTACK
+    if (dist <= stats.attackRange && (!looking || blinked))
+    {
+        AttackBehavior();
+        StartCoroutine(Stun());
+        return;
+    }
+
+    // STATUE: Spieler schaut hin & blinzelt NICHT
+    if (looking && !blinked)
+    {
+        agent.ResetPath();
+        LookAtPlayer();
+        return;
+    }
+
+    // STOPDISTANCE (Anti-Clipping)
+    if (dist < stats.stopDistance && dist > stats.attackRange)
+    {
+        agent.ResetPath();
+        LookAtPlayer();
+        return;
+    }
+
+    // CHASE: Spieler schaut weg ODER blinzelt
+    ApproachStepByStep();
+}
 
     private void ApproachStepByStep()
     {

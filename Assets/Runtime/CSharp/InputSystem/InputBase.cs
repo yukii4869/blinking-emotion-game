@@ -24,14 +24,15 @@ public abstract class InputBase : MonoBehaviour
         }
     }
 
-    protected void FireBlink()
+    public void FireBlink()
     {
         blinkCount++;
         isBlinking = true;
         OnBlink?.Invoke();
+        OnEyesClosed?.Invoke();
     }
 
-    protected void FireEyesClosed() => OnEyesClosed?.Invoke();
-    protected void FireEyesOpened() => OnEyesOpened?.Invoke();
+    public void FireEyesClosed() => OnEyesClosed?.Invoke();
+    public void FireEyesOpened() => OnEyesOpened?.Invoke();
     protected void FireEyesClosedHold() => OnEyesClosedHold?.Invoke();
 }

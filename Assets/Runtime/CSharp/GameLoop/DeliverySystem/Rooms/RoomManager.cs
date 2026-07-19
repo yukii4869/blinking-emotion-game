@@ -28,17 +28,9 @@ public class RoomManager : MonoBehaviour
     private IEnumerator DelayedInit()
     {
         yield return null; // 1 Frame warten
-        Debug.Log("RoomManager.Start() wurde ausgeführt!");
         rooms.Clear();
-        Debug.Log("RoomManager.Start(): groups.Count = " + groups.Count);
-
         foreach (var g in groups)
         {
-
-            Debug.Log("Group: " + g.name);
-            Debug.Log("Root: " + g.root);
-            Debug.Log("Rooms found: " + (g.root == null ? "ROOT NULL" : g.root.GetComponentsInChildren<Room>().Length.ToString()));
-
             // Rooms laden
             g.rooms = new List<Room>(g.root.GetComponentsInChildren<Room>());
             // Globale Liste füllen

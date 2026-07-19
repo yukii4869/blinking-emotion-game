@@ -54,7 +54,6 @@ public class KeyboardEmotionInput : InputBase
             eyesClosed = true;
             eyesClosedTimer = 0f;
 
-            FireEyesClosed();   // exakt wie FaceInputBase
             FireBlink();        // BlinkStart (wie BlinkDetector)
         }
 
