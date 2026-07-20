@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject gameOverUI;
     [SerializeField] private GameObject healthUI;
+    [SerializeField] private GameObject finishedGameUI;
     public GameObject itemUI;
     public static UIManager Instance;
 
@@ -32,7 +33,6 @@ public class UIManager : MonoBehaviour
     }
     private void HandleStateChanged(GameState state)
     {
-        // Alles aus
         calibrationBackground.SetActive(false);
         pythonLoadingUI.SetActive(false);
         liveFaceUI.SetActive(false);
@@ -40,8 +40,8 @@ public class UIManager : MonoBehaviour
         pauseMenu.SetActive(false);
         gameOverUI.SetActive(false);
         healthUI.SetActive(false);
-
-        // Passende UI an
+        finishedGameUI.SetActive(false);
+        
         switch (state)
         {
             case GameState.PythonPreparation:
@@ -61,6 +61,9 @@ public class UIManager : MonoBehaviour
 
             case GameState.GameOver:
                 gameOverUI.SetActive(true);
+                break;
+            case GameState.FinishedGame:
+                finishedGameUI.SetActive(true);
                 break;
         }
     }

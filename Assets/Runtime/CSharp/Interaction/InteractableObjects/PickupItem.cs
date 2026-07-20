@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 public class PickupItem : MonoBehaviour, IInteractable
 {
@@ -17,9 +18,10 @@ public class PickupItem : MonoBehaviour, IInteractable
         if (IsHeld)
             return; // NICHT interagieren, wenn in der Hand
     }
-    public void PickUp(ItemHolder holder)
+    public virtual void PickUp(ItemHolder holder)
     {
         holder.PickUp(gameObject);
+        Activate();
     }
 
     public bool IsBusy()
@@ -35,6 +37,10 @@ public class PickupItem : MonoBehaviour, IInteractable
             Destroy(uiInstance);
             uiInstance = null;
         }
+    }
+    public virtual void Activate()
+    {
+        // Override in speziellen Items
     }
 
 }

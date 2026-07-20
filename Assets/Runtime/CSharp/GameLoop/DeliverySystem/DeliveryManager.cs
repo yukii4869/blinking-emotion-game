@@ -8,7 +8,6 @@ public class DeliveryManager : MonoBehaviour
     private int currentTaskIndex = 0;
     public DeliveryTask CurrentTask => tasks[currentTaskIndex];
 
-
     private void Awake()
     {
         Instance = this;
@@ -16,7 +15,7 @@ public class DeliveryManager : MonoBehaviour
 
     public void InitializeDelivery()
     {
-        GameplayUIManager.Instance.UpdateTaskUI(CurrentTask, currentTaskIndex, tasks.Length);
+        DeliveryUIManager.Instance.UpdateTaskUI(CurrentTask, currentTaskIndex, tasks.Length);
     }
 
     public void OnItemDelivered(PickupItem item, int deliveredRoomNumber, ItemHolder holder)
@@ -26,26 +25,26 @@ public class DeliveryManager : MonoBehaviour
         // ROOM CHECK
         if (deliveredRoomNumber != task.roomNumber)
         {
-            GameplayUIManager.Instance.ShowWrongSpot();
+            DeliveryUIManager.Instance.ShowWrongSpot();
             return;
         }
 
         // ITEM CHECK
         if (item.ItemName != task.itemName)
         {
-            GameplayUIManager.Instance.ShowWrongItem();
+            DeliveryUIManager.Instance.ShowWrongItem();
             return;
         }
 
         // CONDITION CHECK
         if (item is ICondition cond && !cond.IsMet)
         {
-            GameplayUIManager.Instance.ShowConditionFailed();
+            DeliveryUIManager.Instance.ShowConditionFailed();
             return;
         }
 
         // SUCCESS
-        GameplayUIManager.Instance.ShowDeliverySuccess();
+        DeliveryUIManager.Instance.ShowDeliverySuccess();
 
         holder.ClearItem();
         Destroy(item.gameObject);
@@ -53,14 +52,15 @@ public class DeliveryManager : MonoBehaviour
 
         currentTaskIndex++;
 
-        if (currentTaskIndex < tasks.Length)
+        // --- ENDE ---
+        if (currentTaskIndex >= tasks.Length)
         {
-            GameplayUIManager.Instance.UpdateTaskUI(CurrentTask, currentTaskIndex, tasks.Length);
+            DeliveryUIManager.Instance.UpdateTaskUI(null, tasks.Length, tasks.Length);
+            GameStateManager.Instance.SetState(GameState.FinishedGame);
+            return;
         }
-        else
-        {
-            GameplayUIManager.Instance.UpdateTaskUI(null, tasks.Length, tasks.Length);
-        }
-    }
 
+        // --- NÄCHSTER TASK ---
+        DeliveryUIManager.Instance.UpdateTaskUI(CurrentTask, currentTaskIndex, tasks.Length);
+    }
 }

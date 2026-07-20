@@ -31,7 +31,7 @@ public class InteractionController : MonoBehaviour
             {
                 if (interactable.IsBusy())
                 {
-                    GameplayUIManager.Instance.HideInteractionHint();
+                    DeliveryUIManager.Instance.HideInteractionHint();
                     return;
                 }
             }
@@ -39,7 +39,7 @@ public class InteractionController : MonoBehaviour
             if (itemHolder.HasItem && hit.collider.TryGetComponent(out Room room))
             {
                 currentRoom = room;
-                GameplayUIManager.Instance.ShowInteractionHint("Liefern (E)");
+                DeliveryUIManager.Instance.ShowInteractionHint("Liefern (E)");
                 return;
             }
 
@@ -47,7 +47,7 @@ public class InteractionController : MonoBehaviour
             if (!itemHolder.HasItem && hit.collider.TryGetComponent(out PickupItem pickup))
             {
                 currentPickup = pickup;
-                GameplayUIManager.Instance.ShowInteractionHint("Aufheben (E)");
+                DeliveryUIManager.Instance.ShowInteractionHint("Aufheben (E)");
                 return;
             }
 
@@ -55,19 +55,19 @@ public class InteractionController : MonoBehaviour
             if (hit.collider.TryGetComponent(out ButtonInteractable button))
             {
                 currentInteractable = button;
-                GameplayUIManager.Instance.ShowInteractionHint("Betätigen (E)");
+                DeliveryUIManager.Instance.ShowInteractionHint("Betätigen (E)");
                 return;
             }
             if (hit.collider.TryGetComponent(out GambleCard card))
             {
                 currentInteractable = card;
-                GameplayUIManager.Instance.ShowInteractionHint("Karte ziehen (E)");
+                DeliveryUIManager.Instance.ShowInteractionHint("Karte ziehen (E)");
                 return;
             }
             if (hit.collider.TryGetComponent(out DoorInteractable door))
             {
                 currentInteractable = door;
-                GameplayUIManager.Instance.ShowInteractionHint("Interagieren (E)");
+                DeliveryUIManager.Instance.ShowInteractionHint("Interagieren (E)");
                 return;
             }
         }
@@ -75,12 +75,12 @@ public class InteractionController : MonoBehaviour
         // 4) Droppen (wenn Item in der Hand, aber kein Spot/Knopf)
         if (itemHolder.HasItem)
         {
-            GameplayUIManager.Instance.ShowInteractionHint("Fallen lassen (E)");
+            DeliveryUIManager.Instance.ShowInteractionHint("Fallen lassen (E)");
             return;
         }
 
         // 5) Nichts gefunden → Hint ausblenden
-        GameplayUIManager.Instance.HideInteractionHint();
+        DeliveryUIManager.Instance.HideInteractionHint();
     }
 
 

@@ -3,5 +3,6 @@ public enum GameState
     PythonPreparation,
     Gameplay,
     Pause,
-    GameOver
+    GameOver,
+    FinishedGame
 }

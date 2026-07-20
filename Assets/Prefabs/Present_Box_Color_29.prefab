@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 1235610234716584440}
   - component: {fileID: 1235610234717344074}
   - component: {fileID: 1235610234718604320}
-  - component: {fileID: -282162357794955423}
   - component: {fileID: -6798968694781841273}
   - component: {fileID: 4444673864219171584}
+  - component: {fileID: 4037488945662469807}
   m_Layer: 0
   m_Name: Present_Box_Color_29
   m_TagString: Untagged
@@ -93,19 +93,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &-282162357794955423
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1235610234716370296}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad36ba3760072894cb2504332f64b10c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PickupItem
-  itemName: Geschenk
 --- !u!54 &-6798968694781841273
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -154,3 +141,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.43324664, y: 0.41687194, z: 0.41501674}
   m_Center: {x: 0.0018879175, y: 0.19515772, z: 0.0016874671}
+--- !u!114 &4037488945662469807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1235610234716370296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 425eac2e03aa1454bbb94f903648a11b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GiftItem
+  itemName: Geschenk

@@ -1,18 +1,19 @@
 using System.Collections;
 using UnityEngine;
-public class GameplayUIManager : MonoBehaviour
+public class DeliveryUIManager : MonoBehaviour
 {
-    public static GameplayUIManager Instance;
+    public static DeliveryUIManager Instance;
 
-    [Header("UI Elements")]
+    [Header("Interaction")]
     [SerializeField] private GameObject interactionHint;
     [SerializeField] private TMPro.TextMeshProUGUI interactionText;
-
+    [Header("Delivery")]
     [SerializeField] private GameObject deliveryFeedback;
     [SerializeField] private TMPro.TextMeshProUGUI deliveryText;
-
     [SerializeField] private TMPro.TextMeshProUGUI taskCounterText;
     [SerializeField] private TMPro.TextMeshProUGUI taskDescriptionText;
+
+    [Header("Crosshair")]
     [SerializeField] private GameObject crosshairInteract;
     [SerializeField] private GameObject crossHairNormal;
 
@@ -25,7 +26,7 @@ public class GameplayUIManager : MonoBehaviour
     {
         crossHairNormal.SetActive(false);
         crosshairInteract.SetActive(true);
-        
+
         interactionHint.SetActive(true);
         interactionText.text = text;
     }
