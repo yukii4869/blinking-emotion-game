@@ -1,32 +1,59 @@
 using UnityEngine;
-public enum InputMode { Face, Keyboard }
+
 public class InputSelector : MonoBehaviour
 {
     public static InputSelector Instance { get; private set; }
 
     public InputBase ActiveInput { get; private set; }
 
-    public GameplayFaceInput faceInput;
-    public KeyboardEmotionInput keyboardInput;
-
-    public InputMode mode;
+    [SerializeField] private GameplayFaceInput faceInput;
+    [SerializeField] private KeyboardEmotionInput keyboardInput;
+    [SerializeField] private GameObject Eyelids;
 
     private void Awake()
     {
         Instance = this;
-        SwitchMode(mode);
+        ApplySelectedMode();
     }
-
-    public void SwitchMode(InputMode newMode)
+    private void ApplySelectedMode()
     {
-        mode = newMode;
+        GameMode mode = GlobalModeStorage.Instance.SelectedMode;
 
-        faceInput.enabled = (mode == InputMode.Face);
-        keyboardInput.enabled = (mode == InputMode.Keyboard);
+        switch (mode)
+        {
+            case GameMode.FaceNormal:
+                SetFaceInput();
+                Eyelids.SetActive(true);
+                break;
 
-        ActiveInput = (mode == InputMode.Face)
-            ? faceInput
-            : keyboardInput;
+            case GameMode.Keyboard:
+                SetKeyboardInput();
+                Eyelids.SetActive(true);
+                break;
+
+            case GameMode.FaceNoFeedback:
+                SetFaceInput();
+                Eyelids.SetActive(false);
+                break;
+
+            case GameMode.FaceNoCalibration:
+                SetFaceInput();
+                Eyelids.SetActive(true);
+                break;
+        }
     }
 
+    private void SetFaceInput()
+    {
+        faceInput.enabled = true;
+        keyboardInput.enabled = false;
+        ActiveInput = faceInput;
+    }
+
+    private void SetKeyboardInput()
+    {
+        faceInput.enabled = false;
+        keyboardInput.enabled = true;
+        ActiveInput = keyboardInput;
+    }
 }

@@ -4,8 +4,8 @@ using UnityEngine.SceneManagement;
 public class MainMenuUI : MonoBehaviour
 {
     [SerializeField] private GameObject mainMenuUI;
-    [SerializeField] private GameObject loadProfileUI;
     [SerializeField] private GameObject settingsUI;
+    [SerializeField] private GameObject modusUI;
     private void Start()
     {
        ShowMainMenu();
@@ -13,13 +13,13 @@ public class MainMenuUI : MonoBehaviour
     public void ShowMainMenu()
     {
         mainMenuUI.SetActive(true);
-        loadProfileUI.SetActive(false);
+        modusUI.SetActive(false);
         settingsUI.SetActive(false);
     }
     public void StartButton()
     {
         mainMenuUI.SetActive(false);
-        loadProfileUI.SetActive(true);
+        modusUI.SetActive(true);
     }
 
     public void OpenSettings()
