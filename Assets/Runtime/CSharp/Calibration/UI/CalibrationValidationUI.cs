@@ -8,9 +8,11 @@ public class CalibrationValidationUI : MonoBehaviour
     [SerializeField] EmotionCalibrationUI emotionCalibrationUI;
     [SerializeField] private InputActionReference confirmAction;
     [SerializeField] private InputActionReference retryAction;
+    [SerializeField] private InputActionReference toggleEARGraph;
     [SerializeField] private TextMeshProUGUI interactionHintText;
     [SerializeField] private TextMeshProUGUI statusText;
     [SerializeField] private TextMeshProUGUI commentText;
+    [SerializeField] private EARGraph earGraph;
 
     private void OnEnable()
     {
@@ -20,12 +22,14 @@ public class CalibrationValidationUI : MonoBehaviour
 
         confirmAction.action.performed += OnConfirm;
         retryAction.action.performed += OnRetry;
+        toggleEARGraph.action.performed += OnShowEARGraph;
     }
 
     private void OnDisable()
     {
         confirmAction.action.performed -= OnConfirm;
         retryAction.action.performed -= OnRetry;
+        toggleEARGraph.action.performed -= OnShowEARGraph;
 
         confirmAction.action.Disable();
         retryAction.action.Disable();
@@ -38,6 +42,10 @@ public class CalibrationValidationUI : MonoBehaviour
     private void OnRetry(InputAction.CallbackContext ctx)
     {
         OnRetryPressed();
+    }
+    private void OnShowEARGraph(InputAction.CallbackContext ctx)
+    {
+       earGraph.ToggleGraph();
     }
 
     public void OnRetryPressed()

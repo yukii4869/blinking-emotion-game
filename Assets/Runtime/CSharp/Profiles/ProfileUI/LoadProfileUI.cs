@@ -81,7 +81,9 @@ public class LoadProfileUI : MonoBehaviour
     {
         var profile = ProfileManager.LoadProfile(name);
         ActiveProfile.Instance.SetProfile(profile);
-        MediaPipeProvider.Instance.StartMediaPipe();
+        GameMode mode = GlobalModeStorage.Instance.SelectedMode;
+        if (mode != GameMode.Keyboard)
+            MediaPipeProvider.Instance.StartMediaPipe();
         GameSceneManager.Instance.LoadGame();
     }
 

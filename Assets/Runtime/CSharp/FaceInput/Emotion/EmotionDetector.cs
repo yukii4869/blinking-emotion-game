@@ -81,6 +81,16 @@ public class EmotionDetector
 
         return Emotion.Neutral;
     }
+    public Dictionary<string, float> GetThresholds()
+    {
+        return new Dictionary<string, float>
+    {
+        { "Smile", (smilePeakScores["Smile"] - neutralScores["Smile"]) * 0.5f },
+        { "Angry", (angryPeakScores["Angry"] - neutralScores["Angry"]) * 0.4f },
+        { "Sad", (sadPeakScores["Sad"] - neutralScores["Sad"]) * 0.3f },
+        { "Surprised", (surprisedPeakScores["Surprised"] - neutralScores["Surprised"]) * 0.5f }
+    };
+    }
 
     private bool TestFrameStability(Emotion newEmotion)
     {

@@ -14,13 +14,13 @@ public class FinishCalibrationUI : MonoBehaviour
 
     private void OnEnable()
     {
-        InputSelector.Instance.ActiveInput.OnEyesClosedHold += HandleEyesClosedHold;
+          CalibrationFaceInput.Instance.OnEyesClosedHold += HandleEyesClosedHold;
           StartCoroutine(RunSequence(ActiveProfile.Instance.CurrentProfile.playerName));
     }
 
     private void OnDisable()
     {
-        InputSelector.Instance.ActiveInput.OnEyesClosedHold -= HandleEyesClosedHold;
+        CalibrationFaceInput.Instance.OnEyesClosedHold -= HandleEyesClosedHold;
     }
 
     private IEnumerator RunSequence(string playerName)

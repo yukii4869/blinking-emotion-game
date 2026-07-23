@@ -6,6 +6,7 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private GameObject mainMenuUI;
     [SerializeField] private GameObject settingsUI;
     [SerializeField] private GameObject modusUI;
+     [SerializeField] private GameObject loadProfileUI;
     private void Start()
     {
        ShowMainMenu();
@@ -15,6 +16,7 @@ public class MainMenuUI : MonoBehaviour
         mainMenuUI.SetActive(true);
         modusUI.SetActive(false);
         settingsUI.SetActive(false);
+        loadProfileUI.SetActive(false);
     }
     public void StartButton()
     {

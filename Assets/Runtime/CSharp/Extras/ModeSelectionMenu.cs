@@ -32,9 +32,4 @@ public class ModeSelectionMenu : MonoBehaviour
         modeSelectionMenuUI.SetActive(false);
         loadProfileUI.SetActive(true);
     }
-
-    private void LoadGame()
-    {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
-    }
 }

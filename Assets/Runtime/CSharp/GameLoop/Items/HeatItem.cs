@@ -34,7 +34,7 @@ public class HeatItem : PickupItem, ICondition
         if (prefab != null)
         {
             uiInstance = Instantiate(prefab, UIManager.Instance.itemUI.transform);
-            uiInstance.transform.localPosition = new Vector3(0, 0.15f, 0);
+            uiInstance.transform.localPosition = new Vector3(0, -1, 0);
             uiInstance.transform.localRotation = Quaternion.identity;
 
             heatUIInstance = uiInstance.GetComponent<HeatUI>();
@@ -73,6 +73,7 @@ public class HeatItem : PickupItem, ICondition
         // Kaputt
         if (currentHeat <= minHeat)
         {
+            Debug.Log("currentHeat < minHeat");
             IsBroken = true;
             OnHeatBroken?.Invoke();
             return;
@@ -101,11 +102,5 @@ public class HeatItem : PickupItem, ICondition
 
         if (heatUIInstance != null)
             heatUIInstance.Initialize(this);
-
-        OnHeatCompleted = null;
-        OnHeatBroken = null;
-
-
-
     }
 }

@@ -8,7 +8,8 @@ public class InputSelector : MonoBehaviour
 
     [SerializeField] private GameplayFaceInput faceInput;
     [SerializeField] private KeyboardEmotionInput keyboardInput;
-    [SerializeField] private GameObject Eyelids;
+    [SerializeField] private GameObject eyelids;
+    [SerializeField] private GameObject autoBlink;
 
     private void Awake()
     {
@@ -23,22 +24,26 @@ public class InputSelector : MonoBehaviour
         {
             case GameMode.FaceNormal:
                 SetFaceInput();
-                Eyelids.SetActive(true);
+                eyelids.SetActive(true);
+                autoBlink.SetActive(false);
                 break;
 
             case GameMode.Keyboard:
                 SetKeyboardInput();
-                Eyelids.SetActive(true);
+                eyelids.SetActive(true);
+                autoBlink.SetActive(true);
                 break;
 
             case GameMode.FaceNoFeedback:
                 SetFaceInput();
-                Eyelids.SetActive(false);
+                eyelids.SetActive(false);
+                autoBlink.SetActive(false);
                 break;
 
             case GameMode.FaceNoCalibration:
                 SetFaceInput();
-                Eyelids.SetActive(true);
+                eyelids.SetActive(true);
+                autoBlink.SetActive(false);
                 break;
         }
     }

@@ -21,9 +21,7 @@ public class EmotionDebugUI : MonoBehaviour
 
     public void UpdateDebug(
         Dictionary<string, float> scores,
-        Dictionary<string, float> neutralScores,
-        Dictionary<string, float> peakScores,
-        Dictionary<string, float> factors)
+        Dictionary<string, float> thresholds)
     {
         // Score-Balken
         SetBar(smileBar, scores["Smile"]);
@@ -31,17 +29,11 @@ public class EmotionDebugUI : MonoBehaviour
         SetBar(sadBar, scores["Sad"]);
         SetBar(surprisedBar, scores["Surprised"]);
 
-        // Thresholds berechnen
-        float smileTh = (peakScores["Smile"] - neutralScores["Smile"]) * factors["Smile"];
-        float angryTh = (peakScores["Angry"] - neutralScores["Angry"]) * factors["Angry"];
-        float sadTh = (peakScores["Sad"] - neutralScores["Sad"]) * factors["Sad"];
-        float surprisedTh = (peakScores["Surprised"] - neutralScores["Surprised"]) * factors["Surprised"];
-
-        // Threshold-Linien setzen (nur Position)
-        SetThresholdLine(smileThresholdLine, smileTh);
-        SetThresholdLine(angryThresholdLine, angryTh);
-        SetThresholdLine(sadThresholdLine, sadTh);
-        SetThresholdLine(surprisedThresholdLine, surprisedTh);
+        // Threshold-Linien setzen
+        SetThresholdLine(smileThresholdLine, thresholds["Smile"]);
+        SetThresholdLine(angryThresholdLine, thresholds["Angry"]);
+        SetThresholdLine(sadThresholdLine, thresholds["Sad"]);
+        SetThresholdLine(surprisedThresholdLine, thresholds["Surprised"]);
     }
 
     private void SetBar(Image bar, float value)

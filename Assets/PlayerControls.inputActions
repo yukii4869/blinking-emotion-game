@@ -1703,6 +1703,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "EAR Graph",
+                    "type": "Button",
+                    "id": "18545d1f-b463-4d2d-8554-c31bb6d5ba26",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1769,6 +1778,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Enter",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8b177140-a3bb-499d-a9a3-134c0239d797",
+                    "path": "<Keyboard>/g",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "EAR Graph",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

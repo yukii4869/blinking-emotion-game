@@ -21,16 +21,25 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         GameStateManager.Instance.OnStateChanged += HandleStateChanged;
-        if (MediaPipeProvider.Instance.PythonReady)
+        
+        if (GlobalModeStorage.Instance.SelectedMode == GameMode.Keyboard)
         {
             GameStateManager.Instance.SetState(GameState.Gameplay);
         }
         else
         {
-            GameStateManager.Instance.SetState(GameState.PythonPreparation);
+            if (MediaPipeProvider.Instance.PythonReady)
+            {
+                GameStateManager.Instance.SetState(GameState.Gameplay);
+            }
+            else
+            {
+                GameStateManager.Instance.SetState(GameState.PythonPreparation);
+            }
+            HandleStateChanged(GameStateManager.Instance.CurrentState);
         }
-        HandleStateChanged(GameStateManager.Instance.CurrentState);
     }
+
     private void HandleStateChanged(GameState state)
     {
         calibrationBackground.SetActive(false);
@@ -41,7 +50,7 @@ public class UIManager : MonoBehaviour
         gameOverUI.SetActive(false);
         healthUI.SetActive(false);
         finishedGameUI.SetActive(false);
-        
+
         switch (state)
         {
             case GameState.PythonPreparation:

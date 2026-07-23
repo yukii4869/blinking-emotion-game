@@ -33,17 +33,28 @@ public class EARGraph : MonoBehaviour
         // -------------------------
         // EAR nur lesen, wenn FaceInput aktiv ist
         // -------------------------
-        var active = InputSelector.Instance.ActiveInput;
-
-        if (active is FaceInputBase face)
+        if (GlobalModeStorage.Instance.SelectedMode == GameMode.Keyboard)
         {
-            ear = face.currentEAR;
-            threshold = face.blinkThreshold;
+            return;
         }
         else
         {
-            // KeyboardInput → kein EAR → Graph nicht zeichnen
-            return;
+            if (CalibrationFaceInput.Instance != null)
+            {
+                ear = CalibrationFaceInput.Instance.currentEAR;
+                threshold = CalibrationFaceInput.Instance.blinkThreshold;
+            }
+            else
+            {
+                var active = InputSelector.Instance.ActiveInput;
+
+                if (active is FaceInputBase face)
+                {
+                    ear = face.currentEAR;
+                    threshold = face.blinkThreshold;
+                }
+            }
+
         }
 
         // Smoothing

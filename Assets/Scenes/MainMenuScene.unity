@@ -396,7 +396,7 @@ GameObject:
   - component: {fileID: 103243701}
   - component: {fileID: 103243702}
   m_Layer: 0
-  m_Name: InputSelector
+  m_Name: GlobalModeStorage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2382,6 +2382,7 @@ MonoBehaviour:
   mainMenuUI: {fileID: 1472710331}
   settingsUI: {fileID: 72836189}
   modusUI: {fileID: 751718980}
+  loadProfileUI: {fileID: 1987703454}
 --- !u!114 &731052613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7639,6 +7640,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 731052611}
     m_Modifications:
+    - target: {fileID: 121973327543138000, guid: c607646024359bb469529bc0937a69db, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1657031316816402278, guid: c607646024359bb469529bc0937a69db, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -7717,6 +7722,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1657031316816402278, guid: c607646024359bb469529bc0937a69db, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2755835596817540140, guid: c607646024359bb469529bc0937a69db, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4098526488936463806, guid: c607646024359bb469529bc0937a69db, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4192050349094985327, guid: c607646024359bb469529bc0937a69db, type: 3}

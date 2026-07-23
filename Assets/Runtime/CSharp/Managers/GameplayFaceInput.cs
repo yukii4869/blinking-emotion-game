@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Mono.Cecil.Cil;
 using UnityEngine;
 
 public class GameplayFaceInput : FaceInputBase
@@ -10,6 +11,7 @@ public class GameplayFaceInput : FaceInputBase
     private EmotionDetector emotionDetector;
     private Dictionary<string, float> scores;
     private Dictionary<string, float> raw;
+    private Dictionary<string, float> thresholds;
 
 
     private bool ready = false;
@@ -43,21 +45,7 @@ public class GameplayFaceInput : FaceInputBase
         ProcessEmotionDetection();
         emotionDebugUI.UpdateDebug(
             scores,
-            profile.neutralScores,
-            new Dictionary<string, float>
-            {
-        { "Smile", profile.smileScores["Smile"] },
-        { "Angry", profile.angryScores["Angry"] },
-        { "Sad", profile.sadScores["Sad"] },
-        { "Surprised", profile.surprisedScores["Surprised"] }
-            },
-            new Dictionary<string, float>
-            {
-        { "Smile", 0.5f },
-        { "Angry", 0.4f },
-        { "Sad", 0.3f },
-        { "Surprised", 0.5f }
-            }
+            thresholds
         );
     }
 
@@ -65,22 +53,53 @@ public class GameplayFaceInput : FaceInputBase
     {
         profile = ActiveProfile.Instance.CurrentProfile;
 
-        blinkDetector = new BlinkDetector(profile.blinkThreshold);
+        GameMode mode = GlobalModeStorage.Instance.SelectedMode;
 
-        // EmotionDetector korrekt initialisieren
+        // BlinkThreshold
+        blinkThreshold = (mode == GameMode.FaceNoCalibration)
+            ? DefaultValues.defaultEAR
+            : profile.blinkThreshold;
+
+        blinkDetector = new BlinkDetector(blinkThreshold);
+
+        // Emotionen vorbereiten
+        Dictionary<string, float> neutral;
+        Dictionary<string, float> smile;
+        Dictionary<string, float> angry;
+        Dictionary<string, float> sad;
+        Dictionary<string, float> surprised;
+
+        if (mode == GameMode.FaceNoCalibration)
+        {
+            neutral = DefaultValues.Neutral;
+            smile = DefaultValues.Smile;
+            angry = DefaultValues.Angry;
+            sad = DefaultValues.Sad;
+            surprised = DefaultValues.Surprised;
+        }
+        else
+        {
+            neutral = profile.neutralScores;
+            smile = profile.smileScores;
+            angry = profile.angryScores;
+            sad = profile.sadScores;
+            surprised = profile.surprisedScores;
+        }
+
+        // 1) EmotionDetector erzeugen
         emotionDetector = new EmotionDetector(
-            profile.neutralScores,
-            profile.smileScores,
-            profile.angryScores,
-            profile.sadScores,
-            profile.surprisedScores
+            neutral,
+            smile,
+            angry,
+            sad,
+            surprised
         );
 
-
-        blinkThreshold = profile.blinkThreshold;
+        // 2) Thresholds holen
+        thresholds = (mode == GameMode.FaceNoCalibration)
+            ? DefaultValues.emotionThresholds
+            : emotionDetector.GetThresholds();
     }
-
-
     private void ProcessEmotionDetection()
     {
         raw = MediaPipeProvider.Instance.Blendshapes;

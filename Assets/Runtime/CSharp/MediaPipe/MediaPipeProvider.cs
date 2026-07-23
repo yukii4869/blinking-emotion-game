@@ -41,24 +41,7 @@ public class MediaPipeProvider : MonoBehaviour
     {
         if (!IsRunning)
             return;
-        // Daten aus dem UDP-Service holen
-        Landmarks = receiver.LatestLandmarks;
-        Blendshapes = receiver.LatestBlendshapes;
-        PythonReady = receiver.PythonReady;
-        if (PythonReady && !activated)
-        {
-            if (CalibrationStateManager.Instance != null)
-            {
-                CalibrationStateManager.Instance.SetState(CalibrationState.EARCalibration);
-            }
-            if (GameStateManager.Instance != null)
-            {
-
-                GameStateManager.Instance.SetState(GameState.Gameplay);
-            }
-
-            activated = true;
-        }
+        ProcessMediaPipeFrame();
     }
     public void StartMediaPipe()
     {
@@ -74,6 +57,28 @@ public class MediaPipeProvider : MonoBehaviour
 
         IsRunning = true;
     }
+    private void ProcessMediaPipeFrame()
+    {
+        // Daten holen
+        Landmarks = receiver.LatestLandmarks;
+        Blendshapes = receiver.LatestBlendshapes;
+        PythonReady = receiver.PythonReady;
+
+        // Wenn Python bereit ist und wir noch nicht aktiviert haben
+        if (PythonReady && !activated)
+        {
+            if (CalibrationStateManager.Instance != null)
+            {
+                CalibrationStateManager.Instance.SetState(CalibrationState.EARCalibration);
+            }
+            if (GameStateManager.Instance != null)
+            {
+                GameStateManager.Instance.SetState(GameState.Gameplay);
+            }
+            activated = true;
+        }
+    }
+
 
     public void StopMediaPipe()
     {

@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,12 +26,14 @@ public class HeatUI : MonoBehaviour
         // Events abonnieren
         heatItem.OnHeatCompleted += HandleHeatCompleted;
         heatItem.OnHeatBroken += HandleHeatBroken;
+        Debug.Log("Initialize");
 
         // UI-Startzustand
         checkmark.SetActive(false);
         donePopup.SetActive(false);
         brokenPopup.SetActive(false);
         frame.SetActive(true);
+        fill.gameObject.SetActive(true);
     }
 
     private void LateUpdate()
@@ -57,6 +60,8 @@ public class HeatUI : MonoBehaviour
     {
         checkmark.SetActive(true);
         donePopup.SetActive(true);
+        frame.SetActive(false);
+        fill.gameObject.SetActive(false);
 
         StartCoroutine(HideUIAfterDelay(1.5f));
     }
@@ -65,6 +70,7 @@ public class HeatUI : MonoBehaviour
     {
         // Progress-Bar ausblenden
         frame.SetActive(false);
+        fill.gameObject.SetActive(false);
 
         // Kaputt-Popup anzeigen
         brokenPopup.SetActive(true);
@@ -75,5 +81,7 @@ public class HeatUI : MonoBehaviour
         frame.SetActive(false);
         checkmark.SetActive(false);
         donePopup.SetActive(false);
+        frame.SetActive(false);
+        fill.gameObject.SetActive(false);
     }
 }
