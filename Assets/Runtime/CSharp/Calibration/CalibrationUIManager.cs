@@ -51,7 +51,6 @@ public class CalibrationUIManger : MonoBehaviour
                 break;
 
             case CalibrationState.EmotionTest:
-
                 emotionTestUI.SetActive(true);
                 liveFaceUI.SetActive(true);
                 break;

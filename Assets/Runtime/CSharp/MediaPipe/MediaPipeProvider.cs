@@ -5,13 +5,11 @@ public class MediaPipeProvider : MonoBehaviour
 {
     private UdpReceiverService receiver;
 
-    [Header("Python Settings")]
-    [SerializeField] private string pythonExe = "python";
+    [Header("Sender Settings")]
+    [SerializeField] private string exeRelativePath = "Python/Mediapipe_sender.exe";
 
-    [SerializeField] private string scriptRelativePath = "Runtime/Python/Mediapipe_sender.py";
-
-    private string ScriptFullPath =>
-        System.IO.Path.Combine(Application.dataPath, scriptRelativePath);
+    private string ExeFullPath =>
+        System.IO.Path.Combine(Application.streamingAssetsPath, exeRelativePath);
 
     private PythonProcessService python;
     private bool activated;
@@ -43,12 +41,13 @@ public class MediaPipeProvider : MonoBehaviour
             return;
         ProcessMediaPipeFrame();
     }
+
     public void StartMediaPipe()
     {
         if (python == null)
             python = new PythonProcessService();
 
-        python.StartPython(pythonExe, ScriptFullPath);
+        python.StartPython(ExeFullPath, "");
 
         if (receiver == null)
             receiver = new UdpReceiverService();
@@ -57,14 +56,13 @@ public class MediaPipeProvider : MonoBehaviour
 
         IsRunning = true;
     }
+
     private void ProcessMediaPipeFrame()
     {
-        // Daten holen
         Landmarks = receiver.LatestLandmarks;
         Blendshapes = receiver.LatestBlendshapes;
         PythonReady = receiver.PythonReady;
 
-        // Wenn Python bereit ist und wir noch nicht aktiviert haben
         if (PythonReady && !activated)
         {
             if (CalibrationStateManager.Instance != null)
@@ -73,12 +71,16 @@ public class MediaPipeProvider : MonoBehaviour
             }
             if (GameStateManager.Instance != null)
             {
+
                 GameStateManager.Instance.SetState(GameState.Gameplay);
+                AudioManager.Instance.FadeOutMusic();
+                AudioManager.Instance.FadeOutAmbient();
+                AudioManager.Instance.PlaySFX("elevatorBing");
+                AudioManager.Instance.PlaySFX("elevatorOpen");
             }
             activated = true;
         }
     }
-
 
     public void StopMediaPipe()
     {
@@ -97,6 +99,12 @@ public class MediaPipeProvider : MonoBehaviour
     }
 
     public void OnDestroy()
+    {
+        receiver?.Stop();
+        python?.StopPython();
+    }
+
+    private void OnApplicationQuit()
     {
         receiver?.Stop();
         python?.StopPython();

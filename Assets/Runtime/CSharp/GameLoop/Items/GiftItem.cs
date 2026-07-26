@@ -27,6 +27,7 @@ public class GiftItem : PickupItem
         }
 
         DeliveryUIManager.Instance.ShowDeliveryFeedback("Du hast eine Taschenlampe erhalten!");
+        AudioManager.Instance.PlaySFX("flashlightOn");
 
         // 4. Geschenk entfernen
 

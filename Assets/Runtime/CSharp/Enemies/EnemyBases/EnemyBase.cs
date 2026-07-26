@@ -82,6 +82,7 @@ public abstract class EnemyBase : MonoBehaviour
 
     protected virtual void AttackBehavior()
     {
+        AudioManager.Instance.PlaySFX("attackFight");
         float dist = Vector3.Distance(transform.position, player.transform.position);
         if (dist > stats.attackRange) return;
 

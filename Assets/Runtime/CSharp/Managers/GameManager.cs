@@ -4,7 +4,7 @@ public class GameManager : MonoBehaviour
 {
     private void Start()
     {
-        GameStateManager.Instance.SetState(GameState.Gameplay);
+        
     }
     public void OnPause()
     {

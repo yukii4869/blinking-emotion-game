@@ -152,12 +152,13 @@ public class GambleGuest : EnemyBase
     }
     private void DoBadOutCome()
     {
+        AudioManager.Instance.PlaySFX("failSound");
         AttackBehavior();
-        Debug.Log("Attacke");
         PlayerHealth.Instance.TakeDamage(stats.damage);
     }
     private void DoGoodOutcome()
     {
+        AudioManager.Instance.PlaySFX("itemSparkle");
         Instantiate(giftItemPrefab, transform.position + transform.forward, Quaternion.identity);
     }
 
@@ -176,7 +177,6 @@ public class GambleGuest : EnemyBase
     private IEnumerator PlayRevealSound()
     {
         yield return new WaitForSeconds(3f);
-        Debug.Log("Reveal Sound!");
     }
 
     private void SpawnRitualCircle()

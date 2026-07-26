@@ -6,14 +6,22 @@ from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 import os
 import numpy as np
+import sys
 
 # UDP Setup
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 UNITY_IP = "127.0.0.1"
 UNITY_PORT = 5005
 
-# Absoluten Pfad zum Modell bestimmen
-model_path = os.path.join(os.path.dirname(__file__), "face_landmarker.task")
+def resource_path(relative_path):
+    """Gibt den Pfad zurück - funktioniert im Skript UND in der PyInstaller-exe"""
+    if hasattr(sys, "_MEIPASS"):
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.dirname(__file__)
+    return os.path.join(base_path, relative_path)
+
+model_path = resource_path("face_landmarker.task")
 
 LEFT_EYE = [33, 159, 158, 133, 153, 145]
 RIGHT_EYE = [362, 386, 387, 263, 374, 380]

@@ -32,12 +32,10 @@ public class InputStateHandler : MonoBehaviour
         if (mode == GameMode.Keyboard)
         {
             playerInput.SwitchCurrentActionMap("Gameplay Keyboard");
-            Debug.Log("SetKeyboardMode");
         }
         else
         {
             playerInput.SwitchCurrentActionMap("Gameplay");
-            Debug.Log("SetFaceMode");
         }
     }
 

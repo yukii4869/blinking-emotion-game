@@ -26,6 +26,7 @@ public class DeliveryManager : MonoBehaviour
         if (deliveredRoomNumber != task.roomNumber)
         {
             DeliveryUIManager.Instance.ShowWrongSpot();
+            AudioManager.Instance.PlaySFX("deliveryWrong");
             return;
         }
 
@@ -33,6 +34,7 @@ public class DeliveryManager : MonoBehaviour
         if (item.ItemName != task.itemName)
         {
             DeliveryUIManager.Instance.ShowWrongItem();
+            AudioManager.Instance.PlaySFX("deliveryWrong");
             return;
         }
 
@@ -40,11 +42,13 @@ public class DeliveryManager : MonoBehaviour
         if (item is ICondition cond && !cond.IsMet)
         {
             DeliveryUIManager.Instance.ShowConditionFailed();
+            AudioManager.Instance.PlaySFX("deliveryWrong");
             return;
         }
 
         // SUCCESS
         DeliveryUIManager.Instance.ShowDeliverySuccess();
+        AudioManager.Instance.PlaySFX("deliveryCorrect");
 
         holder.ClearItem();
         Destroy(item.gameObject);
