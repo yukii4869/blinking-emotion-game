@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -31,6 +32,7 @@ public class PlayerController : MonoBehaviour
     public Transform cameraTransform;
     public float mouseSensitivity = 1.5f;
     public float maxLookAngle = 60;
+
 
     private Vector3 knockbackVelocity;
     public float knockbackDecay = 10f;
@@ -115,6 +117,11 @@ public class PlayerController : MonoBehaviour
 
         if (ctx.canceled)
             StopCrouch();
+    }
+     public void OnFlashlight(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+            PlayerInventory.Instance.ToggleFlashlight();
     }
 
     // -----------------------------

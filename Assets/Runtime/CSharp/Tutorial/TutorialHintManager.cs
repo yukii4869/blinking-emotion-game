@@ -3,9 +3,9 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-public class TutorialManager : MonoBehaviour
+public class TutorialHintManager : MonoBehaviour
 {
-    public static TutorialManager Instance;
+    public static TutorialHintManager Instance;
 
     [SerializeField] private CanvasGroup hintUI;
     [SerializeField] private TextMeshProUGUI hintText;

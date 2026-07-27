@@ -16,6 +16,10 @@ public class DeliveryManager : MonoBehaviour
     public void InitializeDelivery()
     {
         DeliveryUIManager.Instance.UpdateTaskUI(CurrentTask, currentTaskIndex, tasks.Length);
+        // Minimap-Ziel setzen
+        var room = RoomManager.instance.GetRoomByNumber(CurrentTask.roomNumber);
+        if (room != null)
+            MinimapPathRenderer.Instance.SetTarget(room.transform);
     }
 
     public void OnItemDelivered(PickupItem item, int deliveredRoomNumber, ItemHolder holder)
@@ -66,5 +70,8 @@ public class DeliveryManager : MonoBehaviour
 
         // --- NÄCHSTER TASK ---
         DeliveryUIManager.Instance.UpdateTaskUI(CurrentTask, currentTaskIndex, tasks.Length);
+        var room = RoomManager.instance.GetRoomByNumber(CurrentTask.roomNumber);
+        if (room != null)
+            MinimapPathRenderer.Instance.SetTarget(room.transform);
     }
 }

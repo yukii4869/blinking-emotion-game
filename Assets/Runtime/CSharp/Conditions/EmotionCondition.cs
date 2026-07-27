@@ -229,7 +229,6 @@ public class EmotionCondition : MonoBehaviour
         // -------------------------
         if (inScan)
         {
-            AudioManager.Instance.PlaySFX("scanner");
             scanTimer -= Time.deltaTime;
 
             // Spieler MUSS den Scanner anschauen

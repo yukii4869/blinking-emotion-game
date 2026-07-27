@@ -14,7 +14,7 @@ public class PlantItem : PickupItem, ICondition
     public float sweetSpotMax = 7f;
 
     [Header("Out of Range Timer")]
-    public float outOfRangeLimit = 2f;   // 2 Sekunden außerhalb → tot
+    public float outOfRangeLimit = 4f;   // 2 Sekunden außerhalb → tot
     [HideInInspector] public float outOfRangeTimer = 0f;
 
     [Header("Visuals")]

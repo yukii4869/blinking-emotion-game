@@ -9,6 +9,7 @@ public class SadnessElevator : MonoBehaviour
     [SerializeField] private float drainSpeed = 0.2f;
     [SerializeField] private Animator doorAnimation;
     [SerializeField] private GameObject elevatorUIPrefab;
+    [SerializeField] private Rigidbody rb; // im Inspector zuweisen, muss Kinematic sein
 
     private float fillAmount = 0f;          // 0 = ganz unten, 1 = ganz oben
     private bool isSad = false;
@@ -31,10 +32,6 @@ public class SadnessElevator : MonoBehaviour
         Locked,        // Türen offen, keine Bewegung
         DoorsOpening
     }
-
-
-
-
     private void Start()
     {
         startPos = transform.localPosition;
@@ -55,7 +52,7 @@ public class SadnessElevator : MonoBehaviour
         isSad = (e == Emotion.Sad);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (!playerInside)
             return;
@@ -66,15 +63,16 @@ public class SadnessElevator : MonoBehaviour
         if (state == ElevatorState.Moving)
         {
             if (isSad && fillAmount < 1f)
-                fillAmount += fillSpeed * Time.deltaTime;
+                fillAmount += fillSpeed * Time.fixedDeltaTime;
 
             if (!isSad && fillAmount > 0f)
-                fillAmount -= drainSpeed * Time.deltaTime;
+                fillAmount -= drainSpeed * Time.fixedDeltaTime;
 
             fillAmount = Mathf.Clamp(fillAmount, 0f, 1f);
 
             float y = Mathf.Lerp(0f, maxHeight, fillAmount);
-            transform.localPosition = startPos + new Vector3(0, y, 0);
+            Vector3 targetPos = startPos + new Vector3(0, y, 0);
+            rb.MovePosition(transform.parent != null ? transform.parent.TransformPoint(targetPos) : targetPos);
         }
     }
 
@@ -113,6 +111,8 @@ public class SadnessElevator : MonoBehaviour
 
     private IEnumerator CloseDoors()
     {
+        AudioManager.Instance.PlaySFX("elevatorOpen");
+
         state = ElevatorState.DoorsClosing;
         doorsMoving = true;
 
@@ -122,17 +122,17 @@ public class SadnessElevator : MonoBehaviour
         doorsClosed = true;
         doorsMoving = false;
         state = ElevatorState.Closed;
+        AudioManager.Instance.PlayMusic("elevatorMusic");
     }
 
     private IEnumerator OpenDoors()
     {
+        AudioManager.Instance.FadeOutMusic();
         state = ElevatorState.DoorsOpening;
         doorsMoving = true;
-        Debug.Log("Open Doors");
-
         doorAnimation.SetTrigger("Open");
+        AudioManager.Instance.PlaySFX("elevatorOpen");
         yield return new WaitForSeconds(3f);
-
         doorsClosed = false;
         doorsMoving = false;
         state = ElevatorState.Idle;

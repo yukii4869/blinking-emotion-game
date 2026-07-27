@@ -17,20 +17,15 @@ public class GiftItem : PickupItem
         DeliveryUIManager.Instance.ShowDeliveryFeedback("Du packst das Geschenk aus...");
 
         yield return new WaitForSeconds(2.0f);
-        GameObject flashlightRoot = GameObject.FindWithTag("Flashlight");
-
-        // Light-Komponente aktivieren
-        Light light = flashlightRoot.GetComponentInChildren<Light>(true);
-        if (light != null)
-        {
-            light.enabled = true;
-        }
 
         DeliveryUIManager.Instance.ShowDeliveryFeedback("Du hast eine Taschenlampe erhalten!");
+        PlayerInventory.Instance.GiveFlashlight();
+        AudioManager.Instance.PlaySFX("itemSparkle");
+        yield return new WaitForSeconds(0.5f);
         AudioManager.Instance.PlaySFX("flashlightOn");
+        TutorialHintManager.Instance.ShowHint("Drücke T um die Taschenlampe zu bedienen", null, 3f);
 
         // 4. Geschenk entfernen
-
         Destroy(gameObject);
     }
 }

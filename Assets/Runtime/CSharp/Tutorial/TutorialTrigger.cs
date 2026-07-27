@@ -13,7 +13,7 @@ public class TutorialTrigger : MonoBehaviour
 
         triggered = true;
 
-        TutorialManager.Instance.OnTriggerActivated(triggerId);
+        TutorialHintManager.Instance.OnTriggerActivated(triggerId);
     }
     
 }

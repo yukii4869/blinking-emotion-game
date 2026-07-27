@@ -73,4 +73,13 @@ public class RoomManager : MonoBehaviour
         }
         return null;
     }
+    public Room GetRoomByNumber(int number)
+    {
+        foreach (var r in rooms)
+        {
+            if (r.roomNumber == number)
+                return r;
+        }
+        return null;
+    }
 }

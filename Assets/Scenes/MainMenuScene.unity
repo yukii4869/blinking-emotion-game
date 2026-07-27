@@ -1765,8 +1765,8 @@ MonoBehaviour:
     pitch: 1
   - name: scanner
     clip: {fileID: 8300000, guid: 2ae69c0fd50e5ce40ae24f6ce85bd16a, type: 3}
-    volume: 0.574
-    pitch: 0.1
+    volume: 0.284
+    pitch: 0.484
   - name: correctDoor
     clip: {fileID: 8300000, guid: cfdd16f60815b0a478b7bc7116873c8f, type: 3}
     volume: 1
@@ -1789,7 +1789,7 @@ MonoBehaviour:
     pitch: 0.586
   - name: flashlightOn
     clip: {fileID: 8300000, guid: 73eaf396ed963c045938550a2fad5d2d, type: 3}
-    volume: 0.158
+    volume: 0.771
     pitch: 0.586
   - name: failSound
     clip: {fileID: 8300000, guid: 9b8a20d207617ad489c07d26131909f9, type: 3}
