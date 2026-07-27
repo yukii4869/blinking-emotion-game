@@ -1,92 +1,135 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class MinimapPathRenderer : MonoBehaviour
 {
-    [SerializeField] private LineRenderer line;
+    [Header("Dot Settings")]
+    [SerializeField] private GameObject dotPrefab;      // kleines rundes Sprite/Quad
+    [SerializeField] private float dotSpacing = 1.5f;    // Abstand zwischen Punkten
+    [SerializeField] private float dotHeightOffset = 3.5f;
     [SerializeField] private Transform player;
+    [SerializeField] private Transform dotParent;        // leeres Objekt zum Aufräumen im Hierarchy-Fenster
+
+    [Header("Recalculation")]
+    [SerializeField] private float recalcInterval = 0.2f;
+    private float recalcTimer;
+
     private Transform target;
-    public static MinimapPathRenderer Instance;
     private NavMeshPath path;
     private bool showPath = false;
+
+    public static MinimapPathRenderer Instance;
+
+    private readonly List<GameObject> dotPool = new List<GameObject>();
 
     private void Awake()
     {
         Instance = this;
         path = new NavMeshPath();
-
-        // Sichtbarkeit maximieren
-        line.startWidth = 0.5f;
-        line.endWidth = 0.5f;
-        line.useWorldSpace = true;
-
-        var mat = new Material(Shader.Find("Unlit/Color"));
-        mat.color = Color.magenta;
-        line.material = mat;
     }
 
     public void ShowPath(bool state)
     {
         showPath = state;
-
         if (!state)
-            line.positionCount = 0;
+            HideAllDots();
     }
 
     private void Update()
     {
-        if (!showPath)
-            return;
-
-        if (target == null)
+        if (!showPath || target == null)
         {
-            line.positionCount = 0;
-            Debug.LogWarning("Kein Target gesetzt!");
+            if (target == null) HideAllDots();
             return;
         }
 
-        // Prüfen ob Player auf NavMesh ist
+        recalcTimer -= Time.deltaTime;
+        if (recalcTimer > 0f)
+            return;
+
+        recalcTimer = recalcInterval;
+        RecalculateAndDrawPath();
+    }
+
+    private void RecalculateAndDrawPath()
+    {
         if (!NavMesh.SamplePosition(player.position, out NavMeshHit hitPlayer, 1f, NavMesh.AllAreas))
         {
-            Debug.LogWarning("Player NICHT auf NavMesh → Pfad wird nicht berechnet.");
-            line.positionCount = 0;
+            HideAllDots();
             return;
         }
 
-        // Prüfen ob Target auf NavMesh ist
         if (!NavMesh.SamplePosition(target.position, out NavMeshHit hitTarget, 1f, NavMesh.AllAreas))
         {
-            Debug.LogWarning("Target NICHT auf NavMesh → Pfad wird nicht berechnet.");
-            line.positionCount = 0;
+            HideAllDots();
             return;
         }
 
-        // Pfad berechnen
         bool success = NavMesh.CalculatePath(hitPlayer.position, hitTarget.position, NavMesh.AllAreas, path);
 
-        Debug.Log("Pfad berechnet: " + success + " | Ecken: " + path.corners.Length);
-
-        if (!success || path.corners.Length == 0)
+        if (!success || path.corners.Length < 2)
         {
-            line.positionCount = 0;
-            Debug.LogWarning("Kein Pfad gefunden!");
+            HideAllDots();
             return;
         }
 
-        // Pfad zeichnen
-        line.positionCount = path.corners.Length;
+        DrawDots(path.corners);
+    }
 
-        for (int i = 0; i < path.corners.Length; i++)
+    private void DrawDots(Vector3[] corners)
+    {
+        var points = new List<Vector3>();
+
+        // Punkte entlang jedes Segments in festem Abstand erzeugen
+        for (int i = 0; i < corners.Length - 1; i++)
         {
-            Vector3 pos = path.corners[i];
-            pos.y = player.position.y + 3f; // sichtbar über Boden
-            line.SetPosition(i, pos);
+            Vector3 start = corners[i];
+            Vector3 end = corners[i + 1];
+            float segmentLength = Vector3.Distance(start, end);
+            int stepsOnSegment = Mathf.Max(1, Mathf.FloorToInt(segmentLength / dotSpacing));
+
+            for (int s = 0; s < stepsOnSegment; s++)
+            {
+                float t = s / (float)stepsOnSegment;
+                points.Add(Vector3.Lerp(start, end, t));
+            }
         }
+        points.Add(corners[corners.Length - 1]);
+
+        // Pool auffüllen falls nötig
+        while (dotPool.Count < points.Count)
+        {
+            var dot = Instantiate(dotPrefab, dotParent);
+            dot.SetActive(false);
+            dotPool.Add(dot);
+        }
+
+        // Punkte positionieren
+        for (int i = 0; i < dotPool.Count; i++)
+        {
+            if (i < points.Count)
+            {
+                Vector3 pos = points[i];
+                pos.y = player.position.y + dotHeightOffset;
+                dotPool[i].transform.position = pos;
+                dotPool[i].SetActive(true);
+            }
+            else
+            {
+                dotPool[i].SetActive(false);
+            }
+        }
+    }
+
+    private void HideAllDots()
+    {
+        foreach (var dot in dotPool)
+            dot.SetActive(false);
     }
 
     public void SetTarget(Transform newTarget)
     {
         target = newTarget;
-        Debug.Log("Neues Ziel gesetzt: " + newTarget);
     }
 }
