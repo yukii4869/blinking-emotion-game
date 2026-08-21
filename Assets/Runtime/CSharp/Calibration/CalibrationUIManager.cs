@@ -37,11 +37,13 @@ public class CalibrationUIManger : MonoBehaviour
         switch (state)
         {
             case CalibrationState.PythonPreparation:
+                AudioManager.Instance.PlayMusic("elevatorMusic");
                 pythonLoadingUI.SetActive(true);
                 calibrationBackground.SetActive(true);
                 interactionHintUI.SetActive(false);
                 break;
             case CalibrationState.EARCalibration:
+            AudioManager.Instance.FadeOutMusic();
                 earCalibrationUI.SetActive(true);
                 break;
 

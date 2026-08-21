@@ -28,7 +28,7 @@ public class GiftGuest : EmotionEnemyBase
     [SerializeField] private GameObject handGiftObject;
     [SerializeField] private Animator ghostAnimation;
     [SerializeField] private float pauseDuration = 1.5f;
-    [SerializeField] private float giftDelay = 1.5f;
+    [SerializeField] private float giftDelay = 1f;
     private float giftDelayTimer;
     private float pauseTimer;
 
@@ -110,6 +110,7 @@ public class GiftGuest : EmotionEnemyBase
 
         if (currentEmotion == Emotion.Surprised)
         {
+            AudioManager.Instance.PlaySFX("correctEmotion");
             missedSurprise = false;
             SetGiftState(GiftState.ExpectJoy);
             return;
@@ -131,6 +132,7 @@ public class GiftGuest : EmotionEnemyBase
 
         if (currentEmotion == Emotion.Happy)
         {
+            AudioManager.Instance.PlaySFX("correctEmotion");
             // NICHT direkt Geschenk geben → erst vorbereiten
             giftDelayTimer = giftDelay;
             SetGiftState(GiftState.PrepareGift);

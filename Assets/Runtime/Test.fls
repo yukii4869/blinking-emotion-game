@@ -1,0 +1,4 @@
+PWD c:\Unity Projekte\blinking-emotion-game\Assets\Runtime
+INPUT C:\Users\Lea\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
+INPUT c:\Unity Projekte\blinking-emotion-game\Assets\Runtime\Test.tex
+OUTPUT Test.log

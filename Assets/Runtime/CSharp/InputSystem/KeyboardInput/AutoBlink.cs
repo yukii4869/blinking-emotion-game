@@ -9,16 +9,13 @@ public class AutoBlink : MonoBehaviour
     public float blinkTimer;
     private bool isBlinkingAuto = false;
     private float autoBlinkTimer = 0f;
+    private bool triggeringOwnBlink = false;
 
     private InputBase input;
 
-    void Start()
+    private void OnEnable()
     {
-        input = InputSelector.Instance.ActiveInput;
-
-        // WICHTIG: Wenn Spieler manuell blinzelt → Timer resetten
-        input.OnBlink += HandleManualBlink;
-
+        SubscribeToActiveInput();
         ResetTimer();
     }
 
@@ -28,21 +25,29 @@ public class AutoBlink : MonoBehaviour
             input.OnBlink -= HandleManualBlink;
     }
 
+    private void SubscribeToActiveInput()
+    {
+        if (input != null)
+            input.OnBlink -= HandleManualBlink;
+
+        input = InputSelector.Instance.ActiveInput;
+        input.OnBlink += HandleManualBlink;
+    }
+
     private void HandleManualBlink()
     {
-        // Spieler hat selbst geblinzelt → Timer neu starten
+        // Ignorieren, wenn der Blink von AutoBlink selbst ausgelöst wurde
+        if (triggeringOwnBlink)
+            return;
+
         ResetTimer();
     }
 
     void Update()
     {
-        input = InputSelector.Instance.ActiveInput;
-
-        // Nur KeyboardInput soll AutoBlink nutzen
         if (!(input is KeyboardEmotionInput))
             return;
 
-        // Wenn gerade Auto-Blink läuft → Augen wieder öffnen
         if (isBlinkingAuto)
         {
             autoBlinkTimer -= Time.deltaTime;
@@ -56,18 +61,16 @@ public class AutoBlink : MonoBehaviour
             return;
         }
 
-        // Normaler Timer
         blinkTimer -= Time.deltaTime;
 
         if (blinkTimer <= 0f)
         {
-            // Augen schließen
             input.FireEyesClosed();
 
-            // Blink auslösen
+            triggeringOwnBlink = true;
             input.FireBlink();
+            triggeringOwnBlink = false;
 
-            // Timer für Auto-Öffnen starten
             isBlinkingAuto = true;
             autoBlinkTimer = autoBlinkDuration;
 

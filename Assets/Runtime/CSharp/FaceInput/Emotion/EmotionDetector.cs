@@ -1,18 +1,17 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class EmotionDetector
 {
-    // Baselines aus dem Calibrator
     private readonly Dictionary<string, float> neutralScores;
     private readonly Dictionary<string, float> smilePeakScores;
     private readonly Dictionary<string, float> angryPeakScores;
     private readonly Dictionary<string, float> sadPeakScores;
     private readonly Dictionary<string, float> surprisedPeakScores;
 
-    // Stabilität
+    // Frame-Stabilität pro Emotion
+    private readonly Dictionary<Emotion, int> stableFramesDict = new();
     private readonly int requiredStableFrames = 5;
-    private Emotion lastDetectedEmotion = Emotion.Neutral;
-    private int stableFrames = 0;
 
     public EmotionDetector(
         Dictionary<string, float> neutralScores,
@@ -26,85 +25,72 @@ public class EmotionDetector
         this.angryPeakScores = angryPeakScores;
         this.sadPeakScores = sadPeakScores;
         this.surprisedPeakScores = surprisedPeakScores;
+
+        stableFramesDict[Emotion.Happy] = 0;
+        stableFramesDict[Emotion.Angry] = 0;
+        stableFramesDict[Emotion.Sad] = 0;
+        stableFramesDict[Emotion.Surprised] = 0;
     }
 
     public Emotion ClassifyEmotion(Dictionary<string, float> currentScores)
     {
-        // -----------------------------
-        // 1) Activation berechnen
-        // -----------------------------
-        float smileActivation = currentScores["Smile"] - neutralScores["Smile"];
-        float angryActivation = currentScores["Angry"] - neutralScores["Angry"];
-        float sadActivation = currentScores["Sad"] - neutralScores["Sad"];
-        float surprisedActivation = currentScores["Surprised"] - neutralScores["Surprised"];
+        // 1) Absolute Aktivierung (current - neutral)
+        float smileAct = currentScores["Smile"] - neutralScores["Smile"];
+        float angryAct = currentScores["Angry"] - neutralScores["Angry"];
+        float sadAct = currentScores["Sad"] - neutralScores["Sad"];
+        float surprisedAct = currentScores["Surprised"] - neutralScores["Surprised"];
 
-        // -----------------------------
-        // 2) Threshold berechnen
-        // -----------------------------
-        float smileThreshold = (smilePeakScores["Smile"] - neutralScores["Smile"]) * 0.5f;
-        float angryThreshold = (angryPeakScores["Angry"] - neutralScores["Angry"]) * 0.4f;
-        float sadThreshold = (sadPeakScores["Sad"] - neutralScores["Sad"]) * 0.3f;
-        float surprisedThreshold = (surprisedPeakScores["Surprised"] - neutralScores["Surprised"]) * 0.5f;
+        // 2) Thresholds prüfen (absolute)
+        bool smileActive = smileAct > (smilePeakScores["Smile"] - neutralScores["Smile"]) * 0.5f;
+        bool angryActive = angryAct > (angryPeakScores["Angry"] - neutralScores["Angry"]) * 0.4f;
+        bool sadActive = sadAct > (sadPeakScores["Sad"] - neutralScores["Sad"]) * 0.3f;
+        bool surprisedActive = surprisedAct > (surprisedPeakScores["Surprised"] - neutralScores["Surprised"]) * 0.5f;
 
-        // -----------------------------
-        // 3) Emotion bestimmen
-        // -----------------------------
-        Emotion newEmotion = Emotion.Neutral;
-        float strongest = 0f;
+        // 3) Frame-Stabilität aktualisieren
+        UpdateStability(Emotion.Happy, smileActive);
+        UpdateStability(Emotion.Angry, angryActive);
+        UpdateStability(Emotion.Sad, sadActive);
+        UpdateStability(Emotion.Surprised, surprisedActive);
 
-        if (smileActivation > smileThreshold && smileActivation > strongest)
+        // 4) Stärkste Emotion bestimmen (winner-takes-all)
+        Emotion strongest = Emotion.Neutral;
+        float strongestValue = 0f;
+
+        void Check(Emotion e, float act)
         {
-            strongest = smileActivation;
-            newEmotion = Emotion.Happy;
-        }
-        if (angryActivation > angryThreshold && angryActivation > strongest)
-        {
-            strongest = angryActivation;
-            newEmotion = Emotion.Angry;
-        }
-        if (sadActivation > sadThreshold && sadActivation > strongest)
-        {
-            strongest = sadActivation;
-            newEmotion = Emotion.Sad;
-        }
-        if (surprisedActivation > surprisedThreshold && surprisedActivation > strongest)
-        {
-            strongest = surprisedActivation;
-            newEmotion = Emotion.Surprised;
+            if (stableFramesDict[e] >= requiredStableFrames && act > strongestValue)
+            {
+                strongestValue = act;
+                strongest = e;
+            }
         }
 
-        // -----------------------------
-        // 4) Frame-Stabilität prüfen
-        // -----------------------------
-        if (TestFrameStability(newEmotion))
-            return newEmotion;
+        Check(Emotion.Happy, smileAct);
+        Check(Emotion.Angry, angryAct);
+        Check(Emotion.Sad, sadAct);
+        Check(Emotion.Surprised, surprisedAct);
 
-        return Emotion.Neutral;
+        return strongest;
     }
+
+    private void UpdateStability(Emotion emotion, bool isActive)
+    {
+        if (isActive)
+            stableFramesDict[emotion]++;
+        else
+            stableFramesDict[emotion] = 0;
+    }
+
+    // 5) Thresholds für Debug UI
     public Dictionary<string, float> GetThresholds()
     {
         return new Dictionary<string, float>
-    {
-        { "Smile", (smilePeakScores["Smile"] - neutralScores["Smile"]) * 0.5f },
-        { "Angry", (angryPeakScores["Angry"] - neutralScores["Angry"]) * 0.4f },
-        { "Sad", (sadPeakScores["Sad"] - neutralScores["Sad"]) * 0.3f },
-        { "Surprised", (surprisedPeakScores["Surprised"] - neutralScores["Surprised"]) * 0.5f }
-    };
-    }
-
-    private bool TestFrameStability(Emotion newEmotion)
-    {
-        if (newEmotion == lastDetectedEmotion)
         {
-            stableFrames++;
-        }
-        else
-        {
-            stableFrames = 0;
-            lastDetectedEmotion = newEmotion;
-        }
-
-        return stableFrames >= requiredStableFrames;
+            { "Smile", (smilePeakScores["Smile"] - neutralScores["Smile"]) * 0.5f },
+            { "Angry", (angryPeakScores["Angry"] - neutralScores["Angry"]) * 0.4f },
+            { "Sad", (sadPeakScores["Sad"] - neutralScores["Sad"]) * 0.3f },
+            { "Surprised", (surprisedPeakScores["Surprised"] - neutralScores["Surprised"]) * 0.5f }
+        };
     }
 }
 

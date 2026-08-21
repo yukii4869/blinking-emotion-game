@@ -1,11 +1,16 @@
 using System;
 using UnityEngine;
+
 public class PickupItem : MonoBehaviour, IInteractable
 {
     [SerializeField] private string itemName;
     public string ItemName => itemName;
 
+    [SerializeField] private bool useLargeSlot = false;
+    public bool UseLargeSlot => useLargeSlot;
+
     public bool IsHeld { get; private set; }
+    public bool IsInResetZone { get; set; }
     protected GameObject uiInstance;
 
     public void SetHeld(bool held)
@@ -16,8 +21,9 @@ public class PickupItem : MonoBehaviour, IInteractable
     public void Interact()
     {
         if (IsHeld)
-            return; // NICHT interagieren, wenn in der Hand
+            return;
     }
+
     public virtual void PickUp(ItemHolder holder)
     {
         holder.PickUp(gameObject);
@@ -29,7 +35,6 @@ public class PickupItem : MonoBehaviour, IInteractable
         return false;
     }
 
-
     public void DestroyUI()
     {
         if (uiInstance != null)
@@ -38,9 +43,9 @@ public class PickupItem : MonoBehaviour, IInteractable
             uiInstance = null;
         }
     }
+
     public virtual void Activate()
     {
         // Override in speziellen Items
     }
-
 }

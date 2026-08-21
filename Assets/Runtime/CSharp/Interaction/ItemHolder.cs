@@ -1,66 +1,67 @@
 using UnityEngine;
+
 public class ItemHolder : MonoBehaviour
 {
-    [SerializeField] private Transform handSlot;
+    [SerializeField] private Transform handSlotSmall;
+    [SerializeField] private Transform handSlotLarge;
+
     private GameObject currentItem;
     public GameObject CurrentItem => currentItem;
     public bool HasItem => currentItem != null;
 
-    public void PickUp(GameObject item)
+public void PickUp(GameObject item)
+{
+    if (currentItem != null)
     {
-        if (currentItem != null)
-        {
-            Debug.Log("Habe schon ein Item in der Hand");
-            return;
-        }
-        //Physik deaktivieren
-        currentItem = item;
-        if (item.TryGetComponent(out Rigidbody rb))
-        {
-            rb.isKinematic = true;
-        }
-        if (item.TryGetComponent(out Collider col))
-        {
-            col.enabled = true;
-        }
-        if (item.TryGetComponent(out PickupItem pickup))
-        {
-            pickup.SetHeld(true);
-        }
-
-
-        item.transform.SetParent(handSlot);
-        item.transform.localPosition = Vector3.zero;
-        item.transform.localRotation = Quaternion.identity;
+        Debug.Log("Habe schon ein Item in der Hand");
+        return;
     }
+
+    currentItem = item;
+
+    // Physik deaktivieren
+    if (item.TryGetComponent(out Rigidbody rb))
+        rb.isKinematic = true;
+
+    if (item.TryGetComponent(out Collider col))
+        col.enabled = false;
+
+    if (item.TryGetComponent(out PickupItem pickup))
+        pickup.SetHeld(true);
+
+    // Slot auswählen
+    Transform slot = handSlotSmall;
+
+    if (item.TryGetComponent(out PickupItem p) && p.UseLargeSlot)
+        slot = handSlotLarge;
+
+    // Item platzieren
+    item.transform.SetParent(slot);
+    item.transform.localPosition = Vector3.zero;
+    item.transform.localRotation = Quaternion.identity;
+}
+
 
     public void DropCurrentItem()
     {
-        Debug.Log("DROP");
         if (currentItem == null)
-        {
             return;
-        }
 
-        // Physik wieder aktivieren
         if (currentItem.TryGetComponent(out Rigidbody rb))
             rb.isKinematic = false;
 
         if (currentItem.TryGetComponent(out Collider col))
             col.enabled = true;
+
         if (currentItem.TryGetComponent(out PickupItem pickup))
-        {
             pickup.SetHeld(false);
-        }
 
-        // Von der Hand lösen
         currentItem.transform.SetParent(null);
-
         currentItem = null;
     }
+
     public void ClearItem()
     {
         currentItem = null;
     }
-
 }

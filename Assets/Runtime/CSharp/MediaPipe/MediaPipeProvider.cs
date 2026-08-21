@@ -73,10 +73,6 @@ public class MediaPipeProvider : MonoBehaviour
             {
 
                 GameStateManager.Instance.SetState(GameState.Gameplay);
-                AudioManager.Instance.FadeOutMusic();
-                AudioManager.Instance.FadeOutAmbient();
-                AudioManager.Instance.PlaySFX("elevatorBing");
-                AudioManager.Instance.PlaySFX("elevatorOpen");
             }
             activated = true;
         }

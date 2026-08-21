@@ -1759,20 +1759,20 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 62336953b59ca954cbdf259168dd6fec, type: 3}
     volume: 1
     pitch: 1
-  - name: keyboard
-    clip: {fileID: 8300000, guid: 3ec9a784886356a4b9ef10d01d7f412a, type: 3}
-    volume: 1
+  - name: typewriterOneKey
+    clip: {fileID: 8300000, guid: a859cca52702b0143ae00b1d6c9a972b, type: 3}
+    volume: 0.306
     pitch: 1
   - name: scanner
     clip: {fileID: 8300000, guid: 2ae69c0fd50e5ce40ae24f6ce85bd16a, type: 3}
     volume: 0.284
     pitch: 0.484
   - name: correctDoor
-    clip: {fileID: 8300000, guid: cfdd16f60815b0a478b7bc7116873c8f, type: 3}
+    clip: {fileID: 8300000, guid: a1289ac9641abd442a56c4cc372554f3, type: 3}
     volume: 1
     pitch: 1
   - name: failDoor
-    clip: {fileID: 8300000, guid: 24ebe09bbc806b3488207c13abdaeda7, type: 3}
+    clip: {fileID: 8300000, guid: bdc00efd174a05f449ac564cc77d735b, type: 3}
     volume: 1
     pitch: 1
   - name: deliveryCorrect
@@ -1782,23 +1782,39 @@ MonoBehaviour:
   - name: deliveryWrong
     clip: {fileID: 8300000, guid: 871e861b2a9584c49a091acfe92ddc36, type: 3}
     volume: 1
-    pitch: 0.586
-  - name: itemSparkle
+    pitch: 1
+  - name: correctEmotion
     clip: {fileID: 8300000, guid: d3876bba37afd1e44b254a73ecdb7a7f, type: 3}
     volume: 1
-    pitch: 0.586
+    pitch: 1
   - name: flashlightOn
-    clip: {fileID: 8300000, guid: 73eaf396ed963c045938550a2fad5d2d, type: 3}
-    volume: 0.771
-    pitch: 0.586
+    clip: {fileID: 8300000, guid: 3526d714472b3654fa4eb969214b6128, type: 3}
+    volume: 0.7
+    pitch: 1
+  - name: flashlightOff
+    clip: {fileID: 8300000, guid: 79d7cdf5b145b0a43a5a5f71628c4e7e, type: 3}
+    volume: 0.7
+    pitch: 1
   - name: failSound
     clip: {fileID: 8300000, guid: 9b8a20d207617ad489c07d26131909f9, type: 3}
     volume: 0.539
     pitch: 0.586
   - name: attackFight
     clip: {fileID: 8300000, guid: 91a6feb3ad54fa64ca1e919a6350bbb7, type: 3}
+    volume: 0.306
+    pitch: 1
+  - name: correctSound
+    clip: {fileID: 8300000, guid: a1289ac9641abd442a56c4cc372554f3, type: 3}
     volume: 1
-    pitch: 0.586
+    pitch: 1
+  - name: getGift
+    clip: {fileID: 8300000, guid: 431818c57f6cd9941b0ad965ff6d8020, type: 3}
+    volume: 1
+    pitch: 1
+  - name: cuteSound
+    clip: {fileID: 8300000, guid: 397b7c3b5d38a6d469ef52c257a62cbc, type: 3}
+    volume: 1
+    pitch: 1
   sfxVolume: 1
   musicVolume: 1
   ambientVolume: 1

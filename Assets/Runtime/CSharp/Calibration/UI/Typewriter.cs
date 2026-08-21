@@ -8,7 +8,6 @@ public class Typewriter : MonoBehaviour
 
     public IEnumerator TypeText(TextMeshProUGUI textField, string fullText)
     {
-        AudioManager.Instance.PlaySFX("keyboard");
         textField.text = "";
         float delay = 1f / charsPerSecond;
 

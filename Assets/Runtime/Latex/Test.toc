@@ -1,0 +1,49 @@
+\babel@toc {ngerman}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {ngerman}{}\relax 
+\contentsline {section}{\numberline {1}Einleitung}{1}{}%
+\contentsline {section}{\numberline {2}Grundlagen}{1}{}%
+\contentsline {subsection}{\numberline {2.1}Alternative Eingabemethoden}{1}{}%
+\contentsline {subsection}{\numberline {2.2}MediaPipe}{1}{}%
+\contentsline {subsubsection}{\numberline {2.2.1}Face Landmarks}{2}{}%
+\contentsline {subsubsection}{\numberline {2.2.2}Blendshapes}{2}{}%
+\contentsline {subsection}{\numberline {2.3}Eye Aspect Ratio (EAR)}{3}{}%
+\contentsline {subsection}{\numberline {2.4}Facial Action Coding System (FACS)}{3}{}%
+\contentsline {subsection}{\numberline {2.5}Affective Gameplay / Affective Computing}{6}{}%
+\contentsline {section}{\numberline {3}Stand der Forschung}{6}{}%
+\contentsline {subsection}{\numberline {3.1}Alternative spielerbezogene Eingaben in Videospielen}{7}{}%
+\contentsline {subsection}{\numberline {3.2}Affective Gameplay und Biofeedback in Spielen}{8}{}%
+\contentsline {subsection}{\numberline {3.3}Einordnung der eigenen Arbeit}{9}{}%
+\contentsline {section}{\numberline {4}Konzept}{9}{}%
+\contentsline {subsection}{\numberline {4.1}Zielsetzung und Anforderungen des Prototypen}{9}{}%
+\contentsline {subsection}{\numberline {4.2}Spielkonzept}{10}{}%
+\contentsline {subsection}{\numberline {4.3}Konzeption der spielerbezogenen Eingabemethoden}{11}{}%
+\contentsline {subsubsection}{\numberline {4.3.1}Blinzeln und Augenzustand}{11}{}%
+\contentsline {subsubsection}{\numberline {4.3.2}Gesichtsausdrücke}{11}{}%
+\contentsline {subsection}{\numberline {4.4}Integration in die Spielmechanik}{12}{}%
+\contentsline {subsubsection}{\numberline {4.4.1}Liefer-Gegenstände}{12}{}%
+\contentsline {subsubsection}{\numberline {4.4.2}Hotelgäste / Gegner}{13}{}%
+\contentsline {subsubsection}{\numberline {4.4.3}Weitere Interaktionen}{15}{}%
+\contentsline {subsection}{\numberline {4.5}Kalibrierung}{15}{}%
+\contentsline {subsection}{\numberline {4.6}Feedbackkonzept}{16}{}%
+\contentsline {subsection}{\numberline {4.7}Spielmodi}{17}{}%
+\contentsline {section}{\numberline {5}Implementierung}{18}{}%
+\contentsline {subsection}{\numberline {5.1}Technische Umgebung}{18}{}%
+\contentsline {subsection}{\numberline {5.2}Anbindung von MediaPipe}{20}{}%
+\contentsline {subsection}{\numberline {5.3}Blinzelerkennung}{21}{}%
+\contentsline {subsection}{\numberline {5.4}Gesichtsausdruckserkennung}{21}{}%
+\contentsline {subsubsection}{\numberline {5.4.1}Entwicklung der Klassifikationsmethode}{24}{}%
+\contentsline {subsection}{\numberline {5.5}Kalibrierung}{25}{}%
+\contentsline {subsection}{\numberline {5.6}Umsetzung der Spielmechaniken}{26}{}%
+\contentsline {subsubsection}{\numberline {5.6.1}FaceInput}{26}{}%
+\contentsline {subsubsection}{\numberline {5.6.2}Gegner}{26}{}%
+\contentsline {subsubsection}{\numberline {5.6.3}Gegenstände}{26}{}%
+\contentsline {subsubsection}{\numberline {5.6.4}Umgebungs Interaktionen}{26}{}%
+\contentsline {subsubsection}{\numberline {5.6.5}Weitere Systeme}{26}{}%
+\contentsline {subsection}{\numberline {5.7}Spielmodi}{26}{}%
+\contentsline {section}{\numberline {6}Nutzerstudie / Evaluation}{26}{}%
+\contentsline {subsection}{\numberline {6.1}Hyptothesen und Versuchsdesign}{26}{}%
+\contentsline {subsection}{\numberline {6.2}Versuchsablauf}{26}{}%
+\contentsline {subsection}{\numberline {6.3}Auswertung}{26}{}%
+\contentsline {subsection}{\numberline {6.4}Weitere Ergebnisse}{26}{}%
+\contentsline {section}{\numberline {7}Fazit \& Ausblick}{26}{}%

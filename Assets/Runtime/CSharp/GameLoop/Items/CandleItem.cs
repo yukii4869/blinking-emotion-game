@@ -23,6 +23,7 @@ public class CandleItem : PickupItem, ICondition
 
     private void HandleBlink()
     {
+        if (IsInResetZone) return;
         // Kerze geht NUR aus, wenn sie gehalten wird
         if (IsHeld)
         {

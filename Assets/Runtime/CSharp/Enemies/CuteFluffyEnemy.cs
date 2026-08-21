@@ -86,7 +86,7 @@ public class CuteFluffyEnemy : EmotionEnemyBase
     {
         // DESPAWN: Timer
         lifeTimer += Time.deltaTime;
-        if (lifeTimer > 20f)
+        if (lifeTimer > 120f)
         {
             SetState(EnemyState.GoingHome);
             return;

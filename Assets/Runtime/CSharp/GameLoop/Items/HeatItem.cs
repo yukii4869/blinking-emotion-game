@@ -57,6 +57,13 @@ public class HeatItem : PickupItem, ICondition
 
     private void HandleHeatLogic()
     {
+        if (IsInResetZone)
+        {
+            currentHeat = 20f;
+            IsBroken = false;
+            IsHeated = false;
+            return;
+        }
         // Erhitzen
         if (IsHeld && isAngry)
         {
@@ -83,6 +90,7 @@ public class HeatItem : PickupItem, ICondition
         if (currentHeat >= maxHeat)
         {
             IsHeated = true;
+            AudioManager.Instance.PlaySFX("correctSound");
             OnHeatCompleted?.Invoke();
         }
     }

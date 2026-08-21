@@ -90,6 +90,11 @@ public class PlantItem : PickupItem, ICondition
 
     private void UpdateBloom()
     {
+        if (IsInResetZone)
+        {
+            currentBloom = 5f;
+            return;
+        }
         if (isHappy)
         {
             currentBloom += bloomRate * Time.deltaTime;
@@ -103,6 +108,12 @@ public class PlantItem : PickupItem, ICondition
 
     private void UpdateSweetSpotTimer()
     {
+        if (IsInResetZone)
+        {
+            outOfRangeTimer = 0f;
+            IsDead = false;
+            return;
+        }
         if (IsDead) return;
 
         bool inSweetSpot = currentBloom >= sweetSpotMin && currentBloom <= sweetSpotMax;
@@ -210,8 +221,6 @@ public class PlantItem : PickupItem, ICondition
         // UI aktualisieren
         if (plantUIInstance != null)
             plantUIInstance.Initialize(this);
-
-        Debug.Log("Plant has been reset!");
     }
 
 }

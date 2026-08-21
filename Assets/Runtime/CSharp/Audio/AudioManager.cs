@@ -16,9 +16,9 @@ public class AudioManager : MonoBehaviour
     }
 
     [Header("Audio Sources")]
-    [SerializeField] private AudioSource musicSource;      // 🎵 Musik
-    [SerializeField] private AudioSource sfxSource;        // 🔊 One-Shot SFX
-    [SerializeField] private AudioSource ambientSource;    // 🌫️ Ambient / Loop-SFX
+    [SerializeField] private AudioSource musicSource;      
+    [SerializeField] private AudioSource sfxSource;        
+    [SerializeField] private AudioSource ambientSource;    
 
     [Header("Sound Library")]
     [SerializeField] private List<Sound> sounds = new List<Sound>();

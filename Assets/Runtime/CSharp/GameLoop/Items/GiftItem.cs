@@ -20,7 +20,7 @@ public class GiftItem : PickupItem
 
         DeliveryUIManager.Instance.ShowDeliveryFeedback("Du hast eine Taschenlampe erhalten!");
         PlayerInventory.Instance.GiveFlashlight();
-        AudioManager.Instance.PlaySFX("itemSparkle");
+        AudioManager.Instance.PlaySFX("getGift");
         yield return new WaitForSeconds(0.5f);
         AudioManager.Instance.PlaySFX("flashlightOn");
         TutorialHintManager.Instance.ShowHint("Drücke T um die Taschenlampe zu bedienen", null, 3f);
